@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home"/>
+
+    <fragment
+        android:id="@+id/navigation_preferiti"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment"
+        android:label="Preferiti"
+        tools:layout="@layout/fragment_preferiti"/>
+
+    <fragment
+        android:id="@+id/navigation_ricerca"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.RicercaFragment"
+        android:label="Ricerca"
+        tools:layout="@layout/fragment_ricerca"/>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login"/>
+
+
+</navigation>

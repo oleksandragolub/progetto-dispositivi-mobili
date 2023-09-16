@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Progetto Dispositivi Mobili</string>
+    <string name="title_home">Home</string>
+    <string name="title_preferiti">Preferiti</string>
+    <string name="title_ricerca">Ricerca</string>
+    <string name="title_login">Login</string>
 </resources>
