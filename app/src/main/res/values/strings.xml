@@ -4,4 +4,36 @@
     <string name="title_preferiti">Preferiti</string>
     <string name="title_ricerca">Ricerca</string>
     <string name="title_login">Login</string>
+
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_home_page">HomePageActivity</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+
+    <string name="txt_login">Login</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="text_forgot_pw">Password Dimenticata?</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_login_google">Login con Google</string>
+    <string name="txt_or">OR</string>
+    <string name="txt_domanda">Non sei ancora registrato?</string>
+    <string name="button_registrati">Registrati!</string>
+
+    <string name="txt_registrazione">Registrazione</string>
+    <string name="btn_register">Registrazione</string>
+    <string name="btn_registrazione_google">Registrazione con Google</string>
+    <string name="txt_domanda_registrazione">Hai già un\'account?</string>
+    <string name="button_allora_entra">Allora entra!</string>
+
+    <string name="txt_forgot_pw">Password dimenticata</string>
+    <string name="txt_domanda_forgot_pw">Con quale indirizzo e-mail ti sei registrato?</string>
+    <string name="btn_ripristina_password">Ripristina Password</string>
+    <string name="txt_ripristina_password">Ti inviteremo a questo indirizzo le istruzioni per ripristinare la password!</string>
+    <string name="txt_domanda_back">Non sei interessato in questo?</string>
+    <string name="txt_back">Torna indietro!</string>
+
+    <string name="logout">logout</string>
+
+    <string name="default_web_client_id" translatable="false">337894902146-e4uksm38sne0bqrj6uvkbo4oiu4hvigl.apps.googleusercontent.com</string>
 </resources>
