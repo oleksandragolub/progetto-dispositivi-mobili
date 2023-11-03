@@ -13,4 +13,6 @@
     <color name="dark_red">#9D3232</color>
     <color name="light_red">#ECC3C3</color>
     <color name="light_red_2">#DA6C63</color>
+    <color name="top_appbar_color">#9D3232</color>
+    <color name="gray">#8C8C8C</color>
 </resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "116867753475",
+    "project_id": "progetto-dispositivi-mobili",
+    "storage_bucket": "progetto-dispositivi-mobili.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116867753475:android:2dd785aae6fb22ff021036",
+        "android_client_info": {
+          "package_name": "it.sal.disco.unimib.progettodispositivimobili"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcGpNDPIxRJAc1E31HeQif_6aTF5ZTu2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

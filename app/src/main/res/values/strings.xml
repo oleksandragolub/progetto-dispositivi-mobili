@@ -5,6 +5,8 @@
     <string name="title_ricerca">Ricerca</string>
     <string name="title_login">Login</string>
 
+    <string name="logout">Logout</string>
+
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_home_page">HomePageActivity</string>
@@ -33,7 +35,7 @@
     <string name="txt_domanda_back">Non sei interessato in questo?</string>
     <string name="txt_back">Torna indietro!</string>
 
-    <string name="logout">logout</string>
+
 
     <string name="default_web_client_id" translatable="false">337894902146-e4uksm38sne0bqrj6uvkbo4oiu4hvigl.apps.googleusercontent.com</string>
 </resources>
