@@ -1,16 +1,16 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.login;
+package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class LoginViewModel extends ViewModel {
+public class ProfileViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public LoginViewModel() {
+    public ProfileViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is login fragment");
+        mText.setValue("This is profile fragment");
     }
 
     public LiveData<String> getText() {

@@ -24,10 +24,10 @@
         tools:layout="@layout/fragment_ricerca"/>
 
     <fragment
-        android:id="@+id/navigation_login"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.login.LoginFragment"
-        android:label="Login"
-        tools:layout="@layout/fragment_login"/>
+        android:id="@+id/navigation_profile"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile"/>
 
 
 </navigation>

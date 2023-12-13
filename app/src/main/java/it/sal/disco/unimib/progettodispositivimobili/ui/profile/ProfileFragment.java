@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.login;
+package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import android.os.Bundle;
 
@@ -12,23 +12,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentLoginBinding;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfileBinding;
 
 
-public class LoginFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
-    private FragmentLoginBinding binding;
+    private FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        LoginViewModel loginViewModel =
-                new ViewModelProvider(this).get(LoginViewModel.class);
+        ProfileViewModel profileViewModel =
+                new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        binding = FragmentLoginBinding.inflate(inflater, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textLogin;
-        loginViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textProfile;
+        profileViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
