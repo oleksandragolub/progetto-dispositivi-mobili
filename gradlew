@@ -30,7 +30,7 @@ while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
     link=`expr "$ls" : '.*-> \(.*\)$'`
     if expr "$link" : '/.*' > /dev/null; then
-        PRG="$link"
+        PRG="$link";
     else
         PRG=`dirname "$PRG"`"/$link"
     fi
@@ -68,7 +68,7 @@ nonstop=false
 case "`uname`" in
   CYGWIN* )
     cygwin=true
-    ;;
+    ;
   Darwin* )
     darwin=true
     ;;

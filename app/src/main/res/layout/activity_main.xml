@@ -7,31 +7,62 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_appbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/dark_red"
+            app:layout_anchorGravity="top"
             app:title="Horizon Tales"
             app:titleTextColor="@color/white"
-            app:menu="@menu/toolbar_menu"/>
+            app:menu="@menu/toolbar_menu" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintTop_toBottomOf="@id/top_appbar"
-        app:layout_constraintBottom_toTopOf="@id/nav_view">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".MainActivity">
+
+            <ImageView
+                android:id="@+id/imageView_icon1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:padding="25dp"
+                android:src="@drawable/logo_app_piccola"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toStartOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/guideline_begin"/>
+
+            <ImageView
+                android:id="@+id/imageView_icon2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:padding="25dp"
+                android:src="@drawable/logo_app_piccola"
+                app:layout_constraintTop_toBottomOf="@id/imageView_icon1"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toStartOf="@id/guideline_left" />
+
+            <ImageView
+                android:id="@+id/imageView_icon3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:padding="25dp"
+                android:src="@drawable/logo_app_piccola"
+                app:layout_constraintTop_toBottomOf="@id/imageView_icon2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toStartOf="@id/guideline_left" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_begin"
@@ -52,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="-15dp" />
+                app:layout_constraintGuide_begin="16dp" />
 
             <TextView
                 android:id="@+id/user_details"

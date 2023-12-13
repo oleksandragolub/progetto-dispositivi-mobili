@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Progetto Dispositivi Mobili</string>
+    <string name="app_name">Horizon Tales</string>
     <string name="title_home">Home</string>
     <string name="title_preferiti">Preferiti</string>
     <string name="title_ricerca">Ricerca</string>
@@ -36,6 +36,5 @@
     <string name="txt_back">Torna indietro!</string>
 
 
-
-    <string name="default_web_client_id" translatable="false">337894902146-e4uksm38sne0bqrj6uvkbo4oiu4hvigl.apps.googleusercontent.com</string>
+    <string name="web_client_id">116867753475-rmcirl3u8ncj8sc99d76hbfrrcm0b5kl.apps.googleusercontent.com</string>
 </resources>

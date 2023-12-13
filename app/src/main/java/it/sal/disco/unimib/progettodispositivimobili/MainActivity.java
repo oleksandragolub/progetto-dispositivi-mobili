@@ -2,15 +2,20 @@ package it.sal.disco.unimib.progettodispositivimobili;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.shape.Shapeable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -30,17 +35,38 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     MaterialToolbar toolbar;
+    GoogleSignInClient mGoogleSignInClient;
+
+    //ShapeableImageView imageView;
+   // TextView name, mail;
+
+    ImageView googleBtn;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
+
+    private void configureGoogleSignIn(){
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.iconLogout) {
+            // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();
+
+            // Effettua il logout da Google Sign-In
+            signOutFromGoogle();
+
+            // Passa alla LoginActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -49,10 +75,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void signOutFromGoogle() {
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Log.d("GoogleSignOut", "User signed out from Google");
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Configura GoogleSignInClient
+        configureGoogleSignIn();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -86,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             textView.setText(user.getEmail());
         }
-
-
 
     }
 }

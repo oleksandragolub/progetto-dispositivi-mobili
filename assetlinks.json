@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "it.sal.disco.unimib.progettodispositivimobili",
+    "sha256_cert_fingerprints":
+    ["94:AC:9E:6C:44:DB:5C:4A:9F:E8:ED:2D:3F:48:02:9B:68:F4:87:E5:38:4B:9A:BD:76:5D:28:31:43:69:83:C8"]
+  }
+}]
