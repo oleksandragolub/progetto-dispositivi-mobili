@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
+
     }
 
     private void configureGoogleSignIn(){
@@ -58,22 +60,51 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.iconLogout) {
-            // Effettua il logout da Firebase Auth
-            FirebaseAuth.getInstance().signOut();
 
-            // Effettua il logout da Google Sign-In
-            signOutFromGoogle();
-
-            // Passa alla LoginActivity
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
+        if (item.getItemId() == R.id.action_custom_icon) {
+            // Crea e mostra il PopupMenu
+            View menuItemView = findViewById(R.id.action_custom_icon);
+            PopupMenu popupMenu = new PopupMenu(this, menuItemView);
+            popupMenu.inflate(R.menu.popup_menu);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    return handleMenuSelection(item);
+                }
+            });
+            popupMenu.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private boolean handleMenuSelection(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.navigation_home) {
+            // Gestisci l'azione per Home
+            return true;
+        } else if (id == R.id.navigation_preferiti) {
+            // Gestisci l'azione per Preferiti
+            return true;
+        } else if (id == R.id.navigation_ricerca) {
+            // Gestisci l'azione per Ricerca
+            return true;
+        } else if (id == R.id.navigation_logout) {
+                // Effettua il logout da Firebase Auth
+                FirebaseAuth.getInstance().signOut();
+
+                // Effettua il logout da Google Sign-In
+                signOutFromGoogle();
+
+                // Passa alla LoginActivity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void signOutFromGoogle() {
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {

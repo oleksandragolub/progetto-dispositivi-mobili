@@ -9,6 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -16,7 +20,6 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfile
 
 
 public class ProfileFragment extends Fragment {
-
     private FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,

@@ -12,5 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/dark_red</item>
         <!-- Customize your theme here. -->
-    </style>
-</resources>
+        <!-- <item name="android:src">@drawable/logo_app_piccola</item>
+         <item name="android:actionOverflowButtonStyle">@drawable/logo_app_piccola</item>-->
+     </style>
+ </resources>

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.profile.ProfileFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+tools:context=".ui.profile.ProfileFragment">
 
     <TextView
         android:id="@+id/text_profile"
@@ -19,4 +22,71 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+<ImageView
+    android:id="@+id/profile_image_view"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    android:layout_marginBottom="40dp"
+    android:background="@drawable/circular_bg"
+    android:src="@drawable/profile_icone"
+    android:scaleType="centerCrop" />
+
+<EditText
+    android:id="@+id/profile_username"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:hint="Username"
+    android:inputType="text"
+    android:layout_margin="16dp"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:elevation="5dp"/>
+
+<EditText
+    android:id="@+id/profile_phone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:hint="Phone"
+    android:inputType="phone"
+    android:layout_margin="16dp"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:elevation="5dp"
+    android:enabled="false"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/profile_update_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_btn"
+        android:text="Update profile"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textAllCaps="false" />
+
+    <ProgressBar
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/dark_red"
+        android:layout_gravity="center"
+        android:id="@+id/profile_progress_bar"/>
+</LinearLayout>
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Logout"
+    android:id="@+id/logout_btn"/>
+
+</LinearLayout>
