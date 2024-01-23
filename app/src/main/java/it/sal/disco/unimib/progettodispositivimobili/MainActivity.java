@@ -14,41 +14,34 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.shape.Shapeable;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.RicercaFragment;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
     private ActivityMainBinding binding;
-    TextView textView;
-    FirebaseAuth auth;
-    FirebaseUser user;
+    private FragmentManager fragmentManager;
+    private GoogleSignInClient mGoogleSignInClient;
+    BottomNavigationView bottomNavigationView;
     MaterialToolbar toolbar;
-    GoogleSignInClient mGoogleSignInClient;
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
 
-    //ShapeableImageView imageView;
-   // TextView name, mail;
 
-    ImageView googleBtn;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-
-    }
 
     private void configureGoogleSignIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -58,11 +51,83 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
+
+    private void signOutFromGoogle() {
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Log.d("GoogleSignOut", "User signed out from Google");
+        });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        configureGoogleSignIn();
+
+    /*  binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);*/
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        toolbar = findViewById(R.id.top_appbar);
+        setSupportActionBar(toolbar);
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setBackground(null);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.navigation_home) {
+                    openFragment(new HomeFragment());
+                    return true;
+                } else if (id == R.id.navigation_preferiti) {
+                    openFragment(new PreferitiFragment());
+                    return true;
+                } else if (id == R.id.navigation_ricerca) {
+                    openFragment(new RicercaFragment());
+                    return true;
+                } else if (id == R.id.navigation_profile) {
+                    openFragment(new ProfileFragment());
+                    return true;
+                }
+                    return false;
+            }
+        });
+
+        fragmentManager = getSupportFragmentManager();
+        openFragment(new HomeFragment());
+
+
+        if(currentUser == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+    }
+
+
+    private void openFragment(Fragment fragment){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_custom_icon) {
-            // Crea e mostra il PopupMenu
             View menuItemView = findViewById(R.id.action_custom_icon);
             PopupMenu popupMenu = new PopupMenu(this, menuItemView);
             popupMenu.inflate(R.menu.popup_menu);
@@ -81,75 +146,29 @@ public class MainActivity extends AppCompatActivity {
     private boolean handleMenuSelection(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.navigation_home) {
-            // Gestisci l'azione per Home
-            return true;
+            openFragment(new HomeFragment());
+            //return true;
         } else if (id == R.id.navigation_preferiti) {
-            // Gestisci l'azione per Preferiti
-            return true;
+            openFragment(new PreferitiFragment());
+            //return true;
         } else if (id == R.id.navigation_ricerca) {
-            // Gestisci l'azione per Ricerca
-            return true;
+            openFragment(new RicercaFragment());
+            //return true;
+        } else if (id == R.id.navigation_profile) {
+            openFragment(new ProfileFragment());
+            //return true;
         } else if (id == R.id.navigation_logout) {
-                // Effettua il logout da Firebase Auth
-                FirebaseAuth.getInstance().signOut();
-
-                // Effettua il logout da Google Sign-In
-                signOutFromGoogle();
-
-                // Passa alla LoginActivity
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-                return true;
+            // Effettua il logout da Firebase Auth
+            FirebaseAuth.getInstance().signOut();
+            // Effettua il logout da Google Sign-In
+            signOutFromGoogle();
+            // Passa alla LoginActivity
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void signOutFromGoogle() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            Log.d("GoogleSignOut", "User signed out from Google");
-        });
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Configura GoogleSignInClient
-        configureGoogleSignIn();
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
-
-        textView = findViewById(R.id.user_details);
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-
-        toolbar = findViewById(R.id.top_appbar);
-        setSupportActionBar(toolbar);
-
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
-                findFragmentById(R.id.nav_host_fragment_activity_main);
-        NavController navController = navHostFragment.getNavController();
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_preferiti, R.id.navigation_ricerca, R.id.navigation_profile)
-                .build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-
-        if(user == null){
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        else {
-            textView.setText(user.getEmail());
-        }
-
-    }
 }

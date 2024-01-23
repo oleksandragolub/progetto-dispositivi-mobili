@@ -27,7 +27,72 @@
         android:id="@+id/navigation_profile"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_uploadProfilePicFragment"
+            app:destination="@id/uploadProfilePicFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_updateProfileFragment"
+            app:destination="@id/updateProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_deleteProfileFragment"
+            app:destination="@id/deleteProfileFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/uploadProfilePicFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UploadProfilePicFragment"
+        android:label="Upload Profile Picture"
+        tools:layout="@layout/fragment_upload_profile_pic">
+         <action
+             android:id="@+id/action_uploadProfilePicFragment_to_navigation_profile"
+             app:destination="@id/navigation_profile" />
+     </fragment>
 
-</navigation>
+    <fragment
+        android:id="@+id/updateProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateProfileFragment"
+        android:label="Update Email"
+        tools:layout="@layout/fragment_update_profile">
+        <action
+            android:id="@+id/action_updateProfileFragment_to_updatePasswordFragment"
+            app:destination="@id/updatePasswordFragment" />
+        <action
+            android:id="@+id/action_updateProfileFragment_to_updateEmailFragment"
+            app:destination="@id/updateEmailFragment" />
+        <action
+            android:id="@+id/action_updateProfileFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/updateEmailFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateEmailFragment"
+        android:label="Update Email"
+        tools:layout="@layout/fragment_update_email">
+        <action
+            android:id="@+id/action_updateEmailFragment_to_updateProfileFragment"
+            app:destination="@id/updateProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/updatePasswordFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdatePasswordFragment"
+        android:label="Update Password"
+        tools:layout="@layout/fragment_update_email">
+        <action
+            android:id="@+id/action_updatePasswordFragment_to_updateProfileFragment"
+            app:destination="@id/updateProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/deleteProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.DeleteProfileFragment"
+        android:label="Delete Profile"
+        tools:layout="@layout/fragment_delete_profile">
+        <action
+            android:id="@+id/action_deleteProfileFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+ </navigation>

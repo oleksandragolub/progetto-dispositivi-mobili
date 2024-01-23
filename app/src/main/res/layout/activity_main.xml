@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_appbar"
@@ -16,125 +17,28 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/dark_red"
             app:layout_anchorGravity="top"
-            app:menu="@menu/toolbar_menu"
             app:title="Horizon Tales"
-            app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+            app:titleTextColor="@color/white"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <FrameLayout
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/top_appbar"
+            android:layout_above="@id/bottom_navigation"
+            app:navGraph="@navigation/mobile_navigation"
+            app:defaultNavHost="true"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".MainActivity">
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu" />
+    </RelativeLayout>
 
-            <!--   <ImageView
-                  android:id="@+id/imageView_icon1"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:adjustViewBounds="true"
-                  android:padding="25dp"
-                  android:src="@drawable/logo_app_piccola"
-                  app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                  app:layout_constraintStart_toStartOf="@id/guideline_left"
-                  app:layout_constraintTop_toBottomOf="@id/guideline_begin"/>
-
-              <ImageView
-                  android:id="@+id/imageView_icon2"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:adjustViewBounds="true"
-                  android:padding="25dp"
-                  android:src="@drawable/logo_app_piccola"
-                  app:layout_constraintTop_toBottomOf="@id/imageView_icon1"
-                  app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                  app:layout_constraintStart_toStartOf="@id/guideline_left" />
-
-              <ImageView
-                  android:id="@+id/imageView_icon3"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:adjustViewBounds="true"
-                  android:padding="25dp"
-                  android:src="@drawable/logo_app_piccola"
-                  app:layout_constraintTop_toBottomOf="@id/imageView_icon2"
-                  app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                  app:layout_constraintStart_toStartOf="@id/guideline_left" /> -->
-
-              <androidx.constraintlayout.widget.Guideline
-                  android:id="@+id/guideline_begin"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  app:layout_constraintGuide_begin="16dp" />
-
-              <androidx.constraintlayout.widget.Guideline
-                  android:id="@+id/guideline_right"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  app:layout_constraintGuide_end="16dp" />
-
-              <androidx.constraintlayout.widget.Guideline
-                  android:id="@+id/guideline_left"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  app:layout_constraintGuide_begin="16dp" />
-
-              <TextView
-                  android:id="@+id/user_details"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:text="Ciao!"
-                  android:textSize="20sp"
-                  app:layout_constraintEnd_toStartOf="@id/guideline_right"
-                  app:layout_constraintStart_toEndOf="@id/guideline_left"
-                  app:layout_constraintTop_toBottomOf="@id/guideline_begin"/>
-
-              <androidx.constraintlayout.widget.Guideline
-                  android:id="@+id/guideline_end"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  app:layout_constraintGuide_end="16dp" />
-
-          </androidx.constraintlayout.widget.ConstraintLayout>
-      </ScrollView>
-
-      <FrameLayout
-          android:id="@+id/fragment_container"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_above="@id/nav_view"
-          app:layout_anchor="@+id/appBarLayout"
-          app:layout_anchorGravity="center">
-
-          <com.google.android.material.bottomnavigation.BottomNavigationView
-              android:id="@+id/nav_view"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_gravity="bottom"
-              app:layout_constraintBottom_toBottomOf="parent"
-              app:layout_constraintLeft_toLeftOf="parent"
-              app:layout_constraintRight_toRightOf="parent"
-              app:menu="@menu/bottom_nav_menu" />
-
-          <androidx.fragment.app.FragmentContainerView
-              android:id="@+id/nav_host_fragment_activity_main"
-              android:name="androidx.navigation.fragment.NavHostFragment"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              app:defaultNavHost="true"
-              app:layout_constraintBottom_toTopOf="@id/nav_view"
-              app:layout_constraintTop_toBottomOf="@id/top_appbar"
-              app:navGraph="@navigation/mobile_navigation" />
-      </FrameLayout>
-
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+</androidx.drawerlayout.widget.DrawerLayout>
 

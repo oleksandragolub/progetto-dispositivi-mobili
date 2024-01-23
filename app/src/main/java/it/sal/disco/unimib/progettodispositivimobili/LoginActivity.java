@@ -2,13 +2,16 @@ package it.sal.disco.unimib.progettodispositivimobili;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,16 +20,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -39,6 +44,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+       /* if(mAuth.getCurrentUser() != null){
+            Toast.makeText(LoginActivity.this, "L'utente è già loggato.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        } else {
+            Toast.makeText(LoginActivity.this, "Adesso puoi loggarsi!", Toast.LENGTH_SHORT).show();
+        }*/
     }
 
     private void signIn(){
@@ -126,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(currentUser==null){
             signIn();
-        }else{
+        } else {
             updateUI(currentUser);
         }
 
@@ -149,32 +161,83 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         buttonLogin.setOnClickListener(v -> {
-            String email, password;
-            email = String.valueOf(editTextEmail.getText());
-            password = String.valueOf(editTextPassword.getText());
+            String textEmail = String.valueOf(editTextEmail.getText());
+            String textPassword = String.valueOf(editTextPassword.getText());
 
-            if (TextUtils.isEmpty(email)) {
-                Toast.makeText(getApplicationContext(), "Enter email:", Toast.LENGTH_SHORT).show();
-                return;
+            if(TextUtils.isEmpty(textEmail)){
+                Toast.makeText(LoginActivity.this, "Inserisci il tuo email", Toast.LENGTH_SHORT).show();
+                editTextEmail.setError("Richista di email");
+                editTextEmail.requestFocus();
+                //return;
+            } else if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
+                Toast.makeText(LoginActivity.this, "Re-inserisci il tuo email", Toast.LENGTH_SHORT).show();
+                editTextEmail.setError("Richista di email valido");
+                editTextEmail.requestFocus();
+                //return;
+            } else if(TextUtils.isEmpty(textPassword)){
+                Toast.makeText(LoginActivity.this, "Inserisci la tua password", Toast.LENGTH_SHORT).show();
+                editTextPassword.setError("Richista di password");
+                editTextPassword.requestFocus();
+                //return;
+            } else {
+                loginUser(textEmail, textPassword);
             }
+        });
+    }
 
-            if (TextUtils.isEmpty(password)) {
-                Toast.makeText(getApplicationContext(), "Enter password:", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_SHORT).show();
+    private void loginUser(String textEmail, String textPassword) {
+        mAuth.signInWithEmailAndPassword(textEmail, textPassword)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        currentUser = mAuth.getCurrentUser();
+                        // Controlla che l'email è stato verificato prima che l'utente riesce di entrare nel suo profilo
+                        if(currentUser.isEmailVerified()){
+                            Toast.makeText(getApplicationContext(), "Login effettuato con il successo!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            currentUser.sendEmailVerification();
+                            mAuth.signOut();
+                            showAlertDialog();
                         }
-                    });
+                    } else {
+                        handleLoginError(task.getException());
+                    }
+                });
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle("Email non verificato");
+        builder.setMessage("Controlla la tua email. Non puoi entrare nel tuo account senza effettuare la verificazione.");
+
+        builder.setPositiveButton("Continua", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void handleLoginError(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidUserException) {
+            editTextEmail.setError("L'account non esiste oppure non è più valido.");
+            editTextEmail.requestFocus();
+        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            editTextEmail.setError("Le credenziali inserite sono sbagliate. Controlla bene e riprova.");
+            editTextEmail.requestFocus();
+            editTextPassword.setError("Le credenziali inserite sono sbagliate. Controlla bene e riprova.");
+            editTextPassword.requestFocus();
+        } else {
+            Log.e(TAG, exception.getMessage());
+            Toast.makeText(LoginActivity.this, "Errore di login: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

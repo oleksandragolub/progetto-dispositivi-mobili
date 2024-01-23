@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Material3.Light.NoActionBar"
-        tools:targetApi="34">
+        tools:targetApi="34"
+        android:requestLegacyExternalStorage="true">
 
 
         <activity
@@ -48,6 +49,12 @@
 
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ProgettoDispositiviMobili">
+        </activity>
+
+        <activity
+            android:name=".ui.profile.Pr"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>

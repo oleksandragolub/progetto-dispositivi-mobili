@@ -1,0 +1,177 @@
+package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
+
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
+
+import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUploadProfilePicBinding;
+
+public class UploadProfilePicFragment extends Fragment {
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private ActivityResultLauncher<String> mGetContent;
+    FragmentUploadProfilePicBinding binding;
+    StorageReference storageReference;
+    ImageView imageViewUploadPic;
+    TextView btnBack;
+    Button buttonUploadPicChoose, buttonUploadPic;
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+    Uri uri, uriImage;
+   // ProgressBar progressBar;
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        binding = FragmentUploadProfilePicBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        btnBack = binding.txtBack;
+        buttonUploadPicChoose = binding.btnScegliImmagine;
+        buttonUploadPic = binding.btnCaricaImmagine;
+        imageViewUploadPic = binding.imageViewProfileDp;
+        //progressBar = binding.profileProgressBar;
+
+        storageReference = FirebaseStorage.getInstance().getReference("VisualizzaImmagini");
+        uri = currentUser.getPhotoUrl();
+        Picasso.with(getActivity()).load(uri).into(imageViewUploadPic);
+
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        // Gestisci il risultato dell'attività qui
+                        if (uri != null) {
+                            uriImage = uri;
+                            imageViewUploadPic.setImageURI(uriImage);
+                        }
+                    }
+                });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getActivity() != null) {
+                    openFragment(new ProfileFragment());
+                }
+            }
+        });
+
+
+
+
+        buttonUploadPicChoose.setOnClickListener(v -> openFileChooser());
+
+        buttonUploadPic.setOnClickListener(v -> {
+           // progressBar.setVisibility(View.VISIBLE);
+            uploadPic();
+        });
+
+
+        return root;
+    }
+
+    private void uploadPic() {
+        if(uriImage != null){
+            StorageReference fileReference = storageReference.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid() + "."
+            + getFileExtension(uriImage));
+
+            fileReference.putFile(uriImage).addOnSuccessListener(taskSnapshot -> {
+                fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                    Uri downloadUri = uri;
+                    currentUser = mAuth.getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(downloadUri).build();
+
+                    currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Profilo aggiornato con successo", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Errore nell'aggiornamento del profilo", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+
+               // progressBar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "L'immagine è stata caricata con il successo!", Toast.LENGTH_SHORT).show();
+
+                if(getActivity() != null) {
+                    openFragment(new ProfileFragment());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+           // progressBar.setVisibility(View.GONE);
+            Toast.makeText(getActivity(), "Nessun file è stato selezionato!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openFragment(Fragment fragment){
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+
+    }
+
+    private void openFileChooser() {
+        mGetContent.launch("image/*");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+}

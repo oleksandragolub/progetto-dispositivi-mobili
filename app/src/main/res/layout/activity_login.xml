@@ -6,8 +6,10 @@
    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_appbar"
@@ -19,10 +21,9 @@
             app:titleTextColor="@color/white"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.45" />
+                app:layout_constraintGuide_percent="0.4" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_begin"
@@ -70,21 +71,13 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="16dp" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/guideline_center" />
-
             <TextView
                 android:id="@+id/txt_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:text="@string/txt_login"
                 android:textSize="32sp"
                 android:textStyle="bold"
@@ -105,7 +98,6 @@
                 app:layout_constraintTop_toBottomOf="@id/txt_login"
                 app:startIconDrawable="@drawable/baseline_alternate_email_24"
                 app:endIconMode="clear_text"
-
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -189,6 +181,19 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/btn_login" />
 
+            <TextView
+                android:id="@+id/txt_or"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@id/view3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@id/view2"
+                app:layout_constraintTop_toBottomOf="@id/btn_login"
+                tools:text="@string/txt_or" />
+
             <View
                 android:id="@+id/view3"
                 android:layout_width="0dp"
@@ -202,19 +207,6 @@
                 app:layout_constraintEnd_toStartOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/txt_or"
                 app:layout_constraintTop_toBottomOf="@id/btn_login" />
-
-            <TextView
-                android:id="@+id/txt_or"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toStartOf="@id/view3"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@id/view2"
-                app:layout_constraintTop_toBottomOf="@id/btn_login"
-                tools:text="@string/txt_or" />
 
             <LinearLayout
                 android:id="@+id/LinearLayout1"
@@ -273,7 +265,6 @@
                     android:textColor="@color/dark_red"
                     android:textSize="14sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
@@ -284,5 +275,5 @@
                 app:layout_constraintGuide_end="16dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

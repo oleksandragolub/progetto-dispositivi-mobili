@@ -40,4 +40,37 @@
 
 
     <string name="web_client_id">116867753475-rmcirl3u8ncj8sc99d76hbfrrcm0b5kl.apps.googleusercontent.com</string>
+    <string name="loading">Loading</string>
+    <string name="username">Username</string>
+    <string name="DoB">Data di Nascita</string>
+    <string name="gender">Genere</string>
+    <string name="gender_male">Maschio</string>
+    <string name="gender_fem">Femmina</string>
+    <string name="conferma_password">Conferma password</string>
+
+    <string name="txt_change_pw">Cambia la tua password</string>
+    <string name="txt_change_email">Cambia il tuo email</string>
+    <string name="txt_elimina_profile">Elimina il tuo profilo</string>
+    <string name="txt_upload_profile_pic">Inserisci la foto del tuo profilo</string>
+    <string name="txt_scegli_immagine">Scegli l\'immagine</string>
+    <string name="txt_carica_immagine">Carica l\'immagine</string>
+    <string name="txt_update_profile">Aggiorna i dati del tuo profilo</string>
+    <string name="btn_update_profile">Aggiorna il tuo profilo</string>
+    <string name="btn_salva_update_profile">Salva i tuoi dati aggiornati</string>
+    <string name="descrizione">Descrizione</string>
+    <string name="txt_update_email">Aggiorna l\'email del tuo profilo</string>
+    <string name="txt_update_password">Aggiorna la password del tuo profilo</string>
+    <string name="email_corrente">Email corrente</string>
+    <string name="btn_authenticate">Autentifica</string>
+    <string name="txt_profile_not_authenticated">Il tuo profilo non è stato ancora autentificato/verificato!</string>
+    <string name="email_nuovo">Email nuovo</string>
+    <string name="btn_email_nuovo">Aggiorna il tuo email</string>
+    <string name="btn_password_nuova">Aggiorna la tua password</string>
+    <string name="password_corrente">Password corrente</string>
+    <string name="password_nuova">Password nuova</string>
+    <string name="conferma_password_nuova">Conferma password nuova</string>
+    <string name="txt_domanda_elimina_profile">Vorresti eliminare il tuo profilo?</string>
+    <string name="btn_delete_user">Elimina il tuo profilo</string>
+
+
 </resources>
