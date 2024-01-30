@@ -18,6 +18,7 @@ public class PreferitiFragment extends Fragment {
 
     private FragmentPreferitiBinding binding;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         PreferitiViewModel preferitiViewModel =
@@ -29,6 +30,8 @@ public class PreferitiFragment extends Fragment {
         final TextView textView = binding.textPreferiti;
         preferitiViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
+
+
     }
 
     @Override

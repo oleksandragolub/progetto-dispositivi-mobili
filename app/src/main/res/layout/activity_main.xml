@@ -20,7 +20,7 @@
             app:title="Horizon Tales"
             app:titleTextColor="@color/white"/>
 
-        <FrameLayout
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"

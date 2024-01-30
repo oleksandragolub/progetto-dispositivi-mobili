@@ -31,6 +31,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.RicercaFragment;
+import it.sal.disco.unimib.progettodispositivimobili.util.MarvelApiConfig;
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
     private ActivityMainBinding binding;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     MaterialToolbar toolbar;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+
 
 
 
@@ -107,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             startActivity(intent);
             finish();
         }
+        //metto temporaneamente qua, serve per configurare l'api e prelevare il contenuto
+        // ma non so ancora come salvare quello che è stato trovato e se funziona
+        //incluse le api-key che non vanno inserite direttamente nel codice ma non so come.
+        /*
+        private static final String publicKey = "0b15cb829ed0192799209be00f95e553";
+        private static final String privateKey = "966d2baf127271cc1af5bff030e9998be0df51af";
+
+        MarvelApiConfig marvelApiConfig = new MarvelApiConfig.Builder(publicKey, privateKey).debug().build();
+        ComicApiClient comicApiClient = new ComicApiClient(marvelApiConfig);
+        ComicsQuery query = ComicsQuery.Builder.create().withOffset(0).withLimit(10).build();
+        MarvelResponse<ComicsDto> all = comicApiClient.getAll(query);
+         */
 
     }
 
