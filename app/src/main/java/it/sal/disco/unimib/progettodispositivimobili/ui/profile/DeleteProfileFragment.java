@@ -110,9 +110,9 @@ public class DeleteProfileFragment extends Fragment {
                                 buttonReAuthenticate.setEnabled(false);
                                 buttonDeleteUser.setEnabled(true);
 
-                                textViewAuthenticated.setText("Sei stato autentificato. Adesso puoi eliminare il tuo profilo. Però stai attento, perchè questa azione è irreversibile!");
+                                textViewAuthenticated.setText("Sei stato autenticato, adesso puoi eliminare il tuo profilo. Attenzione, questa azione è irreversibile!");
 
-                                Toast.makeText(getActivity(), "La password è stata verificata." + "Adesso puoi eliminare il tuo profilo!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "La password è stata verificata." + " Adesso puoi eliminare il tuo profilo!", Toast.LENGTH_SHORT).show();
 
                                 buttonDeleteUser.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
 
@@ -139,7 +139,7 @@ public class DeleteProfileFragment extends Fragment {
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Eliminazione dell'account e dei relativi dati?");
-        builder.setMessage("Sei sicuro di voler eliminare il tuo account e dei relativi dati? Questa azione è irreversibile!");
+        builder.setMessage("Sei sicuro di voler eliminare il tuo account e i relativi dati? Questa azione è irreversibile!");
 
         builder.setPositiveButton("Continua", (dialog, which) -> {
             deleteUser(currentUser);
@@ -174,7 +174,7 @@ public class DeleteProfileFragment extends Fragment {
                     // Effettua il logout da Firebase Auth
                     FirebaseAuth.getInstance().signOut();
                     // Passa alla LoginActivity
-                    Toast.makeText(getActivity(), "L'utente è stato eiminato!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "L'utente è stato eliminato!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivity(intent);
                     getActivity().finish();

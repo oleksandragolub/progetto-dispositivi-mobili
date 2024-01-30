@@ -101,7 +101,7 @@ public class UpdateEmailFragment extends Fragment {
 
                 if(TextUtils.isEmpty(userPwd)){
                     Toast.makeText(getActivity(), "Serve la password per continuare!", Toast.LENGTH_SHORT).show();
-                    editTextPwd.setError("Richiesta di password");
+                    editTextPwd.setError("Password richiesta");
                     editTextPwd.requestFocus();
                     //return;
                 } else {
@@ -111,9 +111,9 @@ public class UpdateEmailFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(getActivity(), "L'email è stata verificata." + "Adesso puoi aggiornare il tuo email!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "L'email è stata verificata." + " Adesso puoi aggiornare la tua email!", Toast.LENGTH_SHORT).show();
 
-                                textViewAuthenticated.setText("Sei stato autentificato. Adesso puoi aggiornare il tuo email!");
+                                textViewAuthenticated.setText("Sei stato autenticato. Adesso puoi aggiornare la tua email!");
                                 editTextNewEmail.setEnabled(true);
                                 editTextPwd.setEnabled(false);
                                 buttonVerifyUser.setEnabled(false);
@@ -126,18 +126,18 @@ public class UpdateEmailFragment extends Fragment {
                                     public void onClick(View v) {
                                         userNewEmail = editTextNewEmail.getText().toString();
                                         if(TextUtils.isEmpty(userNewEmail)){
-                                            Toast.makeText(getActivity(), "Inserisci il tuo nuovo email", Toast.LENGTH_SHORT).show();
-                                            editTextNewEmail.setError("Richista di email nuovo");
+                                            Toast.makeText(getActivity(), "Inserisci la tua nuova email", Toast.LENGTH_SHORT).show();
+                                            editTextNewEmail.setError("Nuova email richiesta");
                                             editTextNewEmail.requestFocus();
                                             //return;
                                         } else if(!Patterns.EMAIL_ADDRESS.matcher(userNewEmail).matches()){
-                                            Toast.makeText(getActivity(), "Re-inserisci il tuo email", Toast.LENGTH_SHORT).show();
-                                            editTextNewEmail.setError("Richista di email valido");
+                                            Toast.makeText(getActivity(), "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
+                                            editTextNewEmail.setError("Email valida richiesta");
                                             editTextNewEmail.requestFocus();
                                             //return;
                                         } else if(userOldEmail.matches(userNewEmail)){
-                                            Toast.makeText(getActivity(), "Il nuovo email non può essere lo stesso di prima", Toast.LENGTH_SHORT).show();
-                                            editTextNewEmail.setError("Richista di email nuovo");
+                                            Toast.makeText(getActivity(), "La nuova email non può essere la stessa di prima", Toast.LENGTH_SHORT).show();
+                                            editTextNewEmail.setError("Nuova email richiesta");
                                             editTextNewEmail.requestFocus();
                                             //return;
                                         } else {
@@ -166,7 +166,7 @@ public class UpdateEmailFragment extends Fragment {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isComplete()){
                     currentUser.sendEmailVerification();
-                    Toast.makeText(getActivity(), "Email è stato aggiornato. Adesso verifica il tuo nuovo email per il messaggio!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "L'email è stata aggiornata. Adesso verifica la tua nuova email per il messaggio!", Toast.LENGTH_SHORT).show();
                     if(getActivity() != null) {
                         openFragment(new HomeFragment());
                     }

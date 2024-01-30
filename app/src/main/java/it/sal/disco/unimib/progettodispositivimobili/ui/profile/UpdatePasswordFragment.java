@@ -97,7 +97,7 @@ public class UpdatePasswordFragment extends Fragment {
 
                 if(TextUtils.isEmpty(userPwdCurr)){
                     Toast.makeText(getActivity(), "Serve la password per continuare!", Toast.LENGTH_SHORT).show();
-                    editTextPwdCurr.setError("Richiesta di password corrente");
+                    editTextPwdCurr.setError("Password corrente richiesta");
                     editTextPwdCurr.requestFocus();
                     //return;
                 } else {
@@ -114,9 +114,9 @@ public class UpdatePasswordFragment extends Fragment {
                                 buttonReAuthenticate.setEnabled(false);
                                 buttonChangePwd.setEnabled(true);
 
-                                textViewAuthenticated.setText("Sei stato autentificato. Adesso puoi aggiornare la tua password!");
+                                textViewAuthenticated.setText("Sei stato autenticato. Adesso puoi aggiornare la tua password!");
 
-                                Toast.makeText(getActivity(), "La password è stata verificata." + "Adesso puoi aggiornare la tua password!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "La password è stata verificata." + " Adesso puoi aggiornare la tua password!", Toast.LENGTH_SHORT).show();
 
                                 buttonChangePwd.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
 
@@ -146,22 +146,22 @@ public class UpdatePasswordFragment extends Fragment {
 
         if(TextUtils.isEmpty(userPwdNew)){
             Toast.makeText(getActivity(), "Inserisci la tua nuova password", Toast.LENGTH_SHORT).show();
-            editTextPwdNew.setError("Richista di password nuova");
+            editTextPwdNew.setError("Nuova password richiesta");
             editTextPwdNew.requestFocus();
             //return;
         } else if (TextUtils.isEmpty(userPwdConfirmNew)){
             Toast.makeText(getActivity(), "Conferma la tua nuova password", Toast.LENGTH_SHORT).show();
-            editTextPwdConfirmNew.setError("Richista di conferma password nuova");
+            editTextPwdConfirmNew.setError("Richiesta di conferma nuova password");
             editTextPwdConfirmNew.requestFocus();
             //return;
         } else if(!userPwdNew.matches(userPwdConfirmNew)){
             Toast.makeText(getActivity(), "Le password non coincidono", Toast.LENGTH_SHORT).show();
-            editTextPwdConfirmNew.setError("Richista di password identica");
+            editTextPwdConfirmNew.setError("Password identica richiesta");
             editTextPwdConfirmNew.requestFocus();
             //return;
         } else if(userPwdCurr.matches(userPwdNew)){
             Toast.makeText(getActivity(), "La nuova password non può essere la stessa di prima", Toast.LENGTH_SHORT).show();
-            editTextPwdNew.setError("Richista di password nuova");
+            editTextPwdNew.setError("Nuova password richiesta");
             editTextPwdNew.requestFocus();
             //return;
         } else {
@@ -169,7 +169,7 @@ public class UpdatePasswordFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        Toast.makeText(getActivity(), "Password è stata aggiornata con il successo!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "La password è stata aggiornata con successo!", Toast.LENGTH_SHORT).show();
                         if(getActivity() != null) {
                             openFragment(new ProfileFragment());
                         }

@@ -132,7 +132,7 @@ public class UploadProfilePicFragment extends Fragment {
                 });
 
                // progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), "L'immagine è stata caricata con il successo!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "L'immagine è stata caricata con successo!", Toast.LENGTH_SHORT).show();
 
                 if(getActivity() != null) {
                     openFragment(new ProfileFragment());

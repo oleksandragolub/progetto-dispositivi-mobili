@@ -44,12 +44,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             strEmail = editEmail.getText().toString().trim();
 
             if (TextUtils.isEmpty(strEmail)){
-                Toast.makeText(ForgotPasswordActivity.this, "Inserisci il tuo email", Toast.LENGTH_SHORT).show();
-                editEmail.setError("Richista di email");
+                Toast.makeText(ForgotPasswordActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
+                editEmail.setError("Email richiesta");
                 editEmail.requestFocus();
             } else if (!Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()){
-                Toast.makeText(ForgotPasswordActivity.this, "Re-inserisci il tuo email", Toast.LENGTH_SHORT).show();
-                editEmail.setError("Richista di email valido");
+                Toast.makeText(ForgotPasswordActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
+                editEmail.setError("Email valida richiesta");
                 editEmail.requestFocus();
             } else {
                 resetPassword();
@@ -71,7 +71,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ForgotPasswordActivity.this, "Controlla la tua email. Abbiamo inviato a te il password reset link.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotPasswordActivity.this, "Controlla la tua email, ti abbiamo inviato il link per il reset della password.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);

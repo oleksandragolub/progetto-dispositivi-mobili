@@ -117,47 +117,47 @@ public class RegisterActivity extends AppCompatActivity {
 
             if(TextUtils.isEmpty(textUsername)){
                 Toast.makeText(RegisterActivity.this, "Inserisci il tuo username", Toast.LENGTH_SHORT).show();
-                editTextUsername.setError("Richista di username");
+                editTextUsername.setError("Username richiesto");
                 editTextUsername.requestFocus();
                 //return;
             } else if(TextUtils.isEmpty(textEmail)){
-                Toast.makeText(RegisterActivity.this, "Inserisci il tuo email", Toast.LENGTH_SHORT).show();
-                editTextEmail.setError("Richista di email");
+                Toast.makeText(RegisterActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
+                editTextEmail.setError("Email richiesta");
                 editTextEmail.requestFocus();
                 //return;
             } else if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
-                Toast.makeText(RegisterActivity.this, "Re-inserisci il tuo email", Toast.LENGTH_SHORT).show();
-                editTextEmail.setError("Richista di email valido");
+                Toast.makeText(RegisterActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
+                editTextEmail.setError("Email valida richiesta");
                 editTextEmail.requestFocus();
                 //return;
             } else if(TextUtils.isEmpty(textDoB)){
                 Toast.makeText(RegisterActivity.this, "Inserisci la tua data di nascita", Toast.LENGTH_SHORT).show();
-                editTextDoB.setError("Richista di data di nascita");
+                editTextDoB.setError("Data di nascita richiesta");
                 editTextDoB.requestFocus();
                 //return;
             } else if(radioGroupRegisterGender.getCheckedRadioButtonId() == -1){
                 Toast.makeText(RegisterActivity.this, "Seleziona il tuo genere", Toast.LENGTH_SHORT).show();
-                radioButtonRegisterGenderSelected.setError("Richista di genere");
+                radioButtonRegisterGenderSelected.setError("Genere richiesto");
                 radioButtonRegisterGenderSelected.requestFocus();
                 //return;
             } else if(TextUtils.isEmpty(textPassword)){
                 Toast.makeText(RegisterActivity.this, "Inserisci la tua password", Toast.LENGTH_SHORT).show();
-                editTextPassword.setError("Richista di password");
+                editTextPassword.setError("Password richiesta");
                 editTextPassword.requestFocus();
                 //return;
             } else if(textPassword.length() < 6){
-                Toast.makeText(RegisterActivity.this, "Passwrod deve essere di almeno 6 caratteri", Toast.LENGTH_SHORT).show();
-                editTextPassword.setError("Password troppo debole");
+                Toast.makeText(RegisterActivity.this, "La password deve essere di almeno 6 caratteri", Toast.LENGTH_SHORT).show();
+                editTextPassword.setError("Password troppo corta");
                 editTextPassword.requestFocus();
                 //return;
             } else if(TextUtils.isEmpty(textConfermaPassword)){
                 Toast.makeText(RegisterActivity.this, "Conferma la tua password", Toast.LENGTH_SHORT).show();
-                editTextConfirmPassword.setError("Richista di conferma password");
+                editTextConfirmPassword.setError("Password di conferma richiesta");
                 editTextConfirmPassword.requestFocus();
                 //return;
             } else if(!textPassword.equals(textConfermaPassword)){
-                Toast.makeText(RegisterActivity.this, "Inserisci la tua stessa password", Toast.LENGTH_SHORT).show();
-                editTextConfirmPassword.setError("Richista di conferma password");
+                Toast.makeText(RegisterActivity.this, "Re-inserisci la tua password", Toast.LENGTH_SHORT).show();
+                editTextConfirmPassword.setError("Password di conferma richiesta");
                 editTextConfirmPassword.requestFocus();
                 editTextPassword.clearComposingText();
                 editTextConfirmPassword.clearComposingText();
@@ -179,7 +179,7 @@ public class RegisterActivity extends AppCompatActivity {
                             ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textUsername, textDoB, textGender);
                             reference.child(firebaseUser.getUid()).setValue(writeUserDetails);
                             firebaseUser.sendEmailVerification();
-                            Toast.makeText(RegisterActivity.this, "Registrazione effettuata con il successo. Verifica la tua email.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Registrazione effettuata con successo, verifica la tua email.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();

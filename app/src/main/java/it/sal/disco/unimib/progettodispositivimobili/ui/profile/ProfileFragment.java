@@ -144,8 +144,8 @@ public class ProfileFragment extends Fragment {
 
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Email non verificato");
-        builder.setMessage("Controlla la tua email. Non puoi entrare nel tuo account senza effettuare la verificazione.");
+        builder.setTitle("Email non verificata");
+        builder.setMessage("Controlla la tua email. Non puoi entrare nel tuo account senza effettuare la verifica.");
 
         builder.setPositiveButton("Continua", (dialog, which) -> {
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -188,7 +188,7 @@ public class ProfileFragment extends Fragment {
                     });
 
                 } else {
-                    Toast.makeText(getActivity(), "Qualcosa e' andato scorto!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
 
                 }
                 progressBar.setVisibility(View.GONE);
@@ -196,7 +196,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Qualcosa e' andato scorto!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
         });

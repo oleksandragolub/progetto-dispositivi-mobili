@@ -148,17 +148,17 @@ public class UpdateProfileFragment extends Fragment {
 
         if(TextUtils.isEmpty(username)){
             Toast.makeText(getActivity(), "Inserisci il tuo username", Toast.LENGTH_SHORT).show();
-            usernameEditText.setError("Richista di username");
+            usernameEditText.setError("Username richiesto");
             usernameEditText.requestFocus();
             //return;
         } else if(TextUtils.isEmpty(dob)){
             Toast.makeText(getActivity(), "Inserisci la tua data di nascita", Toast.LENGTH_SHORT).show();
-            dobEditText.setError("Richista di data di nascita");
+            dobEditText.setError("Data di nascita richiesta");
             dobEditText.requestFocus();
             //return;
         } else if(TextUtils.isEmpty(radioButtonRegisterGenderSelected.getText())){
             Toast.makeText(getActivity(), "Seleziona il tuo genere", Toast.LENGTH_SHORT).show();
-            radioButtonRegisterGenderSelected.setError("Richista di genere");
+            radioButtonRegisterGenderSelected.setError("Genere richiesto");
             radioButtonRegisterGenderSelected.requestFocus();
             //return;
         } else{
@@ -179,7 +179,7 @@ public class UpdateProfileFragment extends Fragment {
                                 setDisplayName(username).build();
                         currentUser.updateProfile(profileUpdates);
 
-                        Toast.makeText(getActivity(), "Aggiornamento è completato con il successo!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "L'aggiornamento del profilo è completato con successo!", Toast.LENGTH_SHORT).show();
 
                         if(getActivity() != null) {
                             openFragment(new ProfileFragment());
