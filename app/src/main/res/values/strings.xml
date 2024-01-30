@@ -28,14 +28,14 @@
     <string name="txt_registrazione">Registrazione</string>
     <string name="btn_register">Registrazione</string>
     <string name="btn_registrazione_google">Registrazione con Google</string>
-    <string name="txt_domanda_registrazione">Hai già un\'account?</string>
+    <string name="txt_domanda_registrazione">Hai già un account?</string>
     <string name="button_allora_entra">Allora entra!</string>
 
-    <string name="txt_forgot_pw">Password dimenticata</string>
+    <string name="txt_forgot_pw">Password Dimenticata</string>
     <string name="txt_domanda_forgot_pw">Con quale indirizzo e-mail ti sei registrato?</string>
     <string name="btn_ripristina_password">Ripristina Password</string>
-    <string name="txt_ripristina_password">Ti inviteremo a questo indirizzo le istruzioni per ripristinare la password!</string>
-    <string name="txt_domanda_back">Non sei interessato in questo?</string>
+    <string name="txt_ripristina_password">Ti invieremo a questo indirizzo le istruzioni per ripristinare la password!</string>
+    <string name="txt_domanda_back">Non sei interessato a questo?</string>
     <string name="txt_back">Torna indietro!</string>
 
 
@@ -49,7 +49,7 @@
     <string name="conferma_password">Conferma password</string>
 
     <string name="txt_change_pw">Cambia la tua password</string>
-    <string name="txt_change_email">Cambia il tuo email</string>
+    <string name="txt_change_email">Cambia la tua email</string>
     <string name="txt_elimina_profile">Elimina il tuo profilo</string>
     <string name="txt_upload_profile_pic">Inserisci la foto del tuo profilo</string>
     <string name="txt_scegli_immagine">Scegli l\'immagine</string>
@@ -61,10 +61,10 @@
     <string name="txt_update_email">Aggiorna l\'email del tuo profilo</string>
     <string name="txt_update_password">Aggiorna la password del tuo profilo</string>
     <string name="email_corrente">Email corrente</string>
-    <string name="btn_authenticate">Autentifica</string>
-    <string name="txt_profile_not_authenticated">Il tuo profilo non è stato ancora autentificato/verificato!</string>
-    <string name="email_nuovo">Email nuovo</string>
-    <string name="btn_email_nuovo">Aggiorna il tuo email</string>
+    <string name="btn_authenticate">Autentica</string>
+    <string name="txt_profile_not_authenticated">Il tuo profilo non è stato ancora autenticato/verificato!</string>
+    <string name="email_nuovo">Email nuova</string>
+    <string name="btn_email_nuovo">Aggiorna la tua email</string>
     <string name="btn_password_nuova">Aggiorna la tua password</string>
     <string name="password_corrente">Password corrente</string>
     <string name="password_nuova">Password nuova</string>
