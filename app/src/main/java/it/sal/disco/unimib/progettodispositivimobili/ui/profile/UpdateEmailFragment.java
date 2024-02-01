@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
+import it.sal.disco.unimib.progettodispositivimobili.MainActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.RegisterActivity;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateEmailBinding;
@@ -94,6 +95,8 @@ public class UpdateEmailFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void reAuthenticate(FirebaseUser currentUser) {
+
+
         Button buttonVerifyUser = binding.btnAuthenticate;
         buttonVerifyUser.setOnClickListener(v -> {
             userPwd = editTextPwd.getText().toString();
@@ -104,6 +107,7 @@ public class UpdateEmailFragment extends Fragment {
                 editTextPwd.requestFocus();
                 //return;
             } else {
+
                 AuthCredential credential = EmailAuthProvider.getCredential(userOldEmail, userPwd);
 
                 currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -155,22 +159,20 @@ public class UpdateEmailFragment extends Fragment {
     }
 
     private void updateEmail(FirebaseUser currentUser) {
+        Boolean emailVerificato = true;
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Utenti registrati");
         databaseRef.child(currentUser.getUid()).child("email").setValue(userNewEmail);
 
         currentUser.verifyBeforeUpdateEmail(userNewEmail)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Email sent.
-                        // User must click the email link before the email is updated.
                         currentUser.sendEmailVerification();
+                        databaseRef.child(currentUser.getUid()).child("emailVerificato").setValue(false);
                         Toast.makeText(getActivity(), "L'email è stata aggiornata. Adesso verifica la tua nuova email per il messaggio!", Toast.LENGTH_SHORT).show();
-                        if(getActivity() != null) {
-                            openFragment(new HomeFragment());
-                            getActivity().finish();
-                        }
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        mAuth.signOut();
                     } else {
-                        // An error occurred.
                         try {
                             throw Objects.requireNonNull(task.getException());
                         } catch (Exception e){
@@ -192,5 +194,5 @@ public class UpdateEmailFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-    
+
 }

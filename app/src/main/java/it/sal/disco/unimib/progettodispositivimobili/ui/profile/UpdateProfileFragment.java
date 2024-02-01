@@ -40,6 +40,7 @@ public class UpdateProfileFragment extends Fragment {
 
     private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
     private String email, username, dob, gender, descrizione;
+    private Boolean emailVerificato = true;
     private RadioButton radioButtonRegisterGenderSelected;
     Button updateProfileButton, changeEmailButton, changePasswordButton;
     RadioGroup radioGroupRegisterGender;
@@ -138,7 +139,7 @@ public class UpdateProfileFragment extends Fragment {
             username = Objects.requireNonNull(usernameEditText.getText()).toString();
             dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
-            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(currentUser.getEmail(), username, dob, gender);
+            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(currentUser.getEmail(), username, dob, gender, emailVerificato);
             DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
             String userID = currentUser.getUid();

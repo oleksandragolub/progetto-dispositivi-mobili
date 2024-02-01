@@ -28,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -36,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin;
@@ -48,7 +52,9 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         AppCompatButton btnGoogleSignIn = findViewById(R.id.btn_login_google);
+
         btnGoogleSignIn.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             activityResultLauncher.launch(signInIntent);
@@ -62,16 +68,16 @@ public class LoginActivity extends AppCompatActivity {
                     Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                     try {
                         GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                            firebaseAuthWithGoogle(signInAccount);
-                        } catch (ApiException e) {
-                            // Gestione dell'errore di autenticazione
-                            handleSignInError(e);
+                        firebaseAuthWithGoogle(signInAccount);
+                    } catch (ApiException e) {
+                        // Gestione dell'errore di autenticazione
+                        handleSignInError(e);
                     }
                 } else {
-        // Gestione della situazione in cui il risultato non è OK
-        Toast.makeText(LoginActivity.this, "Sign in cancelled", Toast.LENGTH_SHORT).show();
-    }
-   });
+                    // Gestione della situazione in cui il risultato non è OK
+                    Toast.makeText(LoginActivity.this, "Sign in cancelled", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     private void handleSignInError(ApiException e) {
         // Ottieni il codice di errore e prepara un messaggio di errore appropriato
@@ -99,13 +105,30 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
-            if(task.isSuccessful()) {
+            if (task.isSuccessful()) {
                 currentUser = mAuth.getCurrentUser();
+
+                String textUsername = "";
+                String textEmail = String.valueOf(account.getEmail());
+                String textDoB = "";
+                String textGender = "";
+                Boolean emailVerificato = true;
+
+                // Aggiorna il database Firebase per segnare l'email dell'utente come verificata
+                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato);
+                reference.child(currentUser.getUid()).setValue(writeUserDetails);
+                Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
                 updateUI(currentUser);
             } else {
-                Toast.makeText(LoginActivity.this,"Autentification failed!", Toast.LENGTH_SHORT).show();
-                updateUI(null);
+                // Gestisce gli errori di autenticazione, inclusi eventuali problemi di rete o credenziali errate
+                if (task.getException() instanceof ApiException) {
+                    ApiException apiException = (ApiException) task.getException();
+                    handleSignInError(apiException);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -120,6 +143,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Utenti registrati");
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -179,15 +205,19 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         currentUser = mAuth.getCurrentUser();
                         // Controlla che l'email è stata verificata prima che l'utente riesce di entrare nel suo account
-                        if(Objects.requireNonNull(currentUser).isEmailVerified()){
+                        if (Objects.requireNonNull(currentUser).isEmailVerified()) {
+                            // L'utente ha verificato l'email. Aggiorna il campo emailVerified nel database a true
+                            reference.child(currentUser.getUid()).child("emailVerificato").setValue(true);
                             Toast.makeText(getApplicationContext(), "Login effettuato con il successo!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
+                            reference.child(currentUser.getUid()).child("emailVerificato").setValue(false);
                             showAlertDialog();
                             mAuth.signOut();
                         }
+
                     } else {
                         handleLoginError(task.getException());
                     }

@@ -108,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
             String textConfermaPassword = String.valueOf(editTextConfirmPassword.getText());
             String textPassword = String.valueOf(editTextPassword.getText());
             String textGender;
+            Boolean emailVerificato = false;
 
             if(TextUtils.isEmpty(textUsername)){
                 Toast.makeText(RegisterActivity.this, "Inserisci il tuo username", Toast.LENGTH_SHORT).show();
@@ -158,7 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
                 //return;
             } else{
                 textGender = String.valueOf(radioButtonRegisterGenderSelected.getText());
-                registerUser(textUsername, textEmail, textDoB, textGender, textPassword);
+                registerUser(textUsername, textEmail, textDoB, textGender, textPassword, emailVerificato);
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -166,8 +167,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String textUsername, String textEmail, String textDoB, String textGender, String textPassword) {
-        mAuth.createUserWithEmailAndPassword(textEmail, textPassword)
+    private void registerUser(String textUsername, String textEmail, String textDoB, String textGender, String textPassword, Boolean emailVerificato) {
+        /*mAuth.createUserWithEmailAndPassword(textEmail, textPassword)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -182,8 +183,31 @@ public class RegisterActivity extends AppCompatActivity {
                             handleRegistrationError(task.getException());
                         }
                     }
+                });*/
+
+        mAuth.createUserWithEmailAndPassword(textEmail, textPassword)
+                .addOnCompleteListener(RegisterActivity.this, task -> {
+                    if (task.isSuccessful()) {
+                        currentUser = mAuth.getCurrentUser();
+                        Toast.makeText(RegisterActivity.this, "Registrazione effettuata con successo, verifica la tua email.", Toast.LENGTH_SHORT).show();
+                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato);
+                        reference.child(currentUser.getUid()).setValue(writeUserDetails);
+                        currentUser.sendEmailVerification();
+                        /*currentUser.reload().addOnCompleteListener(task1 -> {
+                            if (currentUser.isEmailVerified()) {
+                                // L'utente ha verificato l'email. Aggiorna il campo emailVerified nel database a true
+                                reference.child("emailVerificato").setValue(true);
+                            } else {
+                                reference.child("emailVerificato").setValue(false);
+                            }
+                        });*/
+                    } else {
+                        handleRegistrationError(task.getException());
+                    }
                 });
     }
+
+
 
     private void handleRegistrationError(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
@@ -202,5 +226,3 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 }
-
-

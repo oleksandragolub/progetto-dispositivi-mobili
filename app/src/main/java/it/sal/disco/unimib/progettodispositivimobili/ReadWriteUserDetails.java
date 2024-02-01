@@ -2,6 +2,7 @@ package it.sal.disco.unimib.progettodispositivimobili;
 
 public class ReadWriteUserDetails {
     public String username, dob, gender, email;
+    public Boolean emailVerificato;
 
     public ReadWriteUserDetails() {}
 
@@ -16,6 +17,22 @@ public class ReadWriteUserDetails {
         this.username = Username;
         this.dob = Dob;
         this.gender = Gender;
+    }
+
+    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender, Boolean emailVerificato) {
+        this.email = email;
+        this.username = Username;
+        this.dob = Dob;
+        this.gender = Gender;
+        this.emailVerificato = emailVerificato;
+    }
+
+    public Boolean getEmailVerificato() {
+        return emailVerificato;
+    }
+
+    public void setEmailVerificato(Boolean email) {
+        this.emailVerificato = emailVerificato;
     }
 
     public String getEmail() {

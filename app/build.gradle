@@ -76,6 +76,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.0-alpha02'
 
+    implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
+
 
     def okHttpVersion = "3.6.0"
     def retrofitVersion = "2.2.0"
