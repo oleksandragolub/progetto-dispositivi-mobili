@@ -1,9 +1,8 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +17,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdatePasswordBinding;
@@ -37,9 +36,9 @@ public class UpdatePasswordFragment extends Fragment {
     private TextView textViewAuthenticated;
     private Button buttonChangePwd, buttonReAuthenticate;
     private String userPwdCurr;
-    private TextView btnBack;
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    TextView btnBack;
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -73,69 +72,52 @@ public class UpdatePasswordFragment extends Fragment {
             reAuthenticateUser(currentUser);
         }
 
-
-
-
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new UpdateProfileFragment());
-                }
+        btnBack.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new UpdateProfileFragment());
             }
         });
 
         return root;
     }
 
+    @SuppressLint("SetTextI18n")
     private void reAuthenticateUser(FirebaseUser currentUser) {
-        buttonReAuthenticate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                userPwdCurr = editTextPwdCurr.getText().toString();
+        buttonReAuthenticate.setOnClickListener(v -> {
+            userPwdCurr = editTextPwdCurr.getText().toString();
 
-                if(TextUtils.isEmpty(userPwdCurr)){
-                    Toast.makeText(getActivity(), "Serve la password per continuare!", Toast.LENGTH_SHORT).show();
-                    editTextPwdCurr.setError("Password corrente richiesta");
-                    editTextPwdCurr.requestFocus();
-                    //return;
-                } else {
-                    AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), userPwdCurr);
+            if(TextUtils.isEmpty(userPwdCurr)){
+                Toast.makeText(getActivity(), "Serve la password per continuare!", Toast.LENGTH_SHORT).show();
+                editTextPwdCurr.setError("Password corrente richiesta");
+                editTextPwdCurr.requestFocus();
+                //return;
+            } else {
+                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), userPwdCurr);
 
-                    currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                editTextPwdCurr.setEnabled(true);
-                                editTextPwdNew.setEnabled(true);
-                                editTextPwdConfirmNew.setEnabled(true);
+                currentUser.reauthenticate(credential).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        editTextPwdCurr.setEnabled(true);
+                        editTextPwdNew.setEnabled(true);
+                        editTextPwdConfirmNew.setEnabled(true);
 
-                                buttonReAuthenticate.setEnabled(false);
-                                buttonChangePwd.setEnabled(true);
+                        buttonReAuthenticate.setEnabled(false);
+                        buttonChangePwd.setEnabled(true);
 
-                                textViewAuthenticated.setText("Sei stato autenticato. Adesso puoi aggiornare la tua password!");
+                        textViewAuthenticated.setText("Sei stato autenticato. Adesso puoi aggiornare la tua password!");
 
-                                Toast.makeText(getActivity(), "La password è stata verificata." + " Adesso puoi aggiornare la tua password!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "La password è stata verificata." + " Adesso puoi aggiornare la tua password!", Toast.LENGTH_SHORT).show();
 
-                                buttonChangePwd.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
+                        buttonChangePwd.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
 
-                                buttonChangePwd.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        changePwd(currentUser);
-                                    }
-                                });
-                            } else {
-                                try {
-                                    throw task.getException();
-                                } catch (Exception e){
-                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
+                        buttonChangePwd.setOnClickListener(v1 -> changePwd(currentUser));
+                    } else {
+                        try {
+                            throw Objects.requireNonNull(task.getException());
+                        } catch (Exception e){
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     }
@@ -165,27 +147,22 @@ public class UpdatePasswordFragment extends Fragment {
             editTextPwdNew.requestFocus();
             //return;
         } else {
-            currentUser.updatePassword(userPwdNew).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(getActivity(), "La password è stata aggiornata con successo!", Toast.LENGTH_SHORT).show();
-                        if(getActivity() != null) {
-                            openFragment(new ProfileFragment());
-                        }
-                    } else {
-                        try {
-                            throw task.getException();
-                        } catch (Exception e){
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+            currentUser.updatePassword(userPwdNew).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Toast.makeText(getActivity(), "La password è stata aggiornata con successo!", Toast.LENGTH_SHORT).show();
+                    if(getActivity() != null) {
+                        openFragment(new ProfileFragment());
+                    }
+                } else {
+                    try {
+                        throw Objects.requireNonNull(task.getException());
+                    } catch (Exception e){
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
     }
-
-
 
     private void openFragment(Fragment fragment){
         FragmentManager fragmentManager = getParentFragmentManager();

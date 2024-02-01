@@ -43,7 +43,6 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUploadP
 
 public class UploadProfilePicFragment extends Fragment {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
     private ActivityResultLauncher<String> mGetContent;
     FragmentUploadProfilePicBinding binding;
     StorageReference storageReference;
@@ -53,7 +52,7 @@ public class UploadProfilePicFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     Uri uri, uriImage;
-   // ProgressBar progressBar;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,43 +67,30 @@ public class UploadProfilePicFragment extends Fragment {
         buttonUploadPicChoose = binding.btnScegliImmagine;
         buttonUploadPic = binding.btnCaricaImmagine;
         imageViewUploadPic = binding.imageViewProfileDp;
-        //progressBar = binding.profileProgressBar;
 
         storageReference = FirebaseStorage.getInstance().getReference("VisualizzaImmagini");
         uri = currentUser.getPhotoUrl();
         Picasso.with(getActivity()).load(uri).into(imageViewUploadPic);
 
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri uri) {
-                        // Gestisci il risultato dell'attività qui
-                        if (uri != null) {
-                            uriImage = uri;
-                            imageViewUploadPic.setImageURI(uriImage);
-                        }
+                uri -> {
+                    if (uri != null) {
+                        uriImage = uri;
+                        imageViewUploadPic.setImageURI(uriImage);
                     }
                 });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new ProfileFragment());
-                }
+        btnBack.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new ProfileFragment());
             }
         });
-
-
-
 
         buttonUploadPicChoose.setOnClickListener(v -> openFileChooser());
 
         buttonUploadPic.setOnClickListener(v -> {
-           // progressBar.setVisibility(View.VISIBLE);
             uploadPic();
         });
-
 
         return root;
     }
@@ -124,27 +110,21 @@ public class UploadProfilePicFragment extends Fragment {
 
                     currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Profilo aggiornato con successo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Profilo è stato aggiornato con il successo!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getActivity(), "Errore nell'aggiornamento del profilo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Errore nell'aggiornamento del profilo.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
 
-               // progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "L'immagine è stata caricata con successo!", Toast.LENGTH_SHORT).show();
 
                 if(getActivity() != null) {
                     openFragment(new ProfileFragment());
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            }).addOnFailureListener(e ->
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-           // progressBar.setVisibility(View.GONE);
             Toast.makeText(getActivity(), "Nessun file è stato selezionato!", Toast.LENGTH_SHORT).show();
         }
     }

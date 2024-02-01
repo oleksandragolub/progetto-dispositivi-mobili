@@ -53,31 +53,6 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-       <!--     <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textView_input_layout_descrizione"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/textView_input_layout_username"
-                app:startIconDrawable="@drawable/baseline_person_search_24"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textView_descrizione"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/descrizione"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout> -->
-
-
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_DoB"
                 android:layout_width="match_parent"

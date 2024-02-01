@@ -29,7 +29,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
@@ -53,11 +52,6 @@
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 
-        <activity
-            android:name=".ui.profile.Pr"
-            android:exported="false"
-            android:theme="@style/Theme.ProgettoDispositiviMobili">
-        </activity>
     </application>
 
 </manifest>

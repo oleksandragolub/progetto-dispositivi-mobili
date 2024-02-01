@@ -15,11 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+
+import java.util.Objects;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     private static final String TAG = "ForgotPasswordActivity";
@@ -73,7 +73,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(ForgotPasswordActivity.this, "Controlla la tua email, ti abbiamo inviato il link per il reset della password.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
                         } else {
@@ -88,7 +88,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             editEmail.setError("L'account non esiste oppure non è più valido.");
             editEmail.requestFocus();
         } else {
-            Log.e(TAG, exception.getMessage());
+            Log.e(TAG, Objects.requireNonNull(exception.getMessage()));
             Toast.makeText(ForgotPasswordActivity.this, "Errore di reset password: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }

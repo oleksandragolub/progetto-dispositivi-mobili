@@ -31,7 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
-import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -42,18 +41,13 @@ public class RegisterActivity extends AppCompatActivity {
     Button buttonReg;
     TextView text_loginNow;
     FirebaseAuth mAuth;
+    FirebaseUser currentUser;
     FirebaseDatabase database;
     DatabaseReference reference;
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     @Override
@@ -165,6 +159,9 @@ public class RegisterActivity extends AppCompatActivity {
             } else{
                 textGender = String.valueOf(radioButtonRegisterGenderSelected.getText());
                 registerUser(textUsername, textEmail, textDoB, textGender, textPassword);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -175,20 +172,19 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textUsername, textDoB, textGender);
-                            reference.child(firebaseUser.getUid()).setValue(writeUserDetails);
-                            firebaseUser.sendEmailVerification();
+                            currentUser = mAuth.getCurrentUser();
                             Toast.makeText(RegisterActivity.this, "Registrazione effettuata con successo, verifica la tua email.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
+                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender);
+                            reference.child(currentUser.getUid()).setValue(writeUserDetails);
+                            currentUser.sendEmailVerification();
+                            //Toast.makeText(RegisterActivity.this, "Registrazione effettuata con il successo. Verifica la tua email.", Toast.LENGTH_SHORT).show();
                         } else {
                             handleRegistrationError(task.getException());
                         }
                     }
                 });
     }
+
     private void handleRegistrationError(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
             editTextPassword.setError("La tua password è troppo debole.");
@@ -204,7 +200,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, "Errore di registrazione: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
 
 }
 

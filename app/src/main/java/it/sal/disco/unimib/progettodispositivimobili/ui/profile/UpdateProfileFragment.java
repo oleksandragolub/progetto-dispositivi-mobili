@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -21,8 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,11 +28,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Calendar;
+import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
-import it.sal.disco.unimib.progettodispositivimobili.RegisterActivity;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateProfileBinding;
 
 public class UpdateProfileFragment extends Fragment {
@@ -45,17 +39,15 @@ public class UpdateProfileFragment extends Fragment {
     FragmentUpdateProfileBinding binding;
 
     private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
-    private TextView textChangePassword, textChangeEmail, textEliminaProfile;
-    private String username, dob, gender, descrizione;
-    private Button updateProfileButton, changeEmailButton, changePasswordButton;
-    private RadioGroup radioGroupRegisterGender;
-
-    private TextView btnBack;
-
+    private String email, username, dob, gender, descrizione;
     private RadioButton radioButtonRegisterGenderSelected;
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    Button updateProfileButton, changeEmailButton, changePasswordButton;
+    RadioGroup radioGroupRegisterGender;
+    TextView btnBack;
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -74,61 +66,40 @@ public class UpdateProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        showProfile(currentUser);
+        showProfile(Objects.requireNonNull(currentUser));
 
-        dobEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            String textASDoB[] = dob.split("/");
+        dobEditText.setOnClickListener(v -> {
+            String[] textASDoB = dob.split("/");
 
-                int day = Integer.parseInt(textASDoB[0]);
-                int month = Integer.parseInt(textASDoB[1]) - 1;
-                int year = Integer.parseInt(textASDoB[2]);
+            int day = Integer.parseInt(textASDoB[0]);
+            int month = Integer.parseInt(textASDoB[1]) - 1;
+            int year = Integer.parseInt(textASDoB[2]);
 
-                DatePickerDialog picker;
+            DatePickerDialog picker;
 
-                picker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dobEditText.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }
-                }, year, month, day);
-                picker.show();
-            }
+            picker = new DatePickerDialog(getActivity(), (view, year1, month1, dayOfMonth) ->
+                    dobEditText.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1), year, month, day);
+            picker.show();
         });
 
 
-        updateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateProfile(currentUser);
+        updateProfileButton.setOnClickListener(v -> updateProfile(currentUser));
+
+        changeEmailButton.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new UpdateEmailFragment());
             }
         });
 
-        changeEmailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new UpdateEmailFragment());
-                }
+        changePasswordButton.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new UpdatePasswordFragment());
             }
         });
 
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new UpdatePasswordFragment());
-                }
-            }
-        });
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new ProfileFragment());
-                }
+        btnBack.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new ProfileFragment());
             }
         });
 
@@ -137,11 +108,12 @@ public class UpdateProfileFragment extends Fragment {
 
     private void updateProfile(FirebaseUser currentUser) {
         int selectedGenderID = binding.radioGroupRegisterGender.getCheckedRadioButtonId();
+
         if (selectedGenderID != -1) {
             radioButtonRegisterGenderSelected = binding.getRoot().findViewById(selectedGenderID);
             gender = radioButtonRegisterGenderSelected.getText().toString();
         } else {
-            // Gestisci il caso in cui nessun RadioButton sia selezionato
+            // Gestione del caso in cui nessun RadioButton sia selezionato
             Toast.makeText(getActivity(), "Seleziona il tuo genere", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -163,37 +135,31 @@ public class UpdateProfileFragment extends Fragment {
             //return;
         } else{
             gender = radioButtonRegisterGenderSelected.getText().toString();
-            username = usernameEditText.getText().toString();
-            dob = dobEditText.getText().toString();
+            username = Objects.requireNonNull(usernameEditText.getText()).toString();
+            dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
-            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(username, dob, gender);
+            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(currentUser.getEmail(), username, dob, gender);
             DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
             String userID = currentUser.getUid();
 
-            referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().
-                                setDisplayName(username).build();
-                        currentUser.updateProfile(profileUpdates);
-
-                        Toast.makeText(getActivity(), "L'aggiornamento del profilo è completato con successo!", Toast.LENGTH_SHORT).show();
-
-                        if(getActivity() != null) {
-                            openFragment(new ProfileFragment());
-                        }
-                    } else {
-                        try {
-                            throw task.getException();
-                        } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+            referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().
+                            setDisplayName(username).build();
+                    currentUser.updateProfile(profileUpdates);
+                    Toast.makeText(getActivity(), "Aggiornamento è completato con il successo!", Toast.LENGTH_SHORT).show();
+                    if(getActivity() != null) {
+                        openFragment(new ProfileFragment());
+                    }
+                } else {
+                    try {
+                        throw Objects.requireNonNull(task.getException());
+                    } catch (Exception e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
         }
     }
 
@@ -215,6 +181,7 @@ public class UpdateProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
                 if (readUserDetails != null){
+                    email = readUserDetails.getEmail();
                     username = readUserDetails.getUsername();
                     dob = readUserDetails.getDob();
                     gender = readUserDetails.getGender();
@@ -239,7 +206,6 @@ public class UpdateProfileFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDestroyView() {

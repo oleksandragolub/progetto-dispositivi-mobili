@@ -1,7 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,10 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +33,8 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
-import it.sal.disco.unimib.progettodispositivimobili.MainActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
-import it.sal.disco.unimib.progettodispositivimobili.RegisterActivity;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfileBinding;
 
 
@@ -49,13 +42,10 @@ public class ProfileFragment extends Fragment {
     FragmentProfileBinding binding;
     ImageView profileImageView, profileImageViewCamera;
     TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText, descrizioneEditText;
-
-    TextView textChangePassword, textChangeEmail, textEliminaProfile, deleteProfileButton;
-
+    TextView deleteProfileButton;
     String username, email, dob, gender, descrizione;
     Button updateProfileButton;
     ProgressBar progressBar;
-
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
 
@@ -81,8 +71,6 @@ public class ProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        //fragmentManager = getSupportFragmentManager();
-
         if (currentUser == null) {
             // L'utente non è loggato, avvia LoginActivity
             Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -98,30 +86,21 @@ public class ProfileFragment extends Fragment {
             showUserProfile(currentUser);
         }
 
-        binding.profileImageViewCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new UploadProfilePicFragment());
-                }
+        binding.profileImageViewCamera.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new UploadProfilePicFragment());
             }
         });
 
-        updateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new UpdateProfileFragment());
-                }
+        updateProfileButton.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new UpdateProfileFragment());
             }
         });
 
-        deleteProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() != null) {
-                    openFragment(new DeleteProfileFragment());
-                }
+        deleteProfileButton.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new DeleteProfileFragment());
             }
         });
 
@@ -168,7 +147,7 @@ public class ProfileFragment extends Fragment {
                 ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
                 if(readUserDetails != null){
                     username = readUserDetails.getUsername();
-                    email = currentUser.getEmail();
+                    email = readUserDetails.getEmail();
                     dob = readUserDetails.getDob();
                     gender = readUserDetails.getGender();
 
@@ -186,7 +165,6 @@ public class ProfileFragment extends Fragment {
                                     .into(profileImageView);
                         }
                     });
-
                 } else {
                     Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
 

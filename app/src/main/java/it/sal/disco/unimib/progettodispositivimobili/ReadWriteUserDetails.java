@@ -1,7 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili;
 
 public class ReadWriteUserDetails {
-    public String username, dob, gender;
+    public String username, dob, gender, email;
 
     public ReadWriteUserDetails() {}
 
@@ -9,6 +9,21 @@ public class ReadWriteUserDetails {
         this.username = Username;
         this.dob = Dob;
         this.gender = Gender;
+    }
+
+    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender) {
+        this.email = email;
+        this.username = Username;
+        this.dob = Dob;
+        this.gender = Gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {

@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -42,9 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
 
-
-
-
     private void configureGoogleSignIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
@@ -55,15 +50,14 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
 
     private void signOutFromGoogle() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            Log.d("GoogleSignOut", "User signed out from Google");
-        });
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> Log.d("GoogleSignOut", "User signed out from Google"));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         configureGoogleSignIn();
 
     /*  binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -103,12 +97,12 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         fragmentManager = getSupportFragmentManager();
         openFragment(new HomeFragment());
 
-
         if(currentUser == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         }
+
         //metto temporaneamente qua, serve per configurare l'api e prelevare il contenuto
         // ma non so ancora come salvare quello che è stato trovato e se funziona
         //incluse le api-key che non vanno inserite direttamente nel codice ma non so come.
@@ -145,12 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             View menuItemView = findViewById(R.id.action_custom_icon);
             PopupMenu popupMenu = new PopupMenu(this, menuItemView);
             popupMenu.inflate(R.menu.popup_menu);
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    return handleMenuSelection(item);
-                }
-            });
+            popupMenu.setOnMenuItemClickListener(this::handleMenuSelection);
             popupMenu.show();
             return true;
         }
