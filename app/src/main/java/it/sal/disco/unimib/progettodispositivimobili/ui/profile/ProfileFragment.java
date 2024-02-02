@@ -48,6 +48,8 @@ public class ProfileFragment extends Fragment {
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,6 +57,9 @@ public class ProfileFragment extends Fragment {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Utenti registrati");
 
         // Collegamento delle variabili agli elementi del layout
         profileImageView = binding.profileImageView;
@@ -98,12 +103,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        deleteProfileButton.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new DeleteProfileFragment());
-            }
-        });
-
         return root;
     }
 
@@ -116,9 +115,24 @@ public class ProfileFragment extends Fragment {
     }
 
     private void chekifEmailVerified(FirebaseUser currentUser) {
-        if(!currentUser.isEmailVerified()){
-            showAlertDialog();
-        }
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ReadWriteUserDetails userDetails = snapshot.getValue(ReadWriteUserDetails.class);
+                if (userDetails != null) {
+                    // Controlla se l'utente si è registrato tramite PasswordEmail o se l'email è stata verificata
+                    if (userDetails.getAuthMethod() != null && userDetails.getAuthMethod().equals("PasswordEmail")) {
+                        showAlertDialog();
+                    } // Altrimenti l'email è verificata o l'utente è registrato tramite Google, percio' non serve mostrare l'alert
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void showAlertDialog() {
@@ -139,9 +153,7 @@ public class ProfileFragment extends Fragment {
 
     private void showUserProfile(FirebaseUser currentUser) {
         String userID = currentUser.getUid();
-
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
-        referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
@@ -160,11 +172,39 @@ public class ProfileFragment extends Fragment {
                         Uri uri = currentUser.getPhotoUrl();
                         if (uri != null) {
                             Picasso.with(getActivity())
-                                    .load(uri.toString()) // Usa uri.toString() per ottenere l'URL dell'immagine
+                                    .load(uri.toString())
                                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                                     .into(profileImageView);
                         }
                     });
+                    String authMethod = readUserDetails.getAuthMethod();
+
+                    // Gestione dei pulsanti deleteProfileButton e updateProfileButton in base all'authMethod
+                    if (authMethod.equals("PasswordEmail")) {
+                        deleteProfileButton.setOnClickListener(v -> {
+                            if (getActivity() != null) {
+                                openFragment(new DeleteProfileFragment());
+                            }
+                        });
+
+                        updateProfileButton.setOnClickListener(v -> {
+                            if (getActivity() != null) {
+                                openFragment(new UpdateProfileFragment());
+                            }
+                        });
+                    } else if (authMethod.equals("Google")) {
+                        deleteProfileButton.setOnClickListener(v -> {
+                            if (getActivity() != null) {
+                                openFragment(new DeleteGoogleProfileFragment());
+                            }
+                        });
+
+                        updateProfileButton.setOnClickListener(v -> {
+                            if (getActivity() != null) {
+                                openFragment(new UpdateGoogleProfileFragment());
+                            }
+                        });
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
 
@@ -178,9 +218,6 @@ public class ProfileFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         });
-
-
-
     }
 
     @Override

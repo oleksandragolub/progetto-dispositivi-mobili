@@ -110,14 +110,14 @@ public class LoginActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 currentUser = mAuth.getCurrentUser();
 
-                String textUsername = "";
+                String textUsername = String.valueOf(account.getDisplayName());
                 String textEmail = String.valueOf(account.getEmail());
                 String textDoB = "";
                 String textGender = "";
                 Boolean emailVerificato = true;
 
                 // Aggiorna il database Firebase per segnare l'email dell'utente come verificata
-                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato);
+                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
                 reference.child(currentUser.getUid()).setValue(writeUserDetails);
                 Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
                 updateUI(currentUser);

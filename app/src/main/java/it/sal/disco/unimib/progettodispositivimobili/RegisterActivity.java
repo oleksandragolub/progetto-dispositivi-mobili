@@ -1,6 +1,5 @@
 package it.sal.disco.unimib.progettodispositivimobili;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -18,10 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -69,23 +65,20 @@ public class RegisterActivity extends AppCompatActivity {
         text_loginNow = findViewById(R.id.loginNow);
         buttonReg = findViewById(R.id.btn_register);
 
-        editTextDoB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
+        editTextDoB.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
 
-                picker = new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        editTextDoB.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }
-                }, year, month, day);
-                picker.show();
-            }
+            picker = new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    editTextDoB.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                }
+            }, year, month, day);
+            picker.show();
         });
 
         text_loginNow.setOnClickListener(v -> {
@@ -168,46 +161,19 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(String textUsername, String textEmail, String textDoB, String textGender, String textPassword, Boolean emailVerificato) {
-        /*mAuth.createUserWithEmailAndPassword(textEmail, textPassword)
-                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            Toast.makeText(RegisterActivity.this, "Registrazione effettuata con successo, verifica la tua email.", Toast.LENGTH_SHORT).show();
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender);
-                            reference.child(currentUser.getUid()).setValue(writeUserDetails);
-                            currentUser.sendEmailVerification();
-                            //Toast.makeText(RegisterActivity.this, "Registrazione effettuata con il successo. Verifica la tua email.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            handleRegistrationError(task.getException());
-                        }
-                    }
-                });*/
-
         mAuth.createUserWithEmailAndPassword(textEmail, textPassword)
                 .addOnCompleteListener(RegisterActivity.this, task -> {
                     if (task.isSuccessful()) {
                         currentUser = mAuth.getCurrentUser();
                         Toast.makeText(RegisterActivity.this, "Registrazione effettuata con successo, verifica la tua email.", Toast.LENGTH_SHORT).show();
-                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato);
+                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "PasswordEmail");
                         reference.child(currentUser.getUid()).setValue(writeUserDetails);
                         currentUser.sendEmailVerification();
-                        /*currentUser.reload().addOnCompleteListener(task1 -> {
-                            if (currentUser.isEmailVerified()) {
-                                // L'utente ha verificato l'email. Aggiorna il campo emailVerified nel database a true
-                                reference.child("emailVerificato").setValue(true);
-                            } else {
-                                reference.child("emailVerificato").setValue(false);
-                            }
-                        });*/
                     } else {
                         handleRegistrationError(task.getException());
                     }
                 });
     }
-
-
 
     private void handleRegistrationError(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {

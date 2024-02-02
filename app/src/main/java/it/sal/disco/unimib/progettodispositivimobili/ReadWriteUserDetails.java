@@ -1,7 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili;
 
 public class ReadWriteUserDetails {
-    public String username, dob, gender, email;
+    public String username, dob, gender, email, authMethod;
     public Boolean emailVerificato;
 
     public ReadWriteUserDetails() {}
@@ -25,6 +25,23 @@ public class ReadWriteUserDetails {
         this.dob = Dob;
         this.gender = Gender;
         this.emailVerificato = emailVerificato;
+    }
+
+    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender, Boolean emailVerificato, String authMethod) {
+        this.email = email;
+        this.username = Username;
+        this.dob = Dob;
+        this.gender = Gender;
+        this.emailVerificato = emailVerificato;
+        this.authMethod = authMethod;
+    }
+
+    public String getAuthMethod() {
+        return authMethod;
+    }
+
+    public void setAuthMethod(String authMethod) {
+        this.authMethod = authMethod;
     }
 
     public Boolean getEmailVerificato() {

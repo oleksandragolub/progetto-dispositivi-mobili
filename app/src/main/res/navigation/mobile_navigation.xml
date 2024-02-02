@@ -35,8 +35,14 @@
             android:id="@+id/action_profileFragment_to_updateProfileFragment"
             app:destination="@id/updateProfileFragment" />
         <action
+            android:id="@+id/action_profileFragment_to_updateGoogleProfileFragment"
+            app:destination="@id/updateGoogleProfileFragment" />
+        <action
             android:id="@+id/action_profileFragment_to_deleteProfileFragment"
             app:destination="@id/deleteProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_deleteGoogleProfileFragment"
+            app:destination="@id/deleteGoogleProfileFragment" />
     </fragment>
 
     <fragment
@@ -62,6 +68,16 @@
             app:destination="@id/updateEmailFragment" />
         <action
             android:id="@+id/action_updateProfileFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/updateGoogleProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateGoogleProfileFragment"
+        android:label="Update Google Email"
+        tools:layout="@layout/fragment_update_google_profile">
+        <action
+            android:id="@+id/action_updateGoogleProfileFragment_to_navigation_profile"
             app:destination="@id/navigation_profile" />
     </fragment>
 
@@ -92,6 +108,16 @@
         tools:layout="@layout/fragment_delete_profile">
         <action
             android:id="@+id/action_deleteProfileFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/deleteGoogleProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.DeleteGoogleProfileFragment"
+        android:label="Delete Google Profile"
+        tools:layout="@layout/fragment_delete_google_profile">
+        <action
+            android:id="@+id/action_deleteGoogleProfileFragment_to_navigation_profile"
             app:destination="@id/navigation_profile" />
     </fragment>
 

@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -39,7 +40,7 @@ public class UpdateProfileFragment extends Fragment {
     FragmentUpdateProfileBinding binding;
 
     private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
-    private String email, username, dob, gender, descrizione;
+    private String email, authMethod, username, dob, gender, descrizione;
     private Boolean emailVerificato = true;
     private RadioButton radioButtonRegisterGenderSelected;
     Button updateProfileButton, changeEmailButton, changePasswordButton;
@@ -70,16 +71,28 @@ public class UpdateProfileFragment extends Fragment {
         showProfile(Objects.requireNonNull(currentUser));
 
         dobEditText.setOnClickListener(v -> {
-            String[] textASDoB = dob.split("/");
+            int day, month, year;
 
-            int day = Integer.parseInt(textASDoB[0]);
-            int month = Integer.parseInt(textASDoB[1]) - 1;
-            int year = Integer.parseInt(textASDoB[2]);
+            if (dob != null && !dob.isEmpty()) {
+                String[] textASDoB = dob.split("/");
 
-            DatePickerDialog picker;
+                day = Integer.parseInt(textASDoB[0]);
+                month = Integer.parseInt(textASDoB[1]) - 1;
+                year = Integer.parseInt(textASDoB[2]);
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+                month = calendar.get(Calendar.MONTH);
+                year = calendar.get(Calendar.YEAR);
+            }
 
-            picker = new DatePickerDialog(getActivity(), (view, year1, month1, dayOfMonth) ->
-                    dobEditText.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1), year, month, day);
+            // Crea e mostra il DatePickerDialog con la data corrente o quella di default
+            DatePickerDialog picker = new DatePickerDialog(getActivity(), (view, year1, month1, dayOfMonth) -> {
+                // Formatta la data selezionata e aggiorna il testo di dobEditText
+                String selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
+                dobEditText.setText(selectedDate);
+            }, year, month, day);
+
             picker.show();
         });
 
@@ -119,6 +132,10 @@ public class UpdateProfileFragment extends Fragment {
             return;
         }
 
+        username = usernameEditText.getText().toString();
+        dob = dobEditText.getText().toString();
+        //email = currentUser.getEmail().toString();
+
         if(TextUtils.isEmpty(username)){
             Toast.makeText(getActivity(), "Inserisci il tuo username", Toast.LENGTH_SHORT).show();
             usernameEditText.setError("Username richiesto");
@@ -134,35 +151,44 @@ public class UpdateProfileFragment extends Fragment {
             radioButtonRegisterGenderSelected.setError("Genere richiesto");
             radioButtonRegisterGenderSelected.requestFocus();
             //return;
-        } else{
-            gender = radioButtonRegisterGenderSelected.getText().toString();
-            username = Objects.requireNonNull(usernameEditText.getText()).toString();
-            dob = Objects.requireNonNull(dobEditText.getText()).toString();
+        } else {
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
 
-            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(currentUser.getEmail(), username, dob, gender, emailVerificato);
-            DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
+            currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Continua con il salvataggio dei dati nel database
+                    gender = radioButtonRegisterGenderSelected.getText().toString();
+                    username = Objects.requireNonNull(usernameEditText.getText()).toString();
+                    dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
-            String userID = currentUser.getUid();
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(email, username, dob, gender, emailVerificato, authMethod);
+                    DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
-            referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().
-                            setDisplayName(username).build();
-                    currentUser.updateProfile(profileUpdates);
-                    Toast.makeText(getActivity(), "Aggiornamento è completato con il successo!", Toast.LENGTH_SHORT).show();
-                    if(getActivity() != null) {
-                        openFragment(new ProfileFragment());
-                    }
+                    String userID = currentUser.getUid();
+
+                    referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
+                        if (databaseTask.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Aggiornamento è completato con successo!", Toast.LENGTH_SHORT).show();
+                            if (getActivity() != null) {
+                                openFragment(new ProfileFragment());
+                            }
+                        } else {
+                            try {
+                                throw Objects.requireNonNull(databaseTask.getException());
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 } else {
-                    try {
-                        throw Objects.requireNonNull(task.getException());
-                    } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getActivity(), "Errore nell'aggiornamento del profilo", Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+
 
     private void openFragment(Fragment fragment){
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -174,9 +200,7 @@ public class UpdateProfileFragment extends Fragment {
 
     private void showProfile(FirebaseUser currentUser) {
         String userIDofRegistered = currentUser.getUid();
-
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
-
         referenceProfile.child(userIDofRegistered).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -186,6 +210,7 @@ public class UpdateProfileFragment extends Fragment {
                     username = readUserDetails.getUsername();
                     dob = readUserDetails.getDob();
                     gender = readUserDetails.getGender();
+                    authMethod = readUserDetails.getAuthMethod();
 
                     usernameEditText.setText(username);
                     dobEditText.setText(dob);
