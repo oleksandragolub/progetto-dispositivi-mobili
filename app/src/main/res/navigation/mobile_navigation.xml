@@ -19,9 +19,48 @@
 
     <fragment
         android:id="@+id/navigation_ricerca"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.RicercaFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment"
         android:label="Ricerca"
         tools:layout="@layout/fragment_ricerca"/>
+
+
+
+
+    <fragment
+        android:id="@+id/searchUserFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment"
+        android:label="Search User"
+        tools:layout="@layout/fragment_search_user">
+        <action
+            android:id="@+id/action_searchUserFragment_to_detailUserProfileFragment"
+            app:destination="@id/detailUserProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailUserProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.DetailUserProfileFragment"
+        android:label="Detail User Profile"
+        tools:layout="@layout/fragment_detail_user_profile">
+        <action
+            android:id="@+id/action_detailUserProfileFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+        <action
+            android:id="@+id/action_detailUserProfileFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.userscommunication.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat">
+        <action
+            android:id="@+id/action_chatFragment_to_detailUserProfileFragment"
+            app:destination="@id/detailUserProfileFragment" />
+    </fragment>
+
+
+
 
     <fragment
         android:id="@+id/navigation_profile"

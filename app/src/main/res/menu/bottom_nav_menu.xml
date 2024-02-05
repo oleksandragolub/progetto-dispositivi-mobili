@@ -3,28 +3,29 @@
 xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.sal.disco.unimib.progettodispositivimobili">
 
-<item
-    android:id="@+id/navigation_home"
-    android:icon="@drawable/home_icone"
-    android:title="@string/title_home"
-    android:orderInCategory="1" />
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/home_icone"
+        android:title="@string/title_home"
+        android:orderInCategory="1" />
 
-<item
-    android:id="@+id/navigation_preferiti"
-    android:icon="@drawable/preferiti_icone"
-    android:title="@string/title_preferiti"
-    android:orderInCategory="2"/>
+    <item
+        android:id="@+id/navigation_preferiti"
+        android:icon="@drawable/preferiti_icone"
+        android:title="@string/title_preferiti"
+        android:orderInCategory="2"/>
 
-<item
-    android:id="@+id/navigation_ricerca"
-    android:icon="@drawable/ricerca_icone"
-    android:title="@string/title_ricerca"
-    android:orderInCategory="3" />
+    <item
+        android:id="@+id/navigation_ricerca"
+        android:icon="@drawable/ricerca_icone"
+        android:title="@string/title_ricerca"
+        android:orderInCategory="3" />
 
-<item
-    android:id="@+id/navigation_profile"
-    android:icon="@drawable/profile_icone"
-    android:title="@string/title_profile"
-    android:orderInCategory="4"/>
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/profile_icone"
+        android:title="@string/title_profile"
+        android:orderInCategory="4"/>
+
 
 </menu>

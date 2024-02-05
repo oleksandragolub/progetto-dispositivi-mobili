@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.ricerca;
+package it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics;
 
 import android.os.Bundle;
 

@@ -22,6 +22,16 @@
             android:title="@string/title_profile" />
 
         <item
+            android:id="@+id/searchUserFragment"
+            android:icon="@drawable/baseline_person_search_24"
+            android:title="@string/title_searchUser" />
+
+        <item
+            android:id="@+id/chatFragment"
+            android:icon="@drawable/baseline_chat_24"
+            android:title="@string/title_chat" />
+
+        <item
             android:id="@+id/navigation_logout"
             android:icon="@drawable/logout_icone"
             android:title="Logout" />

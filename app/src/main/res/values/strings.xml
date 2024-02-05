@@ -74,6 +74,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="txt_profile_domanda_veramente_elimini">Sei sicuro di voler eliminare questo account? Questa azieone è irreversibile!</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_searchUser">Cerca utente</string>
+    <string name="txt_search_user">Cerca utente</string>
+    <string name="txt_chat">Chat</string>
+    <string name="cerca_utente">Cerca utente</string>
+    <string name="cerca_la_lista_degli_utenti_con_un_cerco_username">cerca la lista degli utenti con un cerco username</string>
+    <string name="btn_chat_profile">Scrivi a questo utente</string>
+    <string name="type_a_message">Scrivi il messaggio</string>
 
 
 </resources>
