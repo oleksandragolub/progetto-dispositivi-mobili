@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
 
+    //variabile per tracciare se il form del profilo è stato completato
+    private boolean isProfileFormComplete = false;
+
     private void configureGoogleSignIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
@@ -60,10 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         setContentView(R.layout.activity_main);
 
         configureGoogleSignIn();
-
-    /*  binding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);*/
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -110,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             finish();
         }
 
+
+        // Verifica se l'intent contiene l'extra per mostrare direttamente il ProfileFragment
+        if (getIntent().getBooleanExtra("showProfileFragment", false)) {
+            openFragment(new ProfileFragment());
+            // Imposta anche l'elemento della BottomNavigationView su quello corrispondente, se necessario
+            bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
+        }
+
         //metto temporaneamente qua, serve per configurare l'api e prelevare il contenuto
         // ma non so ancora come salvare quello che è stato trovato e se funziona
         //incluse le api-key che non vanno inserite direttamente nel codice ma non so come.
@@ -122,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         ComicsQuery query = ComicsQuery.Builder.create().withOffset(0).withLimit(10).build();
         MarvelResponse<ComicsDto> all = comicApiClient.getAll(query);
          */
-
     }
 
 

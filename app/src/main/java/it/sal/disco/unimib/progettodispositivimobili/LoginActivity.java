@@ -2,6 +2,7 @@ package it.sal.disco.unimib.progettodispositivimobili;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -28,10 +29,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
+
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -110,17 +116,35 @@ public class LoginActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 currentUser = mAuth.getCurrentUser();
 
-                String textUsername = String.valueOf(account.getDisplayName());
-                String textEmail = String.valueOf(account.getEmail());
-                String textDoB = "";
-                String textGender = "";
-                Boolean emailVerificato = true;
+                // Verifica se l'utente esiste già
+                reference.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            // L'utente esiste, quindi si sta accedendo
+                            Toast.makeText(LoginActivity.this, "Accesso nel proprio account effettuato con successo!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // L'utente non esiste, è una nuova registrazione
+                            String textUsername = String.valueOf(account.getDisplayName());
+                            String textEmail = String.valueOf(account.getEmail());
+                            String textDoB = "";
+                            String textGender = "";
+                            Boolean emailVerificato = true;
 
-                // Aggiorna il database Firebase per segnare l'email dell'utente come verificata
-                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
-                reference.child(currentUser.getUid()).setValue(writeUserDetails);
-                Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
-                updateUI(currentUser);
+                            // Aggiorna il database Firebase con i dettagli dell'utente
+                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
+                            reference.child(currentUser.getUid()).setValue(writeUserDetails);
+                            Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
+                        }
+                        updateUI(currentUser);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Gestisci l'errore
+                        Log.e(TAG, "Database error: " + databaseError.getMessage());
+                    }
+                });
             } else {
                 // Gestisce gli errori di autenticazione, inclusi eventuali problemi di rete o credenziali errate
                 if (task.getException() instanceof ApiException) {
@@ -134,7 +158,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser currentUser){
+        /*Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();*/
+
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        // Aggiungi un extra all'intent che indichi di mostrare ProfileFragment
+        intent.putExtra("showProfileFragment", true);
         startActivity(intent);
         finish();
     }

@@ -43,6 +43,7 @@ public class DetailUserProfileFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference reference;
 
+    private String profileUserId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -63,6 +64,8 @@ public class DetailUserProfileFragment extends Fragment {
         emailEditText = binding.textViewEmail;
         dobEditText = binding.textViewDoB;
         genderEditText = binding.textViewGender;
+        //profileUserId = profileUserId.;
+
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -73,7 +76,11 @@ public class DetailUserProfileFragment extends Fragment {
 
         profileChatButton.setOnClickListener(v -> {
             if(getActivity() != null) {
-                openFragment(new ChatFragment());
+                Bundle bundle = new Bundle();
+                bundle.putString("otherUserId", currentUser.getUid()); // Passa l'ID dell'utente con cui avviare la chat
+                ChatFragment chatFragment = new ChatFragment();
+                chatFragment.setArguments(bundle); // Imposta gli argumenti sul fragment
+                openFragment(chatFragment); // Usa questo fragment con gli argumenti per l'apertura
             }
         });
 
@@ -126,7 +133,7 @@ public class DetailUserProfileFragment extends Fragment {
     private void openFragment(Fragment fragment){
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.replace(R.id.nav_host_fragment, fragment); // Utilizza il fragment fornito come parametro
         transaction.addToBackStack(null);
         transaction.commit();
     }

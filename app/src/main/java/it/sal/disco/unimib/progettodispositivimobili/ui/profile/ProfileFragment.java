@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class ProfileFragment extends Fragment {
     ImageView profileImageView, profileImageViewCamera;
     TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText, descrizioneEditText;
     TextView deleteProfileButton;
-    String username, email, dob, gender, descrizione;
+    String username, email, dob, gender, authMethod;
     Button updateProfileButton;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
@@ -162,22 +163,29 @@ public class ProfileFragment extends Fragment {
                     email = readUserDetails.getEmail();
                     dob = readUserDetails.getDob();
                     gender = readUserDetails.getGender();
+                    authMethod = readUserDetails.getAuthMethod();
 
+                    // Imposta i campi testo
                     usernameEditText.setText(username);
                     emailEditText.setText(email);
                     dobEditText.setText(dob);
                     genderEditText.setText(gender);
 
+                    // Carica l'immagine del profilo se disponibile
                     currentUser.reload().addOnSuccessListener(aVoid -> {
                         Uri uri = currentUser.getPhotoUrl();
-                        if (uri != null) {
+                        if (uri != null && getActivity() != null) { // Aggiunta della verifica che getActivity() non sia null
                             Picasso.with(getActivity())
                                     .load(uri.toString())
                                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                                     .into(profileImageView);
                         }
                     });
-                    String authMethod = readUserDetails.getAuthMethod();
+
+                    // Controlla se l'utente è registrato tramite Google e se alcuni campi sono vuoti
+                    if ("Google".equals(authMethod) && (dob.isEmpty() || gender.isEmpty())) {
+                        showCompletionAlert();
+                    }
 
                     // Gestione dei pulsanti deleteProfileButton e updateProfileButton in base all'authMethod
                     if (authMethod.equals("PasswordEmail")) {
@@ -218,6 +226,25 @@ public class ProfileFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void showCompletionAlert() {
+        // Controlla se il Fragment è attaccato a un'attività.
+        if (isAdded()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Completa il tuo profilo");
+            builder.setMessage("Devi completare i campi obbligatori del tuo profilo prima di procedere.");
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                // Qui viene gestita la navigazione verso UpdateProfileFragment dopo che l'utente preme "OK".
+                openFragment(new UpdateGoogleProfileFragment());
+            });
+            builder.setCancelable(false); // Impedisce di chiudere il dialogo toccando al di fuori o premendo il tasto indietro
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            // Il Fragment non è attaccato a un'attività.
+            Log.e("ProfileFragment", "Tentativo di mostrare dialogo quando il Fragment non è attaccato a un'attività.");
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -95,15 +97,48 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
             });
 
 
-            updateProfileButton.setOnClickListener(v -> updateProfile(currentUser));
+          //  updateProfileButton.setOnClickListener(v -> updateProfile(currentUser));
+
+            updateProfileButton.setOnClickListener(v -> {
+                if (isFormComplete()) {
+                    updateProfile(currentUser);
+                } else {
+                    showErrorToast();
+                }
+            });
 
             btnBack.setOnClickListener(v -> {
-                if(getActivity() != null) {
-                    openFragment(new ProfileFragment());
+                if(isFormComplete()) {
+                    // Solo se il form è completo, permetti di tornare al ProfileFragment
+                    if(getActivity() != null) {
+                        openFragment(new ProfileFragment());
+                    }
+                } else {
+                    // Mostra un messaggio di errore se il form non è completo
+                    showErrorToast();
                 }
             });
 
             return root;
+        }
+
+        private boolean isFormComplete() {
+            int selectedGenderID = radioGroupRegisterGender.getCheckedRadioButtonId();
+            String dob = dobEditText.getText().toString();
+            boolean isComplete = selectedGenderID != -1 && !TextUtils.isEmpty(dob);
+            if (!isComplete) {
+                if (selectedGenderID == -1) {
+                    Toast.makeText(getActivity(), "Seleziona il tuo genere", Toast.LENGTH_SHORT).show();
+                }
+                if (TextUtils.isEmpty(dob)) {
+                    dobEditText.setError("Data di nascita richiesta");
+                }
+            }
+            return isComplete;
+        }
+
+        private void showErrorToast() {
+            Toast.makeText(getActivity(), "Completa tutti i campi obbligatori", Toast.LENGTH_SHORT).show();
         }
 
         private void updateProfile(FirebaseUser currentUser) {
@@ -176,7 +211,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
         }
 
 
-        private void openFragment(Fragment fragment){
+        private void openFragment(Fragment fragment) {
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.nav_host_fragment, fragment);

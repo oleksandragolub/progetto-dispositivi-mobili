@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,12 @@ public class ChatFragment extends Fragment {
             binding = FragmentChatBinding.inflate(inflater, container, false);
             View root = binding.getRoot();
 
+            if (getArguments() != null) {
+                otherUserId = getArguments().getString("otherUserId");
+            }
+
+            binding.chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
             // Inizializzazione dell'ArrayList dei messaggi
             messagesList = new ArrayList<>();
 
@@ -84,18 +92,16 @@ public class ChatFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 messagesList.clear();
+                Message message = null;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Message message = snapshot.getValue(Message.class);
-                    /*if (message.getSenderId().equals(currentUserId) && message.getReceiverId().equals(otherUserId) ||
-                            message.getSenderId().equals(otherUserId) && message.getReceiverId().equals(currentUserId)) {
-                        messagesList.add(message);
-                    }*/
-                    if (String.valueOf(Objects.requireNonNull(message).getSenderId()).equals(currentUserId) && String.valueOf(message.getReceiverId()).equals(otherUserId) ||
-                            String.valueOf(message.getSenderId()).equals(otherUserId) && String.valueOf(message.getReceiverId()).equals(currentUserId)) {
+                    message = snapshot.getValue(Message.class);
+                    if ((message.getSenderId().equals(currentUserId) && message.getReceiverId().equals(otherUserId)) ||
+                            (message.getSenderId().equals(otherUserId) && message.getReceiverId().equals(currentUserId))) {
                         messagesList.add(message);
                     }
                 }
                 adapter.notifyDataSetChanged();
+                Log.d("ChatFragment", "Loaded message: " + message.getMessage());
             }
 
             @Override
@@ -115,11 +121,22 @@ public class ChatFragment extends Fragment {
         });
     }
 
-    private void sendMessage(String senderId, String receiverId, String message) {
+   /* private void sendMessage(String senderId, String receiverId, String message) {
         DatabaseReference reference = databaseReference.push();
         long timestamp = System.currentTimeMillis();
         Message newMessage = new Message(senderId, receiverId, message, timestamp);
         reference.setValue(newMessage);
+    }*/
+
+    private void sendMessage(String senderId, String receiverId, String message) {
+        DatabaseReference reference = databaseReference.push();
+        long timestamp = System.currentTimeMillis();
+        Message newMessage = new Message(senderId, receiverId, message, timestamp);
+        reference.setValue(newMessage).addOnSuccessListener(aVoid -> {
+            messagesList.add(newMessage);
+            adapter.notifyItemInserted(messagesList.size() - 1);
+            binding.chatRecyclerView.smoothScrollToPosition(messagesList.size() - 1);
+        });
     }
 
     private void openFragment(Fragment fragment){

@@ -100,24 +100,51 @@ public class UpdateProfileFragment extends Fragment {
         updateProfileButton.setOnClickListener(v -> updateProfile(currentUser));
 
         changeEmailButton.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new UpdateEmailFragment());
+            if(isFormComplete()) {
+                // Solo se il form è completo, permetti di andare al UpdateEmailFragment
+                if(getActivity() != null) {
+                    openFragment(new UpdateEmailFragment());
+                }
+            } else {
+                // Mostra un messaggio di errore se il form non è completo
+                Toast.makeText(getActivity(), "Completa tutti i campi obbligatori", Toast.LENGTH_SHORT).show();
             }
         });
 
         changePasswordButton.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new UpdatePasswordFragment());
+            if(isFormComplete()) {
+                // Solo se il form è completo, permetti di andare al UpdatePasswordFragment
+                if(getActivity() != null) {
+                    openFragment(new UpdatePasswordFragment());
+                }
+            } else {
+                // Mostra un messaggio di errore se il form non è completo
+                Toast.makeText(getActivity(), "Completa tutti i campi obbligatori", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnBack.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new ProfileFragment());
+            if(isFormComplete()) {
+                // Solo se il form è completo, permetti di tornare al ProfileFragment
+                if(getActivity() != null) {
+                    openFragment(new ProfileFragment());
+                }
+            } else {
+                // Mostra un messaggio di errore se il form non è completo
+                Toast.makeText(getActivity(), "Completa tutti i campi obbligatori", Toast.LENGTH_SHORT).show();
             }
         });
 
         return root;
+    }
+
+    // Metodo per controllare se il form è completo
+    private boolean isFormComplete() {
+        // Controlla se genere e data di nascita non sono vuoti
+        int selectedGenderID = radioGroupRegisterGender.getCheckedRadioButtonId();
+        String dob = dobEditText.getText().toString();
+
+        return selectedGenderID != -1 && !TextUtils.isEmpty(dob);
     }
 
     private void updateProfile(FirebaseUser currentUser) {
