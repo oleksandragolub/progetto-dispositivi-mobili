@@ -2,8 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/Serch_User_Row_Layout"
-    android:background="@drawable/edit_text_rounded_corner">
+    android:background="@drawable/edit_text_rounded_corner"
+    app:contentPadding="10dp"
+    android:layout_margin="10dp">
+
 
     <include layout="@layout/profle_pic_view"
         android:layout_width="52dp"

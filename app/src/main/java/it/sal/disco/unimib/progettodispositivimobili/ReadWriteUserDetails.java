@@ -15,13 +15,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class ReadWriteUserDetails implements Parcelable {
+    private String userId;
     public String username, dob, gender, email, authMethod;
     public Boolean emailVerificato;
-
     public String dataImage;
 
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
     protected ReadWriteUserDetails(Parcel in) {
         // Leggi i dati da Parcel e inizializza gli altri membri
     }
@@ -81,7 +79,23 @@ public class ReadWriteUserDetails implements Parcelable {
         this.authMethod = authMethod;
     }
 
+    public ReadWriteUserDetails(String userId, String username, String dob, String gender, String email, Boolean emailVerificato, String authMethod) {
+        this.userId = userId;
+        this.username = username;
+        this.dob = dob;
+        this.gender = gender;
+        this.email = email;
+        this.emailVerificato = emailVerificato;
+        this.authMethod = authMethod;
+    }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getDataImage() {
         if (dataImage != null) {

@@ -158,10 +158,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser currentUser){
-        /*Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();*/
-
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         // Aggiungi un extra all'intent che indichi di mostrare ProfileFragment
         intent.putExtra("showProfileFragment", true);

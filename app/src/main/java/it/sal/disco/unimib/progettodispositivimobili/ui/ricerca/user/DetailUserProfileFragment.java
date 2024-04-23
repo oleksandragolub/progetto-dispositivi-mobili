@@ -74,13 +74,27 @@ public class DetailUserProfileFragment extends Fragment {
             showUserProfile(currentUser);
         }
 
-        profileChatButton.setOnClickListener(v -> {
+       /*profileChatButton.setOnClickListener(v -> {
             if(getActivity() != null) {
                 Bundle bundle = new Bundle();
                 bundle.putString("otherUserId", currentUser.getUid()); // Passa l'ID dell'utente con cui avviare la chat
                 ChatFragment chatFragment = new ChatFragment();
                 chatFragment.setArguments(bundle); // Imposta gli argumenti sul fragment
                 openFragment(chatFragment); // Usa questo fragment con gli argumenti per l'apertura
+            }
+        });*/
+
+
+        profileChatButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("otherUserId", profileUserId);
+                ChatFragment chatFragment = new ChatFragment();
+                chatFragment.setArguments(bundle);
+                openFragment(chatFragment);
+            } else {
+                // Consider adding a Toast here to inform why the button isn't clickable
+                Toast.makeText(getContext(), "Dettagli utente non disponibili", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -98,6 +112,7 @@ public class DetailUserProfileFragment extends Fragment {
         if (args != null && args.containsKey("userDetails")) {
             ReadWriteUserDetails readUserDetails = args.getParcelable("userDetails");
             if (readUserDetails != null) {
+                profileUserId = readUserDetails.getUserId();
                 username = readUserDetails.getUsername();
                 email = readUserDetails.getEmail();
                 dob = readUserDetails.getDob();

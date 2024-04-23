@@ -42,10 +42,6 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDeleteG
         private GoogleSignInClient mGoogleSignInClient;
         private FragmentDeleteGoogleProfileBinding binding;
 
-        GoogleSignInClient googleSignInClient;
-        TextView btnBack;
-        Button buttonDeleteUser;
-
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             binding = FragmentDeleteGoogleProfileBinding.inflate(inflater, container, false);

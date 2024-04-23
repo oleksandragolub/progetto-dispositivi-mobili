@@ -18,7 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,79 +33,85 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentChatBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
 
 
 public class ChatFragment extends Fragment {
-        FragmentChatBinding binding;
-        private DatabaseReference databaseReference;
-        private ArrayList<Message> messagesList;
-        private MessagesAdapter adapter;
-        private String currentUserId, otherUserId;
+    FragmentChatBinding binding;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private GoogleSignInClient mGoogleSignInClient;
 
-        private ImageButton imageBack;
+    private DatabaseReference databaseReference;
+    private ArrayList<Message> messagesList;
+    private MessagesAdapter adapter;
+    private String currentUserId, otherUserId;
 
-        TextView btnBack;
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
 
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater,
-                                 ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentChatBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-            binding = FragmentChatBinding.inflate(inflater, container, false);
-            View root = binding.getRoot();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
-            if (getArguments() != null) {
-                otherUserId = getArguments().getString("otherUserId");
-            }
+        setupGoogleSignIn();
 
-            binding.chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            // Inizializzazione dell'ArrayList dei messaggi
-            messagesList = new ArrayList<>();
-
-            // Imposta l'adapter per il RecyclerView
-            adapter = new MessagesAdapter(getContext(), messagesList);
-            binding.chatRecyclerView.setAdapter(adapter); // Assicurati che chatRecyclerView sia l'ID corretto
-
-            // Inizializza il riferimento al database di Firebase
-            databaseReference = FirebaseDatabase.getInstance().getReference("Messages");
-            currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            // otherUserId dovrebbe essere ottenuto dall'intento o passato al fragment
-
-            loadMessages();
-            setupSendMessage();
-
-            binding.imageBack.setOnClickListener(v -> {
-                if(getActivity() != null) {
-                    openFragment(new SearchUserFragment());
-                }
-            });
-
-
-            return root;
+        if (getArguments() != null) {
+            otherUserId = getArguments().getString("otherUserId");
         }
 
-    private void loadMessages() {
-        messagesList = new ArrayList<>();
-        // Supponiamo che adapter sia già stato inizializzato e impostato su RecyclerView
-        // Aggiungi ValueEventListener al databaseReference per caricare i messaggi e ascoltare le nuove aggiunte
+        // LinearLayoutManager with stackFromEnd set to true to show latest messages at the bottom
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        binding.chatRecyclerView.setLayoutManager(layoutManager);
 
+        messagesList = new ArrayList<>();
+        adapter = new MessagesAdapter(getContext(), messagesList);
+        binding.chatRecyclerView.setAdapter(adapter);
+
+        currentUserId = currentUser.getUid();
+        String chatRoom = currentUserId + otherUserId;
+        databaseReference = FirebaseDatabase.getInstance().getReference("Chats").child(chatRoom).child("Messages");
+
+        loadMessages();
+        setupSendMessage();
+
+        binding.imageBack.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new SearchUserFragment());
+            }
+        });
+
+        return root;
+    }
+
+    private void setupGoogleSignIn() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+    }
+
+    private void loadMessages() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 messagesList.clear();
-                Message message = null;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    message = snapshot.getValue(Message.class);
-                    if ((message.getSenderId().equals(currentUserId) && message.getReceiverId().equals(otherUserId)) ||
-                            (message.getSenderId().equals(otherUserId) && message.getReceiverId().equals(currentUserId))) {
+                    Message message = snapshot.getValue(Message.class);
+                    if (message != null) {
                         messagesList.add(message);
                     }
                 }
                 adapter.notifyDataSetChanged();
-                Log.d("ChatFragment", "Loaded message: " + message.getMessage());
+                binding.chatRecyclerView.scrollToPosition(messagesList.size() - 1);
             }
 
             @Override
@@ -125,32 +135,31 @@ public class ChatFragment extends Fragment {
         DatabaseReference reference = databaseReference.push();
         long timestamp = System.currentTimeMillis();
         Message newMessage = new Message(senderId, receiverId, message, timestamp);
-        reference.setValue(newMessage);
+        reference.setValue(newMessage).addOnSuccessListener(aVoid -> {
+            messagesList.add(newMessage);
+            adapter.notifyItemInserted(messagesList.size() - 1);
+            binding.chatRecyclerView.smoothScrollToPosition(messagesList.size() - 1);
+        });
     }*/
 
     private void sendMessage(String senderId, String receiverId, String message) {
         DatabaseReference reference = databaseReference.push();
         long timestamp = System.currentTimeMillis();
         Message newMessage = new Message(senderId, receiverId, message, timestamp);
-        reference.setValue(newMessage).addOnSuccessListener(aVoid -> {
-            messagesList.add(newMessage);
-            adapter.notifyItemInserted(messagesList.size() - 1);
-            binding.chatRecyclerView.smoothScrollToPosition(messagesList.size() - 1);
-        });
+        reference.setValue(newMessage); // Rimuovi la parte che aggiunge manualmente alla lista
     }
 
     private void openFragment(Fragment fragment){
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.nav_host_fragment, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-
-
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            binding = null;
-        }
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+}
