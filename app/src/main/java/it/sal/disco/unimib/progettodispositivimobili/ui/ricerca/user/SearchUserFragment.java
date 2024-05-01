@@ -85,38 +85,46 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
             searchInput.setError("Inserisci un'email valida");
         } else {
             reference.orderByChild("email")
-                .startAt(searchTerm).endAt(searchTerm + "\uf8ff")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            searchList.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
-                                searchList.add(user);
+                    .startAt(searchTerm).endAt(searchTerm + "\uf8ff")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                searchList.clear();
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
+                                    searchList.add(user);
+                                }
+                                dataAdapter.notifyDataSetChanged();
+                                Log.d("SearchUserFragment", "Numero di utenti trovati: " + searchList.size());
+                            } else {
+                                Log.d("SearchUserFragment", "Nessun utente trovato.");
                             }
-                            dataAdapter.notifyDataSetChanged();
-                            Log.d("SearchUserFragment", "Numero di utenti trovati: " + searchList.size());
-                        } else {
-                            Log.d("SearchUserFragment", "Nessun utente trovato.");
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), "Errore nella ricerca", Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), "Errore nella ricerca", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
     @Override
     public void onUserClick(ReadWriteUserDetails user) {
-        // L'utente ha cliccato su un utente nella RecyclerView
-        // Passa i dettagli dell'utente alla pagina di profilo
-        openProfilePage(user);
+        DetailUserProfileFragment profileFragment = new DetailUserProfileFragment();
+        Bundle args = new Bundle();
+        args.putString("userId", user.getUserId()); // Assicurati che getUserId() non restituisca null
+        profileFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, profileFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        Log.d("SearchUserFragment", "Passing User ID: " + user.getUserId());
     }
 
     private void openProfilePage(ReadWriteUserDetails user) {
@@ -148,4 +156,5 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
         binding = null;
     }
 }
+
 

@@ -1,18 +1,8 @@
 package it.sal.disco.unimib.progettodispositivimobili;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class ReadWriteUserDetails implements Parcelable {
     private String userId;
@@ -20,46 +10,25 @@ public class ReadWriteUserDetails implements Parcelable {
     public Boolean emailVerificato;
     public String dataImage;
 
+    public ReadWriteUserDetails() {
+        // Costruttore vuoto richiesto da Firebase
+    }
+
     protected ReadWriteUserDetails(Parcel in) {
         // Leggi i dati da Parcel e inizializza gli altri membri
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // Scrivi i membri nella Parcel
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ReadWriteUserDetails> CREATOR = new Creator<ReadWriteUserDetails>() {
-        @Override
-        public ReadWriteUserDetails createFromParcel(Parcel in) {
-            return new ReadWriteUserDetails(in);
-        }
-
-        @Override
-        public ReadWriteUserDetails[] newArray(int size) {
-            return new ReadWriteUserDetails[size];
-        }
-    };
-
-
-    public ReadWriteUserDetails() {}
-
-    public ReadWriteUserDetails(String Username, String Dob, String Gender) {
+    public ReadWriteUserDetails(String Username, String Email, String dataImage) {
         this.username = Username;
-        this.dob = Dob;
-        this.gender = Gender;
+        this.email = Email;
+        this.dataImage = dataImage;
     }
 
-    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender) {
-        this.email = email;
+    public ReadWriteUserDetails(String Id, String Username, String Email, String dataImage) {
+        this.userId = Id;
         this.username = Username;
-        this.dob = Dob;
-        this.gender = Gender;
+        this.email = Email;
+        this.dataImage = dataImage;
     }
 
     public ReadWriteUserDetails(String email, String Username, String Dob, String Gender, Boolean emailVerificato) {
@@ -88,6 +57,28 @@ public class ReadWriteUserDetails implements Parcelable {
         this.emailVerificato = emailVerificato;
         this.authMethod = authMethod;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        // Scrivi i membri nella Parcel
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ReadWriteUserDetails> CREATOR = new Creator<ReadWriteUserDetails>() {
+        @Override
+        public ReadWriteUserDetails createFromParcel(Parcel in) {
+            return new ReadWriteUserDetails(in);
+        }
+
+        @Override
+        public ReadWriteUserDetails[] newArray(int size) {
+            return new ReadWriteUserDetails[size];
+        }
+    };
 
     public String getUserId() {
         return userId;

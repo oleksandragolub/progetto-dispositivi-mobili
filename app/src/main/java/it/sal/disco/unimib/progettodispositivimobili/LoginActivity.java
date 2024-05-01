@@ -134,6 +134,9 @@ public class LoginActivity extends AppCompatActivity {
                             // Aggiorna il database Firebase con i dettagli dell'utente
                             ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
                             reference.child(currentUser.getUid()).setValue(writeUserDetails);
+                           /* String textId = String.valueOf(currentUser.getUid());
+                            writeUserDetails = new ReadWriteUserDetails(textId, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
+                            reference.child(currentUser.getUid()).setValue(writeUserDetails);*/
                             Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
                         }
                         updateUI(currentUser);

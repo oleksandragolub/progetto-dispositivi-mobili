@@ -27,13 +27,27 @@
             android:title="@string/title_searchUser" />
 
         <item
-            android:id="@+id/chatFragment"
+            android:id="@+id/newChatFragment"
             android:icon="@drawable/baseline_chat_24"
-            android:title="@string/title_chat" />
+            android:title="@string/title_new_chat" />
+
 
         <item
-            android:id="@+id/navigation_logout"
-            android:icon="@drawable/logout_icone"
-            android:title="Logout" />
+        android:id="@+id/chatsFragment"
+        android:icon="@drawable/baseline_chat_24"
+        android:title="@string/title_chats" />
 
-</menu>
+
+
+        <!--     <item
+                 android:id="@+id/chatFragment"
+                 android:icon="@drawable/baseline_chat_24"
+                 android:title="@string/title_chat" /> -->
+
+
+             <item
+                 android:id="@+id/navigation_logout"
+                 android:icon="@drawable/logout_icone"
+                 android:title="Logout" />
+
+     </menu>

@@ -82,6 +82,11 @@
     <string name="cerca_la_lista_degli_utenti_con_un_cerco_username">cerca la lista degli utenti con un cerco username</string>
     <string name="btn_chat_profile">Scrivi a questo utente</string>
     <string name="type_a_message">Scrivi il messaggio</string>
+    <string name="title_new_chat">New Chat\n</string>
+    <string name="txt_new_chat">New Chat\n</string>
+    <string name="txt_tutti_chats">Chats\n</string>
+    <string name="title_chats">Chats\n</string>
+    <string name="scrivi_un_messaggio">Scrivi un messaggio...</string>
 
 
 </resources>

@@ -2,22 +2,13 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.userscommunication;
 
 public class Message {
 
-    private String id;
-    private String senderId;
-    private String receiverId;
-    private String message;
-    private long timestamp;
+    private String id, ownerId, text, date;
 
-    public Message() {
-        // Costruttore vuoto richiesto da Firebase
-    }
-
-    // Costruttore con parametri
-    public Message(String senderId, String receiverId, String message, long timestamp) {
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.message = message;
-        this.timestamp = timestamp;
+    public Message(String id, String ownerId, String text, String date) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.text = text;
+        this.date = date;
     }
 
     public String getId() {
@@ -28,38 +19,27 @@ public class Message {
         this.id = id;
     }
 
-    public String getSenderId() {
-        return senderId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
-    public String getReceiverId() {
-        return receiverId;
+    public String getText() {
+        return text;
     }
 
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getMessage() {
-        return message;
+    public String getDate() {
+        return date;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDate(String date) {
+        this.date = date;
     }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    // Getter e setter
-    // ...
 }

@@ -44,7 +44,7 @@ public class ProfileFragment extends Fragment {
     ImageView profileImageView, profileImageViewCamera;
     TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText, descrizioneEditText;
     TextView deleteProfileButton;
-    String username, email, dob, gender, authMethod;
+    String id, username, email, dob, gender, authMethod;
     Button updateProfileButton;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
@@ -159,6 +159,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
                 if(readUserDetails != null){
+                    //id = readUserDetails.getUserId();
                     username = readUserDetails.getUsername();
                     email = readUserDetails.getEmail();
                     dob = readUserDetails.getDob();

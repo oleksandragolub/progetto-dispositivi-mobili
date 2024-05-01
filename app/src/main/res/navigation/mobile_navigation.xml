@@ -44,19 +44,45 @@
         <action
             android:id="@+id/action_detailUserProfileFragment_to_searchUserFragment"
             app:destination="@id/searchUserFragment" />
-        <action
-            android:id="@+id/action_detailUserProfileFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
+    <!--    <action
+           android:id="@+id/action_detailUserProfileFragment_to_chatFragment"
+           app:destination="@id/chatFragment" /> -->
+   </fragment>
+
+<!--    <fragment
+       android:id="@+id/chatFragment"
+       android:name="it.sal.disco.unimib.progettodispositivimobili.ui.userscommunication.ChatFragment"
+       android:label="Chat"
+       tools:layout="@layout/fragment_chat">
+       <action
+           android:id="@+id/action_chatFragment_to_detailUserProfileFragment"
+           app:destination="@id/detailUserProfileFragment" />
+       <action
+           android:id="@+id/action_chatFragment_to_newChatFragment"
+           app:destination="@id/newChatFragment" />
+       <action
+           android:id="@+id/action_chatFragment_to_chatsFragment"
+           app:destination="@id/chatsFragment" />
+   </fragment> -->
+
+    <fragment
+        android:id="@+id/newChatFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment"
+        android:label="NewChat"
+        tools:layout="@layout/fragment_new_chat">
+        <!-- <action
+             android:id="@+id/action_newChatFragment_to_chatFragment"
+             app:destination="@id/chatFragment" /> -->
     </fragment>
 
     <fragment
-        android:id="@+id/chatFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.userscommunication.ChatFragment"
-        android:label="Chat"
-        tools:layout="@layout/fragment_chat">
-        <action
-            android:id="@+id/action_chatFragment_to_detailUserProfileFragment"
-            app:destination="@id/detailUserProfileFragment" />
+        android:id="@+id/chatsFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment"
+        android:label="Chats"
+        tools:layout="@layout/fragment_chats">
+        <!--  <action
+              android:id="@+id/action_chatsFragment_to_chatFragment"
+              app:destination="@id/chatFragment" /> -->
     </fragment>
 
 

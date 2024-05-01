@@ -19,17 +19,11 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.SearchUserRecyc
 public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRecyclerAdapter.MyViewHolder> {
 
     private List<ReadWriteUserDetails> dataList;
-    private OnUserClickListener onUserClickListener; // Aggiungi questa variabile
-    private Fragment fragment;
+    private OnUserClickListener onUserClickListener;
 
-    //private FragmentManager fragmentManager;
-
-    /*public SearchUserRecyclerAdapter(List<ReadWriteUserDetails> dataList){
-        this.dataList = dataList;
-    }*/
     public SearchUserRecyclerAdapter(List<ReadWriteUserDetails> dataList, OnUserClickListener onUserClickListener) {
         this.dataList = dataList;
-        this.onUserClickListener = onUserClickListener; // Inizializza il listener
+        this.onUserClickListener = onUserClickListener;
     }
 
     public interface OnUserClickListener {
@@ -39,13 +33,12 @@ public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRe
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Utilizzo del View Binding per inflazionare il layout
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_recycler_row, parent, false);
-        return new MyViewHolder(itemView);
+        SearchUserRecyclerRowBinding binding = SearchUserRecyclerRowBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new MyViewHolder(binding);
     }
 
 
-    @Override
+   /* @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         ReadWriteUserDetails dataItem = dataList.get(position);
@@ -58,7 +51,7 @@ public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRe
 
         holder.emailText.setText(dataItem.getEmail());
         holder.usernameText.setText(dataItem.getUsername());
-
+*/
 
         /*holder.userRowLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +65,16 @@ public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRe
             }
         });*/
 
+  //  }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        ReadWriteUserDetails user = dataList.get(position);
+       /* if (fragment != null && fragment.isAdded()) {
+            Glide.with(fragment).load(user.getDataImage()).into(holder.binding.imageProfilePic);
+        }*/
+        holder.binding.emailText.setText(user.getEmail());
+        holder.binding.usernameText.setText(user.getUsername());
     }
 
     @Override
@@ -80,7 +83,7 @@ public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRe
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+   /* public class MyViewHolder extends RecyclerView.ViewHolder {
 
         SearchUserRecyclerRowBinding binding;
         TextView usernameText;
@@ -102,6 +105,22 @@ public class SearchUserRecyclerAdapter extends RecyclerView.Adapter<SearchUserRe
             });
         }
 
+    }
+*/
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        private final SearchUserRecyclerRowBinding binding;
+
+        public MyViewHolder(SearchUserRecyclerRowBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && onUserClickListener != null) {
+                    onUserClickListener.onUserClick(dataList.get(position));
+                }
+            });
+        }
     }
 }
 

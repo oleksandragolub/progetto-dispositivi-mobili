@@ -39,6 +39,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDeleteG
         private static final String TAG = "DeleteGoogleProfileFragment";
         private FirebaseAuth mAuth;
         private FirebaseUser currentUser;
+
         private GoogleSignInClient mGoogleSignInClient;
         private FragmentDeleteGoogleProfileBinding binding;
 

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+  <!--  <TextView
         android:id="@+id/textMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,6 +26,33 @@
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textMessage" />
+        app:layout_constraintTop_toBottomOf="@id/textMessage" /> -->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="15dp"
+        android:padding="10dp"
+        android:background="@drawable/background_sent_message">
+
+    <TextView
+        android:id="@+id/message_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        tools:text="Scrivi un messaggio"/>
+
+    <TextView
+        android:id="@+id/message_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        tools:text="12.01.2022 13:30"
+        android:textSize="13sp"
+        android:layout_marginTop="10dp"/>
+    </LinearLayout>
+</RelativeLayout>

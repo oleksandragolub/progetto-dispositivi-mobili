@@ -25,11 +25,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.userscommunication.ChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
@@ -92,8 +93,14 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.searchUserFragment) {
                     openFragment(new SearchUserFragment());
                     return true;
-                } else if (id == R.id.chatFragment) {
+                } /*else if (id == R.id.chatFragment) {
                     openFragment(new ChatFragment());
+                    return true;
+                }*/ else if (id == R.id.newChatFragment) {
+                    openFragment(new NewChatFragment());
+                    return true;
+                } else if (id == R.id.chatsFragment) {
+                    openFragment(new ChatsFragment());
                     return true;
                 }
                     return false;
@@ -176,10 +183,17 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         } else if (id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
             //return true;
-        } else if (id == R.id.chatFragment) {
+        }/* else if (id == R.id.chatFragment) {
             openFragment(new ChatFragment());
             //return true;
-        } else if (id == R.id.navigation_logout) {
+        }*/else if (id == R.id.newChatFragment) {
+            openFragment(new NewChatFragment());
+            //return true;
+        } else if (id == R.id.chatsFragment) {
+            openFragment(new ChatsFragment());
+            //return true;
+        }
+        else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();
             // Effettua il logout da Google Sign-In
