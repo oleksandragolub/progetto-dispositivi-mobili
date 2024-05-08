@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserProfileBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatUtil;
 
 public class DetailUserProfileFragment extends Fragment {
 
@@ -54,20 +56,13 @@ public class DetailUserProfileFragment extends Fragment {
         binding = FragmentDetailUserProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        profileUserId = getArguments().getString("userId", null);
+        profileUserId = getArguments().getString("user2");
 
-        if (profileUserId == null) {
-            Toast.makeText(getContext(), "User ID is missing.", Toast.LENGTH_SHORT).show();
-            return binding.getRoot();
-        }
 
         showUserProfile(profileUserId);
         Log.d("DetailUserProfileFragment", "Received User ID: " + profileUserId);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-      //  profileUserId = currentUser.getUid();
-
 
         btnBack = binding.txtBack;
         profileChatButton = binding.profileChatBtn;
@@ -82,17 +77,38 @@ public class DetailUserProfileFragment extends Fragment {
         dobEditText = binding.textViewDoB;
         genderEditText = binding.textViewGender;
 
-     /*   profileChatButton.setOnClickListener(v -> {
-            if (getActivity() != null && profileUserId != null && !profileUserId.isEmpty()) {
-                Bundle bundle = new Bundle();
-                bundle.putString("otherUserId", profileUserId);
-                ChatActivity chatActivity = new ChatActivity();
-                chatActivity.setArguments(bundle);
-                openFragment(chatActivity);
+        binding.profileChatBtn.setOnClickListener(v -> {
+            if (mAuth.getCurrentUser() != null && profileUserId != null) {
+                String currentUserId = mAuth.getCurrentUser().getUid();
+                String chatId = ChatUtil.generateChatId(currentUserId, profileUserId);
+
+                // Check if the chat already exists in the database
+                FirebaseDatabase.getInstance().getReference().child("Chats").child(chatId)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) {
+                                    // If chat does not exist, create it
+                                    ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
+                                    if (user != null) {
+                                        ChatUtil.createChat(user);  // Create chat using ChatUtil
+                                    } else {
+                                        Toast.makeText(getContext(), "User details not found.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                // Whether the chat was just created or already existed, open the ChatActivity
+                                openChatActivity(chatId);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(getContext(), "Failed to retrieve chat details.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             } else {
-                Toast.makeText(getContext(), "Dettagli utente non disponibili o ID utente mancante", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "User ID is missing.", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
         btnBack.setOnClickListener(v -> {
             if(getActivity() != null) {
@@ -103,6 +119,20 @@ public class DetailUserProfileFragment extends Fragment {
         return root;
     }
 
+    private String getChatId(String currentUserId, String otherUserId) {
+        // Example logic to generate chatId, you might want to handle it differently
+        if (currentUserId.compareTo(otherUserId) > 0) {
+            return currentUserId + "_" + otherUserId;
+        } else {
+            return otherUserId + "_" + currentUserId;
+        }
+    }
+
+    private void openChatActivity(String chatId) {
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("chatId", chatId);
+        startActivity(intent);
+    }
     private void showUserProfile(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId);
 

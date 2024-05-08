@@ -1,6 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.chats;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,10 +24,13 @@ import org.checkerframework.checker.units.qual.C;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentChatsBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.users.UserAdapter;
 
 public class ChatsFragment extends Fragment {
     private FragmentChatsBinding binding;
+
 
     @Nullable
     @Override
@@ -37,9 +42,8 @@ public class ChatsFragment extends Fragment {
         return binding.getRoot();
     }
 
-   /* private void loadChats(){
-        ArrayList<Chat> chats = new ArrayList<>();*/
-        /*chats.add(new Chat("123", "Test chat 1", "123123", "123456"));
+     /*  ArrayList<Chat> chats = new ArrayList<>();
+        chats.add(new Chat("123", "Test chat 1", "12323", "123456"));
         chats.add(new Chat("123", "Test chat 2", "123123", "123456"));
         chats.add(new Chat("123", "Test chat 3", "123123", "123456"));*/
         private void loadChats(){
@@ -48,6 +52,7 @@ public class ChatsFragment extends Fragment {
             FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ReadWriteUserDetails userDetails = snapshot.getValue(ReadWriteUserDetails.class);
                     DataSnapshot chatsNode = snapshot.child("Utenti registrati").child(uid).child("chats");
                     if (!chatsNode.exists() || chatsNode.getValue() == null) {
                         Toast.makeText(getContext(), "No chats available", Toast.LENGTH_SHORT).show();
@@ -71,15 +76,19 @@ public class ChatsFragment extends Fragment {
                         DataSnapshot userNode = snapshot.child("Utenti registrati").child(chatUserId);
                         String chatName = userNode.child("username").getValue(String.class); // Safely get the value as String
 
-                        if (chatName == null) {
+                        String userEmail = userNode.child("email").getValue(String.class);
+                        Log.d("ChatsFragment", "Email utente: " + userEmail);
+
+                        if (chatName == null || userEmail == null) {
                             continue; // Username is missing, skip this chat
                         }
 
-                        Chat chat = new Chat(chatId, chatName, userId1, userId2);
+                        Chat chat = new Chat(chatId, chatName, userId1, userId2, userEmail);
                         chats.add(chat);
                     }
 
                     binding.chatsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    binding.chatsRv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
                     binding.chatsRv.setAdapter(new ChatAdapter(chats));
                 }
 

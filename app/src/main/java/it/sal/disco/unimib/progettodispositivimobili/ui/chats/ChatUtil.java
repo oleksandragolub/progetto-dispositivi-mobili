@@ -36,28 +36,13 @@ public class ChatUtil {
         addChatIdToUser(user.getUserId(), chatId);
     }
 
-    private static String generateChatId(String userId1, String userId2){
+    public static String generateChatId(String userId1, String userId2){
         String sumUser1User2 = userId1 + userId2;
         char[] charArray = sumUser1User2.toCharArray();
         Arrays.sort(charArray);
 
         return new String(charArray);
     }
-
-  /*  private static void addChatIdToUser(String uid, String chatId){
-        FirebaseDatabase.getInstance().getReference().child("Utenti registrati").child(uid).child("chats").get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        //String chats = task.getResult().getValue().toString();
-                        String chats = (task.getResult().getValue() != null) ? task.getResult().getValue().toString() : "";
-
-                        String chatsUpd = addIdToStr(chats, chatId);
-
-                        FirebaseDatabase.getInstance().getReference().child("Utenti registrati").child(uid).child("chats")
-                                .setValue(chatsUpd);
-                    }
-            });
-    }*/
 
     private static void addChatIdToUser(String uid, String chatId) {
         FirebaseDatabase.getInstance().getReference().child("Utenti registrati").child(uid).child("chats").get()

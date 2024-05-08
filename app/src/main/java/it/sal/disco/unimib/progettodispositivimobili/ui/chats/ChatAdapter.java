@@ -39,6 +39,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         holder.chat_username_iv.setText(chats.get(position).getChat_name());
+        holder.chat_email_iv.setText(chats.get(position).getUserEmail());
 
         String userId;
         if (!chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){

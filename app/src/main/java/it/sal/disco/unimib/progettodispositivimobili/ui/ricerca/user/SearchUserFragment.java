@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
@@ -81,19 +84,28 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
 
     private void performSearch() {
         String searchTerm = searchInput.getText().toString().trim().toLowerCase();
-        if(searchTerm.isEmpty() || searchTerm.length() < 2) {
+        if (searchTerm.isEmpty() || searchTerm.length() < 2) {
             searchInput.setError("Inserisci un'email valida");
         } else {
+            // Get current user's UID to exclude it from search results
+            String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
             reference.orderByChild("email")
                     .startAt(searchTerm).endAt(searchTerm + "\uf8ff")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            searchList.clear();
                             if (dataSnapshot.exists()) {
-                                searchList.clear();
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
-                                    searchList.add(user);
+                                    // Check if the current snapshot is the current user
+                                    if (!snapshot.getKey().equals(currentUserUID)) {
+                                        ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
+                                        if (user != null) {
+                                            user.setUserId(snapshot.getKey());
+                                            searchList.add(user);
+                                        }
+                                    }
                                 }
                                 dataAdapter.notifyDataSetChanged();
                                 Log.d("SearchUserFragment", "Numero di utenti trovati: " + searchList.size());
@@ -116,15 +128,19 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
     public void onUserClick(ReadWriteUserDetails user) {
         DetailUserProfileFragment profileFragment = new DetailUserProfileFragment();
         Bundle args = new Bundle();
-        args.putString("userId", user.getUserId()); // Assicurati che getUserId() non restituisca null
+
+        String currentUserUID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser(), "CurrentUser must not be null").getUid();
+        args.putString("user1", currentUserUID);
+        args.putString("user2", user.getUserId());
         profileFragment.setArguments(args);
+
+        Log.d("SearchUserFragment", "user1: " + currentUserUID + ", user2: " + user.getUserId()); // Confirm the IDs
 
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, profileFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        Log.d("SearchUserFragment", "Passing User ID: " + user.getUserId());
     }
 
     private void openProfilePage(ReadWriteUserDetails user) {

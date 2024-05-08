@@ -3,6 +3,7 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.chats;
 public class Chat {
 
     private String chat_id, chat_name, userId1, userId2;
+    private String userEmail;
 
     public Chat(){
         // Costruttore vuoto richiesto da Firebase
@@ -13,6 +14,14 @@ public class Chat {
         this.chat_name = chat_name;
         this.userId1 = userId1;
         this.userId2 = userId2;
+    }
+
+    public Chat(String chat_id, String chat_name, String userId1, String userId2, String userEmail) {
+        this.chat_id = chat_id;
+        this.chat_name = chat_name;
+        this.userId1 = userId1;
+        this.userId2 = userId2;
+        this.userEmail = userEmail;
     }
 
     public String getChat_id() {
@@ -46,5 +55,14 @@ public class Chat {
     public void setUserId2(String userId2) {
         this.userId2 = userId2;
     }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
 
 }

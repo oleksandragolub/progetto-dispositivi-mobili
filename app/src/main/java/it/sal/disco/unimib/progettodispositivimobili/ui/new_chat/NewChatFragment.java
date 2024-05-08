@@ -32,7 +32,6 @@ public class NewChatFragment extends Fragment {
     private ArrayList<ReadWriteUserDetails> users = new ArrayList<>();
     private UserAdapter adapter;
 
-    RecyclerView usersRv;
 
     @Nullable
     @Override
