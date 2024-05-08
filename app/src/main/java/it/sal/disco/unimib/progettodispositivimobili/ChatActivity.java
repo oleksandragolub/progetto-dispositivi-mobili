@@ -35,6 +35,8 @@ public class ChatActivity extends AppCompatActivity {
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.backBtn.setOnClickListener(v -> finish());
+
         String chatId = getIntent().getStringExtra("chatId");
 
         loadMessages(chatId);
