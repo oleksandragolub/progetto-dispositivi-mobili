@@ -37,8 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
-
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private GoogleSignInClient mGoogleSignInClient;
@@ -125,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Accesso nel proprio account effettuato con successo!", Toast.LENGTH_SHORT).show();
                         } else {
                             // L'utente non esiste, è una nuova registrazione
+                            String uid = currentUser.getUid();
                             String textUsername = String.valueOf(account.getDisplayName());
                             String textEmail = String.valueOf(account.getEmail());
                             String textDoB = "";
@@ -132,11 +131,9 @@ public class LoginActivity extends AppCompatActivity {
                             Boolean emailVerificato = true;
 
                             // Aggiorna il database Firebase con i dettagli dell'utente
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
+                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google", "user");
+                            // il tipo dell'utente puo' essere user oppure admin (inserito manualmente da console firebase)
                             reference.child(currentUser.getUid()).setValue(writeUserDetails);
-                           /* String textId = String.valueOf(currentUser.getUid());
-                            writeUserDetails = new ReadWriteUserDetails(textId, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google");
-                            reference.child(currentUser.getUid()).setValue(writeUserDetails);*/
                             Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
                         }
                         updateUI(currentUser);
@@ -228,33 +225,40 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void loginUser(String textEmail, String textPassword) {
-        mAuth.signInWithEmailAndPassword(textEmail, textPassword)
-                .addOnCompleteListener(task -> {
+    private void loginUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        currentUser = mAuth.getCurrentUser();
-                        // Controlla che l'email è stata verificata prima che l'utente riesce di entrare nel suo account
-                        if (Objects.requireNonNull(currentUser).isEmailVerified()) {
-                            // L'utente ha verificato l'email. Aggiorna il campo emailVerified nel database a true
-                            reference.child(currentUser.getUid()).child("emailVerificato").setValue(true);
-                            Toast.makeText(getApplicationContext(), "Login effettuato con il successo!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            reference.child(currentUser.getUid()).child("emailVerificato").setValue(false);
-                            showAlertDialog();
-                            mAuth.signOut();
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        if (currentUser != null) {
+                            if (currentUser.isEmailVerified()) {
+                                // Update the emailVerificato field in the database
+                                updateEmailVerificationStatus(currentUser.getUid(), true);
+                                // Proceed to main activity or user profile
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+                            } else {
+                                // Inform user to verify email and do not proceed to main activity
+                                showVerificationAlert();
+                                mAuth.signOut(); // Optional: sign out user until they verify their email
+                            }
                         }
-
                     } else {
+                        // Handle failed login
                         handleLoginError(task.getException());
                     }
                 });
     }
 
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+    private void updateEmailVerificationStatus(String userId, boolean isVerified) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId);
+        userRef.child("emailVerificato").setValue(isVerified)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Email verification status updated in database."))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status.", e));
+    }
+
+    private void showVerificationAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Email non verificata");
         builder.setMessage("Per favore verifica la tua email prima di accedere. Controlla la tua casella di posta per il link di verifica.");
 

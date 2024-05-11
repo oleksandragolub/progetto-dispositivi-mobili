@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdatePasswordBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 
 public class UpdatePasswordFragment extends Fragment {
 

@@ -19,14 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.ArrayList;
-import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentChatsBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.users.UserAdapter;
 
 public class ChatsFragment extends Fragment {
     private FragmentChatsBinding binding;

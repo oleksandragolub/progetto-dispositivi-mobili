@@ -1,7 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,9 +32,7 @@ import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.MainActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.RegisterActivity;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateEmailBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 
 public class UpdateEmailFragment extends Fragment {
 

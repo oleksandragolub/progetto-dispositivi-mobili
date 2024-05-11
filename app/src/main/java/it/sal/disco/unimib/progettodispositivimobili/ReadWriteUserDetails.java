@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 public class ReadWriteUserDetails implements Parcelable {
     private String userId;
-    public String username, dob, gender, email, authMethod;
+    public String username, dob, gender, email, authMethod, userType;
     public Boolean emailVerificato;
     public String dataImage;
 
@@ -39,16 +39,28 @@ public class ReadWriteUserDetails implements Parcelable {
         this.emailVerificato = emailVerificato;
     }
 
-    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender, Boolean emailVerificato, String authMethod) {
+    public ReadWriteUserDetails(String userId, String email, String Username, String Dob, String Gender, Boolean emailVerificato, String authMethod, String userType) {
+        this.userId = userId;
         this.email = email;
         this.username = Username;
         this.dob = Dob;
         this.gender = Gender;
         this.emailVerificato = emailVerificato;
         this.authMethod = authMethod;
+        this.userType = userType;
     }
 
-    public ReadWriteUserDetails(String userId, String username, String dob, String gender, String email, Boolean emailVerificato, String authMethod) {
+    public ReadWriteUserDetails(String email, String Username, String Dob, String Gender, Boolean emailVerificato, String authMethod, String userType) {
+        this.email = email;
+        this.username = Username;
+        this.dob = Dob;
+        this.gender = Gender;
+        this.emailVerificato = emailVerificato;
+        this.authMethod = authMethod;
+        this.userType = userType;
+    }
+
+   public ReadWriteUserDetails(String userId, String username, String dob, String gender, String email, Boolean emailVerificato, String authMethod) {
         this.userId = userId;
         this.username = username;
         this.dob = dob;
@@ -56,6 +68,14 @@ public class ReadWriteUserDetails implements Parcelable {
         this.email = email;
         this.emailVerificato = emailVerificato;
         this.authMethod = authMethod;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     @Override

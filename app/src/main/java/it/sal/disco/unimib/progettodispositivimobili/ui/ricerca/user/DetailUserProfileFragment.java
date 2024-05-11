@@ -28,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import it.sal.disco.unimib.progettodispositivimobili.ChatActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserProfileBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatUtil;
 
@@ -38,7 +37,6 @@ public class DetailUserProfileFragment extends Fragment {
 
     ImageView profileImageView, profileImageViewCamera;
     TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText, descrizioneEditText;
-    String username, email, dob, gender, descrizione;
     Button profileChatButton;
     TextView btnBack;
     FirebaseAuth mAuth;
@@ -47,7 +45,6 @@ public class DetailUserProfileFragment extends Fragment {
     DatabaseReference reference;
 
     String profileUserId;
-    String userId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

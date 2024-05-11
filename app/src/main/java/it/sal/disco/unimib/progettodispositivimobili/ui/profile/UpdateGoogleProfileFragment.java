@@ -2,8 +2,6 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -42,7 +40,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
         FragmentUpdateGoogleProfileBinding binding;
 
         private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
-        private String email, authMethod, username, dob, gender, descrizione;
+        private String email, authMethod, username, dob, gender, descrizione, userType, uid;
         private Boolean emailVerificato = true;
         private RadioButton radioButtonRegisterGenderSelected;
         Button updateProfileButton, changeEmailButton, changePasswordButton;
@@ -142,6 +140,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
         }
 
         private void updateProfile(FirebaseUser currentUser) {
+            uid = currentUser.getUid();
             int selectedGenderID = binding.radioGroupRegisterGender.getCheckedRadioButtonId();
 
             if (selectedGenderID != -1) {
@@ -184,12 +183,11 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
                         username = Objects.requireNonNull(usernameEditText.getText()).toString();
                         dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
-                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(email, username, dob, gender, emailVerificato, authMethod);
+
+                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, email, username, dob, gender, emailVerificato, authMethod, userType);
                         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
-                        String userID = currentUser.getUid();
-
-                        referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
+                        referenceProfile.child(uid).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
                             if (databaseTask.isSuccessful()) {
                                 Toast.makeText(getActivity(), "Aggiornamento è completato con successo!", Toast.LENGTH_SHORT).show();
                                 if (getActivity() != null) {
@@ -232,6 +230,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
                         dob = readUserDetails.getDob();
                         gender = readUserDetails.getGender();
                         authMethod = readUserDetails.getAuthMethod();
+                        userType = readUserDetails.getUserType();
 
                         usernameEditText.setText(username);
                         dobEditText.setText(dob);

@@ -93,10 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.searchUserFragment) {
                     openFragment(new SearchUserFragment());
                     return true;
-                } /*else if (id == R.id.chatFragment) {
-                    openFragment(new ChatFragment());
-                    return true;
-                }*/ else if (id == R.id.newChatFragment) {
+                } else if (id == R.id.newChatFragment) {
                     openFragment(new NewChatFragment());
                     return true;
                 } else if (id == R.id.chatsFragment) {
@@ -168,32 +165,16 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
     private boolean handleMenuSelection(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.navigation_home) {
-            openFragment(new HomeFragment());
-            //return true;
-        } else if (id == R.id.navigation_preferiti) {
-            openFragment(new PreferitiFragment());
-            //return true;
-        } else if (id == R.id.navigation_ricerca) {
-            openFragment(new RicercaFragment());
-            //return true;
-        } else if (id == R.id.navigation_profile) {
-            openFragment(new ProfileFragment());
-            //return true;
-        } else if (id == R.id.searchUserFragment) {
+        if (id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
             //return true;
-        }/* else if (id == R.id.chatFragment) {
-            openFragment(new ChatFragment());
-            //return true;
-        }*/else if (id == R.id.newChatFragment) {
+        } else if (id == R.id.newChatFragment) {
             openFragment(new NewChatFragment());
             //return true;
         } else if (id == R.id.chatsFragment) {
             openFragment(new ChatsFragment());
             //return true;
-        }
-        else if (id == R.id.navigation_logout) {
+        } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();
             // Effettua il logout da Google Sign-In

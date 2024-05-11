@@ -40,7 +40,7 @@ public class UpdateProfileFragment extends Fragment {
     FragmentUpdateProfileBinding binding;
 
     private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
-    private String email, authMethod, username, dob, gender, descrizione;
+    private String email, authMethod, username, dob, gender, descrizione, uid, userType;
     private Boolean emailVerificato = true;
     private RadioButton radioButtonRegisterGenderSelected;
     Button updateProfileButton, changeEmailButton, changePasswordButton;
@@ -148,6 +148,7 @@ public class UpdateProfileFragment extends Fragment {
     }
 
     private void updateProfile(FirebaseUser currentUser) {
+        uid = currentUser.getUid();
         int selectedGenderID = binding.radioGroupRegisterGender.getCheckedRadioButtonId();
 
         if (selectedGenderID != -1) {
@@ -190,12 +191,10 @@ public class UpdateProfileFragment extends Fragment {
                     username = Objects.requireNonNull(usernameEditText.getText()).toString();
                     dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
-                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(email, username, dob, gender, emailVerificato, authMethod);
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, email, username, dob, gender, emailVerificato, authMethod, userType);
                     DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
-                    String userID = currentUser.getUid();
-
-                    referenceProfile.child(userID).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
+                    referenceProfile.child(uid).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
                         if (databaseTask.isSuccessful()) {
                             Toast.makeText(getActivity(), "Aggiornamento è completato con successo!", Toast.LENGTH_SHORT).show();
                             if (getActivity() != null) {
@@ -238,6 +237,7 @@ public class UpdateProfileFragment extends Fragment {
                     dob = readUserDetails.getDob();
                     gender = readUserDetails.getGender();
                     authMethod = readUserDetails.getAuthMethod();
+                    userType = readUserDetails.getUserType();
 
                     usernameEditText.setText(username);
                     dobEditText.setText(dob);
