@@ -7,6 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -16,25 +23,17 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-
-import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
 
-public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
-    private ActivityMainBinding binding;
+public class MainAdminActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
+    private ActivityAdminMainBinding binding;
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
     BottomNavigationView bottomNavigationView;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
 
-    //variabile per tracciare se il form del profilo è stato completato
     private boolean isProfileFormComplete = false;
 
     private void configureGoogleSignIn(){
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_admin_main);
 
         configureGoogleSignIn();
 
@@ -71,15 +69,15 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_admin);
         bottomNavigationView.setBackground(null);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.navigation_home) {
-                    openFragment(new HomeFragment());
+                if (id == R.id.navigation_admin_home) {
+                    openFragment(new HomeAdminFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());
@@ -105,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         });
 
         fragmentManager = getSupportFragmentManager();
-        openFragment(new HomeFragment());
+        openFragment(new HomeAdminFragment());
 
         if(currentUser == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

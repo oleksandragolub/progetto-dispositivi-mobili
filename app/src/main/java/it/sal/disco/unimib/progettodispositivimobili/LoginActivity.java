@@ -158,10 +158,51 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser currentUser){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        // Aggiungi un extra all'intent che indichi di mostrare ProfileFragment
-        intent.putExtra("showProfileFragment", true);
-        startActivity(intent);
+        if (currentUser == null) {
+            Log.e(TAG, "Tentativo di aggiornare UI quando currentUser è null");
+            return;
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(currentUser.getUid());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ReadWriteUserDetails userDetails = dataSnapshot.getValue(ReadWriteUserDetails.class);
+                    if (userDetails != null) {
+                        if ("admin".equals(userDetails.getUserType())) {
+                            // L'utente è un admin, avvia MainAdminActivity
+                            Intent adminIntent = new Intent(LoginActivity.this, MainAdminActivity.class);
+                            startActivity(adminIntent);
+                            finish();
+                        } else {
+                            // L'utente non è un admin, avvia MainActivity
+                            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(mainIntent);
+                            finish();
+                        }
+                    } else {
+                        Log.e(TAG, "Dettagli utente non trovati nonostante dataSnapshot esista");
+                        startMainActivity();
+                    }
+                } else {
+                    Log.e(TAG, "Snapshot non esiste");
+                    startMainActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Errore nel database: " + databaseError.getMessage());
+                startMainActivity();
+            }
+        });
+    }
+
+
+    private void startMainActivity() {
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(mainIntent);
         finish();
     }
 
