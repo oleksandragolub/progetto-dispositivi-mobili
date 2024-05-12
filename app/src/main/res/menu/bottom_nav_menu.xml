@@ -10,9 +10,9 @@ xmlns:tools="http://schemas.android.com/tools"
         android:orderInCategory="1" />
 
     <item
-        android:id="@+id/navigation_preferiti"
-        android:icon="@drawable/preferiti_icone"
-        android:title="@string/title_preferiti"
+        android:id="@+id/navigation_category"
+        android:icon="@drawable/baseline_star_rate_24"
+        android:title="@string/title_category"
         android:orderInCategory="2"/>
 
     <item

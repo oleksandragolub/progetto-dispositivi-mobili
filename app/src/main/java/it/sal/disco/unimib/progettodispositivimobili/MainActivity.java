@@ -25,6 +25,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
@@ -80,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 int id = item.getItemId();
                 if (id == R.id.navigation_home) {
                     openFragment(new HomeFragment());
+                    return true;
+                } else if (id == R.id.navigation_category) {
+                    openFragment(new CategoryAddFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());
@@ -165,7 +170,10 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
     private boolean handleMenuSelection(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.searchUserFragment) {
+        if (id == R.id.navigation_preferiti) {
+            openFragment(new PreferitiFragment());
+            //return true;
+        } else if (id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
             //return true;
         } else if (id == R.id.newChatFragment) {

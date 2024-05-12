@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
         <item
+            android:id="@+id/navigation_preferiti"
+            android:icon="@drawable/baseline_favorite_24"
+            android:title="@string/title_preferiti" />
+
+        <item
             android:id="@+id/searchUserFragment"
             android:icon="@drawable/baseline_person_search_24"
             android:title="@string/title_searchUser" />

@@ -19,6 +19,19 @@
 
 
     <fragment
+        android:id="@+id/navigation_category_admin"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment"
+        android:label="Admin Categorie"
+        tools:layout="@layout/fragment_category_add_admin"/>
+
+    <fragment
+        android:id="@+id/navigation_category"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddFragment"
+        android:label="Categorie"
+        tools:layout="@layout/fragment_category_add"/>
+
+
+    <fragment
         android:id="@+id/navigation_preferiti"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment"
         android:label="Preferiti"

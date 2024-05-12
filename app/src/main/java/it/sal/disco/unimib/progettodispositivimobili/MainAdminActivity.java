@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
@@ -78,6 +79,9 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                 int id = item.getItemId();
                 if (id == R.id.navigation_admin_home) {
                     openFragment(new HomeAdminFragment());
+                    return true;
+                } else if (id == R.id.navigation_category_admin) {
+                    openFragment(new CategoryAddAdminFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());
@@ -163,7 +167,10 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
 
     private boolean handleMenuSelection(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.searchUserFragment) {
+        if (id == R.id.navigation_preferiti) {
+            openFragment(new PreferitiFragment());
+            //return true;
+        } else if(id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
             //return true;
         } else if (id == R.id.newChatFragment) {
