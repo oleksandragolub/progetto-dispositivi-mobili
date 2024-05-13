@@ -93,6 +93,10 @@
     <string name="category_title">Titolo della categoria</string>
     <string name="submit_btn">Aggiungi</string>
     <string name="submit_btn_2">Salva</string>
+    <string name="category_title_2">Titolo della categoria\n</string>
+    <string name="category_title_3">Titolo della categoria</string>
+    <string name="txt_search_catalogo">Cerca una categoria</string>
+    <string name="txt_search_category">Cerca una categoria</string>
 
 
 </resources>
