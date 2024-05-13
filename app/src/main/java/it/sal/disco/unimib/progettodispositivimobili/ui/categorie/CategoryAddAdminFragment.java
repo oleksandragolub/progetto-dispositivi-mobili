@@ -73,6 +73,12 @@ public class CategoryAddAdminFragment extends Fragment {
             }
         });
 
+        binding.addComicsPdfBtn.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new ComicsPdfAddFragment());
+            }
+        });
+
 
         return root;
     }

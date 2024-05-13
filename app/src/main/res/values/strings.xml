@@ -97,6 +97,10 @@
     <string name="category_title_3">Titolo della categoria</string>
     <string name="txt_search_catalogo">Cerca una categoria</string>
     <string name="txt_search_category">Cerca una categoria</string>
+    <string name="txt_add_new_comics">Aggiungi un nuovo comics</string>
+    <string name="comics_title">Titolo del comics</string>
+    <string name="comics_description">Descrizione del comics</string>
+    <string name="comics_category">Categoria del comics</string>
 
 
 </resources>
