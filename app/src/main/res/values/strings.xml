@@ -88,6 +88,11 @@
     <string name="title_chats">Chats\n</string>
     <string name="scrivi_un_messaggio">Scrivi un messaggio...</string>
     <string name="title_category">Categoria</string>
+    <string name="aggiungi_categoria">+ Aggiungi Categoria</string>
+    <string name="txt_add_new_category">Aggiungi una nuova categoria</string>
+    <string name="category_title">Titolo della categoria</string>
+    <string name="submit_btn">Aggiungi</string>
+    <string name="submit_btn_2">Salva</string>
 
 
 </resources>

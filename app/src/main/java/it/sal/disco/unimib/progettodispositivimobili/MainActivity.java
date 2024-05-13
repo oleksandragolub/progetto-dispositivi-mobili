@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     openFragment(new HomeFragment());
                     return true;
                 } else if (id == R.id.navigation_category) {
-                    openFragment(new CategoryAddFragment());
+                    openFragment(new CategoryAddAdminFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());

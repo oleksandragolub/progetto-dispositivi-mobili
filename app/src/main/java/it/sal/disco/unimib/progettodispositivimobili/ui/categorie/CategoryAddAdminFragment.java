@@ -24,6 +24,12 @@ public class CategoryAddAdminFragment extends Fragment {
         binding = FragmentCategoryAddAdminBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        binding.addCategoryBtn.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new CategoryAddFragment());
+            }
+        });
+
 
         return root;
     }
