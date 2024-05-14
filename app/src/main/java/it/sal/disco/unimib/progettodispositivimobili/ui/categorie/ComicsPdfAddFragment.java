@@ -47,7 +47,9 @@ public class ComicsPdfAddFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
-    private ArrayList<ModelCategory> categoryArrayList;
+    //private ArrayList<ModelCategory> categoryArrayList;
+
+    private ArrayList<String> categoryTitleArrayList, categoryIdArrayList;
 
     private Uri pdfUri;
 
@@ -55,7 +57,8 @@ public class ComicsPdfAddFragment extends Fragment {
 
     private static final int PDF_PICK_CODE = 1000;
 
-    private String title, descrizione, category;
+    private String title, descrizione;
+    //private String title, descrizione, category;
 
 
     @Override
@@ -103,7 +106,7 @@ public class ComicsPdfAddFragment extends Fragment {
         Log.d(TAG, "validateData: validating data...");
         title = binding.textViewComicsTitle.getText().toString().trim();
         descrizione = binding.textViewComicsDescription.getText().toString().trim();
-        category = binding.textViewComicsCategory.getText().toString().trim();
+        //category = binding.textViewComicsCategory.getText().toString().trim();
 
         if(TextUtils.isEmpty(title)){
             Toast.makeText(getActivity(), "Inserisci il titolo...", Toast.LENGTH_SHORT).show();
@@ -113,7 +116,11 @@ public class ComicsPdfAddFragment extends Fragment {
             Toast.makeText(getActivity(), "Inserisci la descrizione...", Toast.LENGTH_SHORT).show();
             binding.textViewComicsDescription.setError("Descrizione richiesta");
             binding.textViewComicsDescription.requestFocus();
-        } else if(TextUtils.isEmpty(category)){
+        } /*else if(TextUtils.isEmpty(category)){
+            Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
+            binding.textViewComicsCategory.setError("Categoria richiesta");
+            binding.textViewComicsCategory.requestFocus();
+        } */ else if(TextUtils.isEmpty(selectedCategoryTitle)){
             Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
             binding.textViewComicsCategory.setError("Categoria richiesta");
             binding.textViewComicsCategory.requestFocus();
@@ -168,7 +175,8 @@ public class ComicsPdfAddFragment extends Fragment {
         hashMap.put("id", ""+timestamp);
         hashMap.put("titolo", ""+title);
         hashMap.put("descrizione", ""+descrizione);
-        hashMap.put("categoria", ""+category);
+        //hashMap.put("categoria", ""+category);
+        hashMap.put("categoryId", ""+selectedCategoryId);
         hashMap.put("url", ""+uploadedPdfUri);
         hashMap.put("timestamp", timestamp);
 
@@ -192,18 +200,26 @@ public class ComicsPdfAddFragment extends Fragment {
 
     private void loadPdfCategories() {
         Log.d(TAG, "loadPdfCategories: Loading pdf categories...");
-        categoryArrayList = new ArrayList<>();
+        categoryTitleArrayList = new ArrayList<>();
+        categoryIdArrayList = new ArrayList<>();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                categoryArrayList.clear();
+                categoryTitleArrayList.clear();
+                categoryIdArrayList.clear();
                 for(DataSnapshot ds: snapshot.getChildren()){
-                    ModelCategory model = ds.getValue(ModelCategory.class);
-                    categoryArrayList.add(model);
+                   /* ModelCategory model = ds.getValue(ModelCategory.class);
+                    categoryTitleArrayList.add(model);
 
-                    Log.d(TAG, "onDataChange: " + model.getCategory());
+                    Log.d(TAG, "onDataChange: " + model.getCategory());*/
+
+                    String categoryId = ""+ds.child("id").getValue();
+                    String categoryTitle = ""+ds.child("category").getValue();
+
+                    categoryTitleArrayList.add(categoryTitle);
+                    categoryIdArrayList.add(categoryId);
                 }
             }
 
@@ -214,21 +230,30 @@ public class ComicsPdfAddFragment extends Fragment {
         });
     }
 
+    private String selectedCategoryId, selectedCategoryTitle;
+
     private void categoryPickDialog() {
         Log.d(TAG, "categoryPickDialog: showing category pick dialog");
 
-        String[] categoriesArray = new String[categoryArrayList.size()];
-        for(int i=0; i<categoryArrayList.size(); i++){
-            categoriesArray[i] = categoryArrayList.get(i).getCategory();
+        String[] categoriesArray = new String[categoryTitleArrayList.size()];
+        for(int i = 0; i< categoryTitleArrayList.size(); i++){
+            //categoriesArray[i] = categoryTitleArrayList.get(i).getCategory();
+            categoriesArray[i] = categoryTitleArrayList.get(i);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Pick Category").setItems(categoriesArray, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String category = categoriesArray[which];
+               /* String category = categoriesArray[which];
                 binding.textViewComicsCategory.setText(category);
 
-                Log.d(TAG, "onClick: Selected Category: "+category);
+                Log.d(TAG, "onClick: Selected Category: "+category);*/
+
+                selectedCategoryTitle = categoryTitleArrayList.get(which);
+                selectedCategoryId = categoryIdArrayList.get(which);
+                binding.textViewComicsCategory.setText(selectedCategoryTitle);
+
+                Log.d(TAG, "onClick: Selected Category: "+selectedCategoryId+" "+selectedCategoryTitle);
             }
         }).show();
     }
