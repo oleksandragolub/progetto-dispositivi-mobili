@@ -6,13 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.categorie.ComicsPdfListAdminFragment">
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-    ViewGroup container, Bundle savedInstanceState) {
 
-    binding = FragmentCategoryAddAdminBinding.inflate(inflater, container, false);
-    View root = binding.getRoot();
-
-    firebaseAuth = FirebaseAuth.getInstance();
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -101,6 +101,8 @@
     <string name="comics_title">Titolo del comics</string>
     <string name="comics_description">Descrizione del comics</string>
     <string name="comics_category">Categoria del comics</string>
+    <string name="title_comics">Titolo del comics</string>
+    <string name="description_comics">Descrizione del comics</string>
 
 
 </resources>
