@@ -1,7 +1,9 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,13 +26,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
+import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowCategoryBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterCategory;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 
 public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.HolderCategory> implements Filterable {
 
@@ -79,6 +85,34 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
                                 dialog.dismiss();
                             }
                         }).show();
+            }
+        });
+
+    /*    holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ComicsPdfListAdminFragment.class);
+                intent.putExtra("categoryId", id);
+                intent.putExtra("categoryTitle", category);
+                context.startActivity(intent);
+            }
+        });*/
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryId", id);
+                bundle.putString("categoryTitle", category);
+
+                ComicsPdfListAdminFragment comicsPdfListAdminFragment = new ComicsPdfListAdminFragment();
+                comicsPdfListAdminFragment.setArguments(bundle);
+
+                FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, comicsPdfListAdminFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

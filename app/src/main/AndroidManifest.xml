@@ -16,6 +16,7 @@
         android:logo="@mipmap/logo_app_piccola"
         android:roundIcon="@mipmap/logo_app_piccola"
         android:supportsRtl="true"
+        android:name=".MyApplication"
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.ProgettoDispositiviMobili"
         tools:targetApi="34"

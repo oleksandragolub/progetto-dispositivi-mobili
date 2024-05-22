@@ -103,6 +103,13 @@
     <string name="comics_category">Categoria del comics</string>
     <string name="title_comics">Titolo del comics</string>
     <string name="description_comics">Descrizione del comics</string>
+    <string name="size_comics">13 MB</string>
+    <string name="date_comics">dd/mm/yyyy</string>
+    <string name="category_comics">Categoria</string>
+    <string name="comics">Comics</string>
+    <string name="Categoria" />
+    <string name="categoria_text">Categoria\n</string>
+    <string name="cerca_text">Cerca</string>
 
 
 </resources>

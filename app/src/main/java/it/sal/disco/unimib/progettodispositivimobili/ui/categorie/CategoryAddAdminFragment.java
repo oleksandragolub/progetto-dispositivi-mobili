@@ -20,12 +20,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryAddAdminBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategory;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 
 public class CategoryAddAdminFragment extends Fragment {
 

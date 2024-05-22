@@ -1,8 +1,11 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters;
 
 import android.widget.Filter;
 
 import java.util.ArrayList;
+
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategory;
 
 public class FilterCategory extends Filter {
 

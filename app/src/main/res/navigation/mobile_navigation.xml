@@ -22,13 +22,40 @@
         android:id="@+id/navigation_category_admin"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment"
         android:label="Admin Categorie"
-        tools:layout="@layout/fragment_category_add_admin"/>
+        tools:layout="@layout/fragment_category_add_admin">
+
+        <action
+            android:id="@+id/action_CategoryAddAdminFragment_to_ComicsPdfAddFragment"
+            app:destination="@id/navigation_add_comics" />
+
+        <action
+            android:id="@+id/action_CategoryAddAdminFragment_to_CategoryAddFragment"
+            app:destination="@id/navigation_category" />
+
+        <action
+            android:id="@+id/action_CategoryAddAdminFragment_to_ComicsPdfListAdminFragment"
+            app:destination="@id/navigation_comics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_category"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddFragment"
         android:label="Categorie"
         tools:layout="@layout/fragment_category_add"/>
+
+    <fragment
+        android:id="@+id/navigation_add_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfAddFragment"
+        android:label="Aggiungi comics"
+        tools:layout="@layout/fragment_comics_pdf_add"/>
+
+    <fragment
+        android:id="@+id/navigation_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment"
+        android:label="List comics"
+        tools:layout="@layout/fragment_comics_pdf_list_admin"/>
+
 
 
     <fragment
