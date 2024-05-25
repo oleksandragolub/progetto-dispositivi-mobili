@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentTransaction;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
@@ -85,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     return true;
                 } else if (id == R.id.navigation_category) {
                     openFragment(new CategoryAddAdminFragment());
+                    return true;
+                } else if (id == R.id.navigation_edit_comics) {
+                    openFragment(new ComicsPdfEditFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());

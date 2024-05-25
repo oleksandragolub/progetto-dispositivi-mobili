@@ -51,6 +51,12 @@
         tools:layout="@layout/fragment_comics_pdf_add"/>
 
     <fragment
+        android:id="@+id/navigation_edit_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment"
+        android:label="Modifica comics"
+        tools:layout="@layout/fragment_comics_pdf_edit"/>
+
+    <fragment
         android:id="@+id/navigation_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment"
         android:label="List comics"

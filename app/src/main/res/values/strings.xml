@@ -110,6 +110,8 @@
     <string name="Categoria" />
     <string name="categoria_text">Categoria\n</string>
     <string name="cerca_text">Cerca</string>
+    <string name="txt_edit_comics">Modifica i dati di un comics</string>
+    <string name="update_btn_2">Aggiorna</string>
 
 
 </resources>

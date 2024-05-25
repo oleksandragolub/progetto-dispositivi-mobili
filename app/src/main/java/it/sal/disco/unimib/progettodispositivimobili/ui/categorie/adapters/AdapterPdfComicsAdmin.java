@@ -2,7 +2,11 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import static it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants.MAX_BYTES_PDF;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -32,10 +40,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
@@ -47,12 +60,18 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     public ArrayList<ModelPdfComics> pdfArrayList, filterList;
     private FilterPdfComicsAdmin filter;
     private RowPdfAdminBinding binding;
+    private ProgressDialog progressDialog;
 
     private static final String TAG = "PDF_ADAPTER_TAG";
     public AdapterPdfComicsAdmin(Context context, ArrayList<ModelPdfComics> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
         this.filterList = pdfArrayList;
+
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Per favore, aspetta");
+        progressDialog.setCanceledOnTouchOutside(false);
+
     }
 
     @NonNull
@@ -82,6 +101,93 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         loadCategory(model, holder);
         loadPdfFromUrl(model, holder);
         loadPdfSize(model, holder);
+
+        holder.moreBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moreOptionsDialog(model, holder);
+            }
+        });
+    }
+
+    private void moreOptionsDialog(ModelPdfComics model, HolderPdfAdmin holder) {
+
+        String[] options = {"Modifica", "Elimina"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Scegli l'opzione").setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which==0){
+                   /* Intent intent = new Intent(context, ComicsPdfEditFragment.class);
+                    intent.putExtra("comicsId", model.getId());
+                    context.startActivity(intent);*/
+                    openComicsPdfEditFragment(model.getId());
+                } else if (which==1) {
+                    deleteComics(model, holder);
+                }
+            }
+        }).show();
+
+    }
+
+    private void openComicsPdfEditFragment(String comicsId) {
+        // Crea una nuova istanza del fragment di modifica
+        ComicsPdfEditFragment fragment = new ComicsPdfEditFragment();
+
+        // Passa l'ID del fumetto come argomento
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void deleteComics(ModelPdfComics model, HolderPdfAdmin holder) {
+        String comicsId = model.getId();
+        String comicsUrl = model.getUrl();
+        String comicsTitolo = model.getTitolo();
+
+        Log.d(TAG, "deleteComics: Deleting...");
+        progressDialog.setMessage("Deleting " + comicsTitolo + "...");
+        progressDialog.show();
+
+        Log.d(TAG, "deleteComics: Deleting from storage...");
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(comicsUrl);
+        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG, "onSuccess: Deleting from storage");
+                Log.d(TAG, "onSuccess: Now deleting info from db");
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Comics");
+                reference.child(comicsId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "onSuccess: Deleted from db too");
+                        progressDialog.dismiss();
+                        Toast.makeText(context, "Comics Deleted Successfully...", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: Failed to delete from db due to "+ e.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: Failed to delete from storage due to " + e.getMessage());
+                progressDialog.dismiss();
+                Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadPdfSize(ModelPdfComics model, HolderPdfAdmin holder) {
