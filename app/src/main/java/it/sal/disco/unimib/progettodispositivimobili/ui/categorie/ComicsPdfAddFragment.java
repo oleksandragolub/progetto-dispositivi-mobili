@@ -179,6 +179,9 @@ public class ComicsPdfAddFragment extends Fragment {
         hashMap.put("categoryId", ""+selectedCategoryId);
         hashMap.put("url", ""+uploadedPdfUri);
         hashMap.put("timestamp", timestamp);
+        hashMap.put("viewsCount", 0);
+        hashMap.put("downloadsCount", 0);
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(""+timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {

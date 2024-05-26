@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
@@ -91,6 +92,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         String title = model.getTitolo();
         String description = model.getDescrizione();
         long timestamp = model.getTimestamp();
+        String pdfId = model.getId();
+        String categoryId = model.getCategoryId();
+        String pdfUrl = model.getUrl();
 
         String formattedDate = MyApplication.formatTimestamp(timestamp);
 
@@ -98,9 +102,23 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         holder.descriptionTV.setText(description);
         holder.dateTV.setText(formattedDate);
 
-        loadCategory(model, holder);
-        loadPdfFromUrl(model, holder);
-        loadPdfSize(model, holder);
+        //loadCategory(model, holder);
+        MyApplication.loadCategory(
+                ""+categoryId,
+                holder.categoryTV);
+
+        //loadPdfFromUrl(model, holder);
+        MyApplication.loadPdfFromUrlSinglePage(
+                ""+pdfUrl,
+                ""+title,
+                holder.pdfView,
+                holder.progressBar);
+
+        //loadPdfSize(model, holder);
+        MyApplication.loadPdfSize(
+                ""+pdfUrl,
+                ""+title,
+                holder.sizeTV);
 
         holder.moreBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +126,29 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                 moreOptionsDialog(model, holder);
             }
         });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("comicsId", pdfId);
+
+                ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+                comicsPdfDetailFragment.setArguments(bundle);
+
+                FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
     }
 
     private void moreOptionsDialog(ModelPdfComics model, HolderPdfAdmin holder) {
+        String comicsId = model.getId();
+        String comicsUrl = model.getUrl();
+        String comicsTitolo = model.getTitolo();
 
         String[] options = {"Modifica", "Elimina"};
 
@@ -119,16 +157,16 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(which==0){
-                   /* Intent intent = new Intent(context, ComicsPdfEditFragment.class);
-                    intent.putExtra("comicsId", model.getId());
-                    context.startActivity(intent);*/
                     openComicsPdfEditFragment(model.getId());
                 } else if (which==1) {
-                    deleteComics(model, holder);
+                    MyApplication.deleteComics(context,
+                            "" + comicsId,
+                            "" + comicsUrl,
+                            "" + comicsTitolo);
+                    //deleteComics(model, holder);
                 }
             }
         }).show();
-
     }
 
     private void openComicsPdfEditFragment(String comicsId) {
@@ -147,7 +185,7 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         transaction.commit();
     }
 
-    private void deleteComics(ModelPdfComics model, HolderPdfAdmin holder) {
+  /*  private void deleteComics(ModelPdfComics model, HolderPdfAdmin holder) {
         String comicsId = model.getId();
         String comicsUrl = model.getUrl();
         String comicsTitolo = model.getTitolo();
@@ -188,9 +226,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                 Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
-    private void loadPdfSize(ModelPdfComics model, HolderPdfAdmin holder) {
+   /* private void loadPdfSize(ModelPdfComics model, HolderPdfAdmin holder) {
         String pdfUrl = model.getUrl();
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -218,9 +256,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                 Log.d(TAG, "onFailure: "+ e.getMessage());
             }
         });
-    }
+    }*/
 
-    private void loadPdfFromUrl(ModelPdfComics model, HolderPdfAdmin holder) {
+   /* private void loadPdfFromUrl(ModelPdfComics model, HolderPdfAdmin holder) {
 
         String pdfUrl = model.getUrl();
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -263,10 +301,10 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                 Log.d(TAG, "onFailure: failed getting file from url due to "+ e.getMessage());
             }
         });
-    }
+    }*/
 
 
-   private void loadCategory(ModelPdfComics model, HolderPdfAdmin holder) {
+   /*private void loadCategory(ModelPdfComics model, HolderPdfAdmin holder) {
        String categoryId = model.getCategoryId();
 
        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
@@ -282,7 +320,7 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                Log.e(TAG, "onCancelled: " + error.getMessage());
            }
        });
-   }
+   }*/
     @Override
     public int getItemCount() {
         return pdfArrayList.size();

@@ -3,13 +3,13 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 public class ModelPdfComics {
 
     String uid, id, titolo, descrizione, categoryId, url;
-    long timestamp;
+    long timestamp, viewsCount, downloadsCount;
 
     public ModelPdfComics(){
 
     }
 
-    public ModelPdfComics(String uid, String id, String titolo, String descrizione, String categoryId, String url, long timestamp) {
+    public ModelPdfComics(String uid, String id, String titolo, String descrizione, String categoryId, String url, long timestamp, long viewsCount, long downloadsCount) {
         this.uid = uid;
         this.id = id;
         this.titolo = titolo;
@@ -17,6 +17,8 @@ public class ModelPdfComics {
         this.categoryId = categoryId;
         this.url = url;
         this.timestamp = timestamp;
+        this.viewsCount = viewsCount;
+        this.downloadsCount = downloadsCount;
     }
 
     public String getUid() {
@@ -73,5 +75,21 @@ public class ModelPdfComics {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public long getViewsCount() {
+        return viewsCount;
+    }
+
+    public void setViewsCount(long viewsCount) {
+        this.viewsCount = viewsCount;
+    }
+
+    public long getDownloadsCount() {
+        return downloadsCount;
+    }
+
+    public void setDownloadsCount(long downloadsCount) {
+        this.downloadsCount = downloadsCount;
     }
 }

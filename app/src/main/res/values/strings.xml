@@ -112,6 +112,15 @@
     <string name="cerca_text">Cerca</string>
     <string name="txt_edit_comics">Modifica i dati di un comics</string>
     <string name="update_btn_2">Aggiorna</string>
+    <string name="comics_detail">Dettagli</string>
+    <string name="titolo_del_comics">Titolo del comics</string>
+    <string name="categoria_text2">Categoria</string>
+    <string name="na">N/A</string>
+    <string name="date_text2">Data</string>
+    <string name="size_text2">Dimensione</string>
+    <string name="views_text2">Visualizzazioni</string>
+    <string name="downloads_text2">Downloads</string>
+    <string name="descrizione_comics">Descrizione del comics</string>
 
 
 </resources>

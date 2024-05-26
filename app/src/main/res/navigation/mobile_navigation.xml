@@ -57,10 +57,22 @@
         tools:layout="@layout/fragment_comics_pdf_edit"/>
 
     <fragment
+        android:id="@+id/navigation_detail_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailFragment"
+        android:label="Dettagli comics"
+        tools:layout="@layout/fragment_comics_pdf_detail"/>
+
+    <fragment
         android:id="@+id/navigation_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment"
         android:label="List comics"
-        tools:layout="@layout/fragment_comics_pdf_list_admin"/>
+        tools:layout="@layout/fragment_comics_pdf_list_admin">
+
+        <action
+            android:id="@+id/action_ComicsPdfListAdminFragment_to_ComicsPdfEditFragment"
+            app:destination="@id/navigation_edit_comics" />
+
+    </fragment>
 
 
 
