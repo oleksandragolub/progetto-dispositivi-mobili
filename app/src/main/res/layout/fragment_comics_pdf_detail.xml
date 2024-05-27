@@ -209,14 +209,32 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/readComicsBtn"
+    <LinearLayout
+        android:id="@+id/bookOptionsLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:drawableTop="@drawable/baseline_menu_book_24_white"
-        android:text="Leggi"
-        android:background="@drawable/border_btn"
-        />
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/readComicsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/baseline_menu_book_24_white"
+            android:text="Leggi"
+            android:background="@drawable/border_btn" />
+
+        <Button
+            android:id="@+id/downloadComicsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/baseline_download_24"
+            android:text="Download"
+            android:background="@drawable/border_btn" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

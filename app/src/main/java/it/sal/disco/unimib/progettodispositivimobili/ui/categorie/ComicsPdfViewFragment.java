@@ -1,6 +1,5 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,9 +47,6 @@ public class ComicsPdfViewFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-     /*   Intent intent = getIntent();
-        comicsId = intent.getStringExtra("comicsId");*/
-
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
         }
@@ -59,8 +55,8 @@ public class ComicsPdfViewFragment extends Fragment {
         loadComicsDetails();
 
         binding.buttonBack.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new CategoryAddAdminFragment());
+            if (getActivity() != null) {
+                openFragment(new ComicsPdfDetailFragment(), comicsId);
             }
         });
 
@@ -84,7 +80,6 @@ public class ComicsPdfViewFragment extends Fragment {
 
             }
         });
-
     }
 
     private void loadComicsFromUrl(String pdfUrl) {
@@ -123,16 +118,20 @@ public class ComicsPdfViewFragment extends Fragment {
                 binding.progressBar.setVisibility(View.GONE);
             }
         });
-
     }
 
-    private void openFragment(Fragment fragment){
+    private void openFragment(Fragment fragment, String comicsId) {
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        fragment.setArguments(args);
+
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
