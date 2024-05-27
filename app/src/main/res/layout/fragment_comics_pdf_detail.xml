@@ -46,6 +46,7 @@
         android:layout_below="@id/toolbarRl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/readComicsBtn"
         android:padding="10dp">
 
         <LinearLayout
@@ -207,5 +208,15 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/readComicsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:drawableTop="@drawable/baseline_menu_book_24_white"
+        android:text="Leggi"
+        android:background="@drawable/border_btn"
+        />
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -54,6 +55,29 @@ public class ComicsPdfDetailFragment extends Fragment {
         binding.buttonBack.setOnClickListener(v -> {
             if(getActivity() != null) {
                 openFragment(new CategoryAddAdminFragment());
+            }
+        });
+
+        binding.readComicsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            /*    Intent intent1 = new Intent(getActivity(), ComicsPdfViewFragment.class);
+                intent1.putExtra("comicsId", comicsId);
+                startActivity(intent1);*/
+
+                // Crea una nuova istanza del fragment
+                ComicsPdfViewFragment comicsPdfViewFragment = new ComicsPdfViewFragment();
+                // Passa l'ID del fumetto come argomento
+                Bundle args = new Bundle();
+                args.putString("comicsId", comicsId);
+                comicsPdfViewFragment.setArguments(args);
+
+                // Avvia la transazione per sostituire il fragment corrente con il nuovo fragment
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, comicsPdfViewFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

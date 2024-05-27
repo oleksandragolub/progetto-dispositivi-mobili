@@ -60,7 +60,19 @@
         android:id="@+id/navigation_detail_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailFragment"
         android:label="Dettagli comics"
-        tools:layout="@layout/fragment_comics_pdf_detail"/>
+        tools:layout="@layout/fragment_comics_pdf_detail">
+
+        <action
+            android:id="@+id/action_ComicsPdfDetailFragment_to_ComicsPdfViewFragment"
+            app:destination="@id/navigation_view_comics" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_view_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfViewFragment"
+        android:label="Leggere il comics"
+        tools:layout="@layout/fragment_comics_pdf_view"/>
 
     <fragment
         android:id="@+id/navigation_comics"
@@ -71,6 +83,10 @@
         <action
             android:id="@+id/action_ComicsPdfListAdminFragment_to_ComicsPdfEditFragment"
             app:destination="@id/navigation_edit_comics" />
+
+        <action
+            android:id="@+id/action_ComicsPdfListAdminFragment_to_ComicsPdfDetailFragment"
+            app:destination="@id/navigation_detail_comics" />
 
     </fragment>
 

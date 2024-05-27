@@ -121,6 +121,8 @@
     <string name="views_text2">Visualizzazioni</string>
     <string name="downloads_text2">Downloads</string>
     <string name="descrizione_comics">Descrizione del comics</string>
+    <string name="txt_comics">Leggi il comics</string>
+    <string name="txt1">N/N</string>
 
 
 </resources>
