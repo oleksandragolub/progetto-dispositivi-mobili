@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
 
 import android.Manifest;
 import android.content.Intent;
@@ -30,9 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import it.sal.disco.unimib.progettodispositivimobili.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 
 public class ComicsPdfDetailFragment extends Fragment {
 

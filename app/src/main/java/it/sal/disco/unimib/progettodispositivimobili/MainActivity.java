@@ -25,11 +25,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfViewFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfViewFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 if (id == R.id.navigation_home) {
                     openFragment(new HomeFragment());
                     return true;
-                } else if (id == R.id.navigation_category) {
-                    openFragment(new CategoryAddAdminFragment());
+                } else if (id == R.id.navigation_category_user) {
+                    openFragment(new ComicsUserFragment());
                     return true;
                 } else if (id == R.id.navigation_edit_comics) {
                     openFragment(new ComicsPdfEditFragment());

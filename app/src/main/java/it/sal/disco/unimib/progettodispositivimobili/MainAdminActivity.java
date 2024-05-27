@@ -24,9 +24,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryAddAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfViewFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
@@ -82,6 +86,15 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                     return true;
                 } else if (id == R.id.navigation_category_admin) {
                     openFragment(new CategoryAddAdminFragment());
+                    return true;
+                } else if (id == R.id.navigation_edit_comics) {
+                    openFragment(new ComicsPdfEditFragment());
+                    return true;
+                } else if (id == R.id.navigation_detail_comics) {
+                    openFragment(new ComicsPdfDetailFragment());
+                    return true;
+                } else if (id == R.id.navigation_view_comics) {
+                    openFragment(new ComicsPdfViewFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());

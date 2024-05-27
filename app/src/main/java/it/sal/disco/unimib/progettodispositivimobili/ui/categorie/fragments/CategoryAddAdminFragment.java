@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;

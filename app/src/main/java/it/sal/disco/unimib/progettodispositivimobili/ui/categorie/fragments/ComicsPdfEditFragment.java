@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,14 +26,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import org.checkerframework.common.value.qual.ArrayLen;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfEditBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 
 public class ComicsPdfEditFragment extends Fragment {
 

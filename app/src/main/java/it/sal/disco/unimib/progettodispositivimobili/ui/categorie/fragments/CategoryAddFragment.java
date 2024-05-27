@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,17 +14,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryAddBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateProfileFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 
 public class CategoryAddFragment extends Fragment {
 

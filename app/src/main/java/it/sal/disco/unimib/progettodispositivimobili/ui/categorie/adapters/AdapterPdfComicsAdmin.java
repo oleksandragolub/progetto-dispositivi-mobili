@@ -1,13 +1,9 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
-import static it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants.MAX_BYTES_PDF;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +12,6 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,34 +21,16 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.listener.OnErrorListener;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
-import it.sal.disco.unimib.progettodispositivimobili.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfEditFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 
 public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComicsAdmin.HolderPdfAdmin> implements Filterable {
 

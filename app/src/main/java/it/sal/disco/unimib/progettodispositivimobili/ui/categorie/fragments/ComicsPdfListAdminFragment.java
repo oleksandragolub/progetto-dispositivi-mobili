@@ -1,9 +1,5 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
 
-import static android.content.Intent.getIntent;
-import static android.content.Intent.getIntentOld;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,13 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfListAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
 
 public class ComicsPdfListAdminFragment extends Fragment {
 

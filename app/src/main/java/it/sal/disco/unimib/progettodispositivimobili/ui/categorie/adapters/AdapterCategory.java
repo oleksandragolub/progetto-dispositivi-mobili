@@ -2,7 +2,6 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +28,7 @@ import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowCategoryBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterCategory;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 

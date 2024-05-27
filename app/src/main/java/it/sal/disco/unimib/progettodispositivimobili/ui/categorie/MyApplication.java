@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
 
 import static it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants.MAX_BYTES_PDF;
 
