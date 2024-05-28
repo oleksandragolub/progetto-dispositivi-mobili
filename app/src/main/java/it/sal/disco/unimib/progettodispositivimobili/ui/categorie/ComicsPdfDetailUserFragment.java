@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
 
 import android.Manifest;
 import android.content.Intent;
@@ -31,14 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailUserBinding;
 
-public class ComicsPdfDetailFragment extends Fragment {
+public class ComicsPdfDetailUserFragment extends Fragment {
 
     private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
-    private FragmentComicsPdfDetailBinding binding;
+    private FragmentComicsPdfDetailUserBinding binding;
 
     private FirebaseAuth firebaseAuth;
 
@@ -59,13 +57,14 @@ public class ComicsPdfDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentComicsPdfDetailBinding.inflate(inflater, container, false);
+        binding = FragmentComicsPdfDetailUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
+
         }
 
         //binding.downloadComicsBtn.setVisibility(View.GONE);
@@ -77,28 +76,42 @@ public class ComicsPdfDetailFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
         }
 
-        binding.buttonBack.setOnClickListener(v -> {
+        binding.buttonBackUser.setOnClickListener(v -> {
             if (getActivity() != null) {
-                openFragment(new CategoryAddAdminFragment());
+                openFragment(new CategoryUserFragment());
             }
         });
+
 
         binding.readComicsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ComicsPdfViewFragment comicsPdfViewFragment = new ComicsPdfViewFragment();
+                ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
                 Bundle args = new Bundle();
                 args.putString("comicsId", comicsId);
-                comicsPdfViewFragment.setArguments(args);
+                comicsPdfViewUserFragment.setArguments(args);
 
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, comicsPdfViewFragment);
+                transaction.replace(R.id.nav_host_fragment, comicsPdfViewUserFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
+        /*binding.downloadComicsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG_DOWNLOAD, "onClick: Checking permission");
+                if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG_DOWNLOAD, "onClick: Permission already granted, can download comics");
+                    MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
+                } else {
+                    Log.d(TAG_DOWNLOAD, "onClick: Permission was not granted, request permission...");
+                    requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            }
+        });*/
 
         binding.downloadComicsBtn.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -147,6 +160,17 @@ public class ComicsPdfDetailFragment extends Fragment {
     }
 
 
+   /* private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Log.d(TAG_DOWNLOAD, "Permission Granted");
+                    MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
+                } else {
+                    Log.d(TAG_DOWNLOAD, "Permission was denied...");
+                    Toast.makeText(getActivity(), "Permission was denied...", Toast.LENGTH_SHORT).show();
+                }
+            });*/
+
     private void loadComicsDetails() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -188,6 +212,8 @@ public class ComicsPdfDetailFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+
 
     @Override
     public void onDestroyView() {

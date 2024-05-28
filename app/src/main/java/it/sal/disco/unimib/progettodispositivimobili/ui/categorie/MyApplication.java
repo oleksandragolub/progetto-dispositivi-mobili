@@ -25,6 +25,8 @@ import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,11 +52,22 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPd
 
 public class MyApplication extends Application {
 
+
+
     private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
+
+   /* @Override
+    public void onCreate() {
+        super.onCreate();
+    }*/
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                PlayIntegrityAppCheckProviderFactory.getInstance());
     }
 
     public static final String formatTimestamp(long timestamp){

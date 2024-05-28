@@ -8,32 +8,66 @@
     <fragment
         android:id="@+id/navigation_admin_home"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment"
-        android:label="Admin Home"
+        android:label="Admin: Home"
         tools:layout="@layout/fragment_admin_home"/>
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment"
-        android:label="Home"
+        android:label="User: Home"
         tools:layout="@layout/fragment_home"/>
 
 
+    <!-- PARTE USER (categorie+comics) -->
 
     <fragment
         android:id="@+id/navigation_category_user"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsUserFragment"
-        android:label="User Categorie"
-        tools:layout="@layout/fragment_comics_user">
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryUserFragment"
+        android:label="User: categorie"
+        tools:layout="@layout/fragment_category_user">
+
+        <action
+            android:id="@+id/action_CategoryUserFragment_to_ComicsPdfListUserFragment"
+            app:destination="@id/navigation_comics_user" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_comics_user"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListUserFragment"
+        android:label="User: comics"
+        tools:layout="@layout/fragment_comics_pdf_list_user">
+
+        <action
+            android:id="@+id/action_ComicsPdfListUserFragment_to_ComicsPdfDetailUserFragment"
+            app:destination="@id/navigation_detail_comics_user" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detail_comics_user"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailUserFragment"
+        android:label="User: dettagli comics"
+        tools:layout="@layout/fragment_comics_pdf_detail_user">
+
+        <action
+            android:id="@+id/action_ComicsPdfDetailUserFragment_to_ComicsPdfViewUserFragment"
+            app:destination="@id/navigation_view_comics_user" />
 
     </fragment>
 
+    <fragment
+        android:id="@+id/navigation_view_comics_user"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfViewUserFragment"
+        android:label="User: leggere il comics"
+        tools:layout="@layout/fragment_comics_pdf_view_user"/>
 
 
+
+    <!-- PARTE ADMIN (categorie+comics) -->
 
     <fragment
         android:id="@+id/navigation_category_admin"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment"
-        android:label="Admin Categorie"
+        android:label="Admin: categorie"
         tools:layout="@layout/fragment_category_add_admin">
 
         <action
@@ -42,7 +76,7 @@
 
         <action
             android:id="@+id/action_CategoryAddAdminFragment_to_CategoryAddFragment"
-            app:destination="@id/navigation_category" />
+            app:destination="@id/navigation_add_category" />
 
         <action
             android:id="@+id/action_CategoryAddAdminFragment_to_ComicsPdfListAdminFragment"
@@ -51,45 +85,21 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_category"
+        android:id="@+id/navigation_add_category"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddFragment"
-        android:label="Categorie"
+        android:label="Admin: aggiungi categorie"
         tools:layout="@layout/fragment_category_add"/>
 
     <fragment
         android:id="@+id/navigation_add_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfAddFragment"
-        android:label="Aggiungi comics"
+        android:label="Admin: aggiungi comics"
         tools:layout="@layout/fragment_comics_pdf_add"/>
-
-    <fragment
-        android:id="@+id/navigation_edit_comics"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment"
-        android:label="Modifica comics"
-        tools:layout="@layout/fragment_comics_pdf_edit"/>
-
-    <fragment
-        android:id="@+id/navigation_detail_comics"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment"
-        android:label="Dettagli comics"
-        tools:layout="@layout/fragment_comics_pdf_detail">
-
-        <action
-            android:id="@+id/action_ComicsPdfDetailFragment_to_ComicsPdfViewFragment"
-            app:destination="@id/navigation_view_comics" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_view_comics"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfViewFragment"
-        android:label="Leggere il comics"
-        tools:layout="@layout/fragment_comics_pdf_view"/>
 
     <fragment
         android:id="@+id/navigation_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfListAdminFragment"
-        android:label="List comics"
+        android:label="Admin: list comics"
         tools:layout="@layout/fragment_comics_pdf_list_admin">
 
         <action
@@ -101,6 +111,31 @@
             app:destination="@id/navigation_detail_comics" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_edit_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment"
+        android:label="Admin: modifica comics"
+        tools:layout="@layout/fragment_comics_pdf_edit"/>
+
+    <fragment
+        android:id="@+id/navigation_detail_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment"
+        android:label="Admin: dettagli comics"
+        tools:layout="@layout/fragment_comics_pdf_detail">
+
+        <action
+            android:id="@+id/action_ComicsPdfDetailFragment_to_ComicsPdfViewFragment"
+            app:destination="@id/navigation_view_comics" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_view_comics"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfViewFragment"
+        android:label="Admin: leggere il comics"
+        tools:layout="@layout/fragment_comics_pdf_view"/>
+
 
 
 

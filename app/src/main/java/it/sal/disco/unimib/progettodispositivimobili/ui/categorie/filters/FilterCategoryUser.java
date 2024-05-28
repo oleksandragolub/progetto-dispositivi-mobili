@@ -6,14 +6,13 @@ import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategoryUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategory;
 
-public class FilterCategory extends Filter {
+public class FilterCategoryUser extends Filter {
 
     ArrayList<ModelCategory> filterList;
-    AdapterCategory adapterCategory;
+    AdapterCategoryUser adapterCategory;
 
-    public FilterCategory(ArrayList<ModelCategory> filterList, AdapterCategory adapterCategory) {
+    public FilterCategoryUser(ArrayList<ModelCategory> filterList, AdapterCategoryUser adapterCategory) {
         this.filterList = filterList;
         this.adapterCategory = adapterCategory;
     }

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.categorie.fragments.ComicsPdfDetailFragment">
+    tools:context=".ui.categorie.ComicsPdfDetailUserFragment">
 
     <RelativeLayout
         android:id="@+id/toolbarRl"
@@ -14,7 +14,7 @@
         tools:ignore="MissingConstraints">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/buttonBack"
+            android:id="@+id/buttonBackUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

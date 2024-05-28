@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -23,8 +23,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.CategoryUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfViewUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
@@ -39,13 +42,14 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFr
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
+
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
     BottomNavigationView bottomNavigationView;
     MaterialToolbar toolbar;
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     //variabile per tracciare se il form del profilo è stato completato
     private boolean isProfileFormComplete = false;
@@ -87,16 +91,16 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     openFragment(new HomeFragment());
                     return true;
                 } else if (id == R.id.navigation_category_user) {
-                    openFragment(new ComicsUserFragment());
+                    openFragment(new CategoryUserFragment());
                     return true;
-                } else if (id == R.id.navigation_edit_comics) {
-                    openFragment(new ComicsPdfEditFragment());
+                } else if (id == R.id.navigation_comics_user) {
+                    openFragment(new ComicsPdfListUserFragment());
                     return true;
-                } else if (id == R.id.navigation_detail_comics) {
-                    openFragment(new ComicsPdfDetailFragment());
+                } else if (id == R.id.navigation_detail_comics_user) {
+                    openFragment(new ComicsPdfDetailUserFragment());
                     return true;
-                } else if (id == R.id.navigation_view_comics) {
-                    openFragment(new ComicsPdfViewFragment());
+                } else if (id == R.id.navigation_view_comics_user) {
+                    openFragment(new ComicsPdfViewUserFragment());
                     return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             finish();
         }
 
-
         // Verifica se l'intent contiene l'extra per mostrare direttamente il ProfileFragment
         if (getIntent().getBooleanExtra("showProfileFragment", false)) {
             openFragment(new ProfileFragment());
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         ComicsQuery query = ComicsQuery.Builder.create().withOffset(0).withLimit(10).build();
         MarvelResponse<ComicsDto> all = comicApiClient.getAll(query);
          */
+
     }
 
 
