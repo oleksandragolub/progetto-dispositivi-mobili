@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.CategoryUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfListUserFragment;

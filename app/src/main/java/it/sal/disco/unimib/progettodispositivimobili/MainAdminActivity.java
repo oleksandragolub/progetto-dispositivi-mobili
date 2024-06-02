@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfEditFragment;
