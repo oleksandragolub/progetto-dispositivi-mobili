@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,25 +23,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryUserBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategoryUser;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryAddAdminBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategory;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 
-public class CategoryUserFragment extends Fragment {
+public class CategoryAddAdminFragment extends Fragment {
 
-    private FragmentCategoryUserBinding binding;
+    private FragmentCategoryAddAdminBinding binding;
 
     private FirebaseAuth firebaseAuth;
 
     private ArrayList<ModelCategory> categoryArrayList;
 
-    private AdapterCategoryUser adapterCategory;
+    private AdapterCategory adapterCategory;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentCategoryUserBinding.inflate(inflater, container, false);
+        binding = FragmentCategoryAddAdminBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -67,7 +67,7 @@ public class CategoryUserFragment extends Fragment {
             }
         });
 
-      /*  binding.addCategoryBtn.setOnClickListener(v -> {
+        binding.addCategoryBtn.setOnClickListener(v -> {
             if(getActivity() != null) {
                 openFragment(new CategoryAddFragment());
             }
@@ -77,7 +77,7 @@ public class CategoryUserFragment extends Fragment {
             if(getActivity() != null) {
                 openFragment(new ComicsPdfAddFragment());
             }
-        });*/
+        });
 
 
         return root;
@@ -100,7 +100,7 @@ public class CategoryUserFragment extends Fragment {
                         categoryArrayList.add(model);
                     }
                 }
-                adapterCategory = new AdapterCategoryUser(getActivity(), categoryArrayList);
+                adapterCategory = new AdapterCategory(getActivity(), categoryArrayList);
 
                 binding.RecyclerViewCategory.setAdapter(adapterCategory);
             }

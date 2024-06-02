@@ -1,36 +1,25 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.RowCategoryBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowCategoryUserBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfListUserFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterCategory;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfListUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterCategoryUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 

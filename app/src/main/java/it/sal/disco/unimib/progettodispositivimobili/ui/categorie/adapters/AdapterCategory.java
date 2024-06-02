@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowCategoryBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfListAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterCategory;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 

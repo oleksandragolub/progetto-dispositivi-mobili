@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,25 +23,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryAddAdminBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategory;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryUserBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterCategoryUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 
-public class CategoryAddAdminFragment extends Fragment {
+public class CategoryUserFragment extends Fragment {
 
-    private FragmentCategoryAddAdminBinding binding;
+    private FragmentCategoryUserBinding binding;
 
     private FirebaseAuth firebaseAuth;
 
     private ArrayList<ModelCategory> categoryArrayList;
 
-    private AdapterCategory adapterCategory;
+    private AdapterCategoryUser adapterCategory;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentCategoryAddAdminBinding.inflate(inflater, container, false);
+        binding = FragmentCategoryUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -68,7 +67,7 @@ public class CategoryAddAdminFragment extends Fragment {
             }
         });
 
-        binding.addCategoryBtn.setOnClickListener(v -> {
+      /*  binding.addCategoryBtn.setOnClickListener(v -> {
             if(getActivity() != null) {
                 openFragment(new CategoryAddFragment());
             }
@@ -78,7 +77,7 @@ public class CategoryAddAdminFragment extends Fragment {
             if(getActivity() != null) {
                 openFragment(new ComicsPdfAddFragment());
             }
-        });
+        });*/
 
 
         return root;
@@ -101,7 +100,7 @@ public class CategoryAddAdminFragment extends Fragment {
                         categoryArrayList.add(model);
                     }
                 }
-                adapterCategory = new AdapterCategory(getActivity(), categoryArrayList);
+                adapterCategory = new AdapterCategoryUser(getActivity(), categoryArrayList);
 
                 binding.RecyclerViewCategory.setAdapter(adapterCategory);
             }

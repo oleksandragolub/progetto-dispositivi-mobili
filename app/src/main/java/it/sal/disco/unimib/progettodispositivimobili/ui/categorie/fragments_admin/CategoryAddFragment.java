@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,7 +22,6 @@ import java.util.HashMap;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentCategoryAddBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 
 public class CategoryAddFragment extends Fragment {
 

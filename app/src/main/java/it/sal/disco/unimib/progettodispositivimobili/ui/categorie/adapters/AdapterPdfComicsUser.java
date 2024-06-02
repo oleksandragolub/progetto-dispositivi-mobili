@@ -1,7 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +22,9 @@ import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfUserBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsPdfDetailUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsUser;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsUser.HolderPdfUser> implements Filterable {
@@ -70,7 +68,7 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
         holder.descriptionTv.setText(description);
         holder.dateTv.setText(date);
 
-        MyApplication.loadPdfFromUrlSinglePage(""+pdfUrl, ""+title, holder.pdfView, holder.progressBar);
+        MyApplication.loadPdfFromUrlSinglePage(""+pdfUrl, ""+title, holder.pdfView, holder.progressBar, null);
         MyApplication.loadCategory(""+categoryId, holder.categoryTv);
         MyApplication.loadPdfSize(""+pdfUrl, ""+title, holder.sizeTv);
 

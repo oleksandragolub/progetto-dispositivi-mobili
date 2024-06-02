@@ -40,11 +40,23 @@
             android:layout_height="wrap_content"
             android:text="@string/title_comics"
             android:layout_toEndOf="@id/pdfRL"
+            android:layout_toStartOf="@id/removeFavBtn"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
             android:maxLines="1"
             style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+        <ImageButton
+            android:id="@+id/removeFavBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="TODO"
+            android:padding="5dp"
+            android:src="@drawable/baseline_favorite_border_24_black"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/description_comics"
@@ -97,18 +109,6 @@
             android:layout_marginLeft="5dp"
             android:maxLines="1"
             style="@style/TextAppearance.MaterialComponents.Caption"/>
-
-
-    <!--    <ImageButton
-            android:id="@+id/moreBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="TODO"
-            android:padding="5dp"
-            android:src="@drawable/baseline_more_vert_24"
-            tools:ignore="TouchTargetSizeCheck" />  -->
 
 
     </RelativeLayout>

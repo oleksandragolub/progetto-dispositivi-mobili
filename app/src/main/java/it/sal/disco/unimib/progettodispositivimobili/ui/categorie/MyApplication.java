@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,14 +53,8 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPd
 
 public class MyApplication extends Application {
 
-
-
     private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
 
-   /* @Override
-    public void onCreate() {
-        super.onCreate();
-    }*/
 
     @Override
     public void onCreate() {
@@ -156,7 +151,7 @@ public class MyApplication extends Application {
     }
 
 
-    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
+    /*public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
         String TAG = "PDF_LOAD_SINGLE_TAG";
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -187,6 +182,55 @@ public class MyApplication extends Application {
                             public void loadComplete(int nbPages) {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 Log.d(TAG, "loadComplete: pdf loaded");
+                            }
+                        })
+                        .load();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.INVISIBLE);
+                //Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: failed getting file from url due to "+ e.getMessage());
+            }
+        });
+    }*/
+
+    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
+        String TAG = "PDF_LOAD_SINGLE_TAG";
+
+        StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
+        ref.getBytes(MAX_BYTES_PDF).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d(TAG, "onSuccess: "+ pdfTitle + " succesfylly got the file");
+
+                pdfView.fromBytes(bytes)
+                        .pages(0)
+                        .spacing(0)
+                        .swipeHorizontal(false)
+                        .enableSwipe(false)
+                        .onError(new OnErrorListener() {
+                            @Override
+                            public void onError(Throwable t) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "onError: "+ t.getMessage());
+                            }
+                        }).onPageError(new OnPageErrorListener(){
+                            @Override
+                            public void onPageError(int page, Throwable t) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "onPageError: "+ t.getMessage());
+                            }
+                        }).onLoad(new OnLoadCompleteListener() {
+                            @Override
+                            public void loadComplete(int nbPages) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "loadComplete: pdf loaded");
+
+                                if(pagesTv != null){
+                                    pagesTv.setText(""+nbPages);
+                                }
                             }
                         })
                         .load();
@@ -358,6 +402,73 @@ public class MyApplication extends Application {
             Log.d(TAG_DOWNLOAD, "saveDownloadedComics: Failed saving to Download Folder due to " + e.getMessage());
             Toast.makeText(context, "Failed saving to Download Folder due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
+        }
+    }
+
+   /* public static void loadPdfPageCount(Context context, String pdfUrl, TextView pagesTv){
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
+        storageReference.getBytes(MAX_BYTES_PDF).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                PDFView pdfView = new PDFView(context, null);
+                pdfView.fromBytes(bytes).onLoad(new OnLoadCompleteListener() {
+                    @Override
+                    public void loadComplete(int nbPages) {
+                        pagesTv.setText(""+nbPages);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }*/
+
+    public static void addToFavorite(Context context, String comicsId){
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() == null){
+            Toast.makeText(context, "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+        }else{
+            long timestamp = System.currentTimeMillis();
+
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("comicsId", ""+comicsId);
+            hashMap.put("timestamp", ""+timestamp);
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
+            ref.child(firebaseAuth.getUid()).child("Favorites").child(comicsId).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(context, "Il comics e' stato aggiunto alla lista dei tuoi preferiti!", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, "Fallito il tentativo di aggiungere il comics a causa di " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    public static void removeFromFavorite(Context context, String comicsId){
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() == null){
+            Toast.makeText(context, "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+        }else{
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
+            ref.child(firebaseAuth.getUid()).child("Favorites").child(comicsId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(context, "Il comics e' stato rimosso dalla lista dei tuoi preferiti!", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, "Fallito il tentativo di rimuovere il comics a causa di " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

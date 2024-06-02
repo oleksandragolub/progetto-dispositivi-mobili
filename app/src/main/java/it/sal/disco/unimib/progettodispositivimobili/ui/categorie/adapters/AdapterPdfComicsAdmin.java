@@ -24,11 +24,11 @@ import com.github.barteksc.pdfviewer.PDFView;
 
 import java.util.ArrayList;
 
+import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfEditFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
@@ -89,7 +89,8 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
                 ""+pdfUrl,
                 ""+title,
                 holder.pdfView,
-                holder.progressBar);
+                holder.progressBar,
+                null);
 
         //loadPdfSize(model, holder);
         MyApplication.loadPdfSize(

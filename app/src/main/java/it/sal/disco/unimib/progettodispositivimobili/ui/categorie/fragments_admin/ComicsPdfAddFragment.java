@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,7 +39,6 @@ import java.util.HashMap;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfAddBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 
 public class ComicsPdfAddFragment extends Fragment {
 

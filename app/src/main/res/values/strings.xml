@@ -123,6 +123,12 @@
     <string name="descrizione_comics">Descrizione del comics</string>
     <string name="txt_comics">Leggi il comics</string>
     <string name="txt1">N/N</string>
+    <string name="downloads_text3">Scaricato</string>
+    <string name="pages_text3">Pagine</string>
+    <string name="preferiti">Preferiti</string>
+    <string name="preferiti2">Aggiungi a preferiti</string>
+    <string name="preferiti3">Aggiungi</string>
+    <string name="count">N/A</string>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfListAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class ComicsPdfListAdminFragment extends Fragment {

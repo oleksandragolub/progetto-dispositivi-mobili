@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -27,9 +27,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfViewBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfViewUserBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
 
 public class ComicsPdfViewUserFragment extends Fragment {
     private FragmentComicsPdfViewUserBinding binding;

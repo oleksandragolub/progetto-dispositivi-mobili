@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
 import android.Manifest;
 import android.content.Intent;
@@ -32,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailUserBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 
 public class ComicsPdfDetailUserFragment extends Fragment {
 
@@ -41,6 +43,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
 
     String comicsId, comicsTitle, comicsUrl;
+    boolean isInMyFavorites = false;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -60,14 +63,16 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         binding = FragmentComicsPdfDetailUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
 
         }
 
         //binding.downloadComicsBtn.setVisibility(View.GONE);
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() != null){
+            checkIsFavorite();
+        }
 
         if (comicsId != null) {
             loadComicsDetails();
@@ -125,6 +130,21 @@ public class ComicsPdfDetailUserFragment extends Fragment {
                     MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
                 } else {
                     requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            }
+        });
+
+        binding.favoriteComicsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isInMyFavorites){
+                        MyApplication.removeFromFavorite(getActivity(), comicsId);
+                    } else {
+                        MyApplication.addToFavorite(getActivity(), comicsId);
+                    }
                 }
             }
         });
@@ -188,8 +208,10 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
                 MyApplication.loadCategory(""+categoryId, binding.categoryTv);
-                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar);
+                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
                 MyApplication.loadPdfSize(""+comicsUrl, ""+comicsTitle, binding.sizeTv);
+                //MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
+
 
                 binding.titleTv.setText(comicsTitle);
                 binding.descriptionTv.setText(description);
@@ -205,6 +227,28 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         });
     }
 
+    private void checkIsFavorite(){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
+            ref.child(firebaseAuth.getUid()).child("Favorites").child(comicsId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    isInMyFavorites = snapshot.exists();
+                    if(isInMyFavorites){
+                        binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
+                        binding.favoriteComicsBtn.setText("Rimuovi");
+                    } else {
+                        binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
+                        binding.favoriteComicsBtn.setText("Aggiungi");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+    }
+
     private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -212,8 +256,6 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-
 
     @Override
     public void onDestroyView() {

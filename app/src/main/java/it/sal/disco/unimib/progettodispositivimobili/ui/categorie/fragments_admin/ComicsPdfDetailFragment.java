@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
 import android.Manifest;
 import android.content.Intent;
@@ -41,6 +41,7 @@ public class ComicsPdfDetailFragment extends Fragment {
     private FragmentComicsPdfDetailBinding binding;
 
     private FirebaseAuth firebaseAuth;
+    boolean isInMyFavorites = false;
 
     String comicsId, comicsTitle, comicsUrl;
 
@@ -62,13 +63,15 @@ public class ComicsPdfDetailFragment extends Fragment {
         binding = FragmentComicsPdfDetailBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
         }
 
         //binding.downloadComicsBtn.setVisibility(View.GONE);
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() != null){
+            checkIsFavorite();
+        }
 
         if (comicsId != null) {
             loadComicsDetails();
@@ -112,6 +115,21 @@ public class ComicsPdfDetailFragment extends Fragment {
                     MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
                 } else {
                     requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            }
+        });
+
+        binding.favoriteComicsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isInMyFavorites){
+                        MyApplication.removeFromFavorite(getActivity(), comicsId);
+                    } else {
+                        MyApplication.addToFavorite(getActivity(), comicsId);
+                    }
                 }
             }
         });
@@ -164,14 +182,39 @@ public class ComicsPdfDetailFragment extends Fragment {
 
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
                 MyApplication.loadCategory(""+categoryId, binding.categoryTv);
-                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar);
+                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
                 MyApplication.loadPdfSize(""+comicsUrl, ""+comicsTitle, binding.sizeTv);
+                //MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
+
+
 
                 binding.titleTv.setText(comicsTitle);
                 binding.descriptionTv.setText(description);
                 binding.viewsTv.setText(viewsCount.replace("null", "N/A"));
                 binding.downloadsTv.setText(downloadsCount.replace("null", "N/A"));
                 binding.dateTv.setText(date);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void checkIsFavorite(){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
+        ref.child(firebaseAuth.getUid()).child("Favorites").child(comicsId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isInMyFavorites = snapshot.exists();
+                if(isInMyFavorites){
+                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
+                    binding.favoriteComicsBtn.setText("Rimuovi");
+                } else {
+                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
+                    binding.favoriteComicsBtn.setText("Aggiungi");
+                }
             }
 
             @Override
