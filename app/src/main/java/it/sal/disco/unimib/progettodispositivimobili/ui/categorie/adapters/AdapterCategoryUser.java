@@ -134,7 +134,7 @@ public class AdapterCategoryUser extends RecyclerView.Adapter<AdapterCategoryUse
 
         TextView categoryTv;
 
-       // ImageButton deleteBtn;
+        // ImageButton deleteBtn;
 
 
         public HolderCategoryUser(@NonNull View itemView){

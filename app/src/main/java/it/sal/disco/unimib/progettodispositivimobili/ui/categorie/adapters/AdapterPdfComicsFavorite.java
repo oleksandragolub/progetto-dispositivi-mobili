@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfFavoriteBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
@@ -59,23 +60,39 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
 
         loadComicsDetails(model, holder);
 
+       /* holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("comicsId", model.getId());
+
+                ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+                comicsPdfDetailFragment.setArguments(bundle);
+
+                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });*/
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("comicsId", model.getId());
 
-                PreferitiFragment preferitiFragment = new PreferitiFragment();
-                preferitiFragment.setArguments(bundle);
+                ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+                comicsPdfDetailFragment.setArguments(bundle);
 
-                FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, preferitiFragment);
+                transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
-
         holder.removeFavBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

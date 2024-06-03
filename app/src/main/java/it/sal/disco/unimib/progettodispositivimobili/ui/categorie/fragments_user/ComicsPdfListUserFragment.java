@@ -23,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfListUserBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class ComicsPdfListUserFragment extends Fragment {
@@ -91,7 +93,7 @@ public class ComicsPdfListUserFragment extends Fragment {
         });
 
         return root;
-}
+    }
 
 
     private void loadPdfList() {
@@ -114,6 +116,13 @@ public class ComicsPdfListUserFragment extends Fragment {
                 }
                 adapterPdfUser = new AdapterPdfComicsUser(getActivity(), pdfArrayList);
                 binding.comicsRv.setAdapter(adapterPdfUser);
+
+                adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
+                    @Override
+                    public void onItemClick(ModelPdfComics model) {
+                        openComicsPdfDetailUserFragment(model.getId());
+                    }
+                });
             }
 
             @Override
@@ -121,6 +130,19 @@ public class ComicsPdfListUserFragment extends Fragment {
 
             }
         });
+    }
+
+    private void openComicsPdfDetailUserFragment(String comicsId) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.commit();
     }
 
 

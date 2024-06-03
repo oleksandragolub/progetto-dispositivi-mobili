@@ -51,52 +51,54 @@ public class ComicsPdfListAdminFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
 
         if (getActivity() != null) {
-            //Intent intent = getActivity().getIntent();
             categoryId = getArguments().getString("categoryId");
             categoryTitle = getArguments().getString("categoryTitle");
-            //categoryDescription = getArguments().getString("categoryTitle");
             binding.subTitleTv.setText(categoryTitle);
         }
-
-
 
         loadPdfList();
 
         binding.searchEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
                     adapterPdfAdmin.getFilter().filter(s);
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.d(TAG, "onTextChanged: " + e.getMessage());
                 }
-
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         binding.buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getActivity() != null) {
+                if (getActivity() != null) {
                     openFragment(new CategoryAddAdminFragment());
                 }
             }
         });
 
-
         return root;
-}
+    }
 
+    private void openComicsPdfDetailFragment(String comicsId) {
+        ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
+        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.commit();
+    }
 
     private void loadPdfList() {
         pdfArrayList = new ArrayList<>();
@@ -118,23 +120,29 @@ public class ComicsPdfListAdminFragment extends Fragment {
                 }
                 adapterPdfAdmin = new AdapterPdfComicsAdmin(getActivity(), pdfArrayList);
                 binding.comicsRv.setAdapter(adapterPdfAdmin);
+
+                // Imposta il listener dopo aver creato l'adattatore
+                adapterPdfAdmin.setOnItemClickListener(new AdapterPdfComicsAdmin.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(ModelPdfComics model) {
+                        openComicsPdfDetailFragment(model.getId());
+                    }
+                });
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
-
-    private void openFragment(Fragment fragment){
+    private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

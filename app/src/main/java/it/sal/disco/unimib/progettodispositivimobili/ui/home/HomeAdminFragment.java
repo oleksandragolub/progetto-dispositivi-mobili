@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
@@ -22,8 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentAdminHomeBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.ComicsAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
 
 public class HomeAdminFragment extends Fragment {
@@ -44,9 +47,8 @@ public class HomeAdminFragment extends Fragment {
         return root;
     }
 
-
-    private void setupViewPagerAdapter(ViewPager viewPager){
-        viewPagerAdapter = new HomeAdminFragment.ViewPagerAdapter(getActivity().getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, getActivity());
+    private void setupViewPagerAdapter(ViewPager viewPager) {
+        viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, getActivity());
 
         categoryArrayList = new ArrayList<>();
 
@@ -64,36 +66,32 @@ public class HomeAdminFragment extends Fragment {
                 categoryArrayList.add(modelMostViewed);
                 categoryArrayList.add(modelMostDownloaded);
 
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid()), modelAll.getCategory());
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostViewed.getId(), modelMostViewed.getCategory(), modelMostViewed.getUid()), modelMostViewed.getCategory());
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostDownloaded.getId(), modelMostDownloaded.getCategory(), modelMostDownloaded.getUid()), modelMostDownloaded.getCategory());
+                viewPagerAdapter.addFragment(ComicsAdminFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid()), modelAll.getCategory());
+                viewPagerAdapter.addFragment(ComicsAdminFragment.newInstance(modelMostViewed.getId(), modelMostViewed.getCategory(), modelMostViewed.getUid()), modelMostViewed.getCategory());
+                viewPagerAdapter.addFragment(ComicsAdminFragment.newInstance(modelMostDownloaded.getId(), modelMostDownloaded.getCategory(), modelMostDownloaded.getUid()), modelMostDownloaded.getCategory());
 
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelCategory model = ds.getValue(ModelCategory.class);
                     if (model != null) {
                         categoryArrayList.add(model);
-                        viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(model.getId(), model.getCategory(), model.getUid()), model.getCategory());
+                        viewPagerAdapter.addFragment(ComicsAdminFragment.newInstance(model.getId(), model.getCategory(), model.getUid()), model.getCategory());
                     }
                 }
 
                 viewPager.setAdapter(viewPagerAdapter);
-
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Gestisci l'errore se necessario
-            }
-
-        });binding.tabLayout.setupWithViewPager(viewPager);
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        binding.tabLayout.setupWithViewPager(viewPager);
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<ComicsUserFragment> fragmentList = new ArrayList<>();
+        private ArrayList<ComicsAdminFragment> fragmentList = new ArrayList<>();
         private ArrayList<String> fragmentTitleList = new ArrayList<>();
         private Context context;
-
 
         public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior, Context context) {
             super(fm, behavior);
@@ -110,22 +108,33 @@ public class HomeAdminFragment extends Fragment {
             return fragmentList.size();
         }
 
-        private void addFragment(ComicsUserFragment fragment, String title){
+        private void addFragment(ComicsAdminFragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
         }
 
         @Override
-        public CharSequence getPageTitle(int position){
+        public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
         }
     }
 
+    private void openComicsPdfDetailFragment(String comicsId) {
+        ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
+        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.commit();
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         binding = null;
     }
 }

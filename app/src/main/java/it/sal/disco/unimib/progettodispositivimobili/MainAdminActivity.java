@@ -155,12 +155,12 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.commit();
     }*/
-    private void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
-        transaction.commit();
-    }
+   private void openFragment(Fragment fragment) {
+       FragmentTransaction transaction = fragmentManager.beginTransaction();
+       transaction.replace(R.id.nav_host_fragment, fragment);
+       transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+       transaction.commit();
+   }
 
 
     @Override
@@ -211,5 +211,4 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

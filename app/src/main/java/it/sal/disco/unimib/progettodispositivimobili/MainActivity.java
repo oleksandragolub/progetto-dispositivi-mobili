@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     private void openFragment(Fragment fragment){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
         transaction.commit();
     }
 
@@ -206,5 +207,4 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
