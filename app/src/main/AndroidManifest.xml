@@ -26,7 +26,7 @@
 
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.start_app.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
             <intent-filter>
@@ -36,19 +36,19 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.start_app.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".ui.start_app.ForgotPasswordActivity"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili" >
         </activity>
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.start_app.RegisterActivity"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
             <meta-data
@@ -57,19 +57,19 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 
         <activity
-            android:name=".MainAdminActivity"
+            android:name=".ui.main.MainAdminActivity"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 
         <activity
-            android:name=".ChatActivity"
+            android:name=".ui.chat.ChatActivity"
             android:exported="false"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>

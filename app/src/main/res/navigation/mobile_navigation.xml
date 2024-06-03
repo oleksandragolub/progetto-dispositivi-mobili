@@ -156,7 +156,7 @@
 
     <fragment
         android:id="@+id/searchUserFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment"
         android:label="Search User"
         tools:layout="@layout/fragment_search_user">
         <action
@@ -166,7 +166,7 @@
 
     <fragment
         android:id="@+id/detailUserProfileFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.DetailUserProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment"
         android:label="Detail User Profile"
         tools:layout="@layout/fragment_detail_user_profile">
         <action
@@ -179,7 +179,7 @@
 
     <fragment
         android:id="@+id/newChatFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.new_chat.NewChatFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.chat.new_chats.NewChatFragment"
         android:label="NewChat"
         tools:layout="@layout/fragment_new_chat">
         <!-- <action
@@ -189,7 +189,7 @@
 
     <fragment
         android:id="@+id/chatsFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatsFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatsFragment"
         android:label="Chats"
         tools:layout="@layout/fragment_chats">
         <!--  <action
@@ -202,7 +202,7 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -224,7 +224,7 @@
 
     <fragment
         android:id="@+id/uploadProfilePicFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UploadProfilePicFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.UploadProfilePicFragment"
         android:label="Upload Profile Picture"
         tools:layout="@layout/fragment_upload_profile_pic">
          <action
@@ -234,7 +234,7 @@
 
     <fragment
         android:id="@+id/updateProfileFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.UpdateProfileFragment"
         android:label="Update Email"
         tools:layout="@layout/fragment_update_profile">
         <action
@@ -250,7 +250,7 @@
 
     <fragment
         android:id="@+id/updateGoogleProfileFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateGoogleProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.UpdateGoogleProfileFragment"
         android:label="Update Google Email"
         tools:layout="@layout/fragment_update_google_profile">
         <action
@@ -260,7 +260,7 @@
 
     <fragment
         android:id="@+id/updateEmailFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateEmailFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.UpdateEmailFragment"
         android:label="Update Email"
         tools:layout="@layout/fragment_update_email">
         <action
@@ -270,7 +270,7 @@
 
     <fragment
         android:id="@+id/updatePasswordFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdatePasswordFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.UpdatePasswordFragment"
         android:label="Update Password"
         tools:layout="@layout/fragment_update_email">
         <action
@@ -280,7 +280,7 @@
 
     <fragment
         android:id="@+id/deleteProfileFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.DeleteProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.DeleteProfileFragment"
         android:label="Delete Profile"
         tools:layout="@layout/fragment_delete_profile">
         <action
@@ -290,7 +290,7 @@
 
     <fragment
         android:id="@+id/deleteGoogleProfileFragment"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.DeleteGoogleProfileFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.DeleteGoogleProfileFragment"
         android:label="Delete Google Profile"
         tools:layout="@layout/fragment_delete_google_profile">
         <action

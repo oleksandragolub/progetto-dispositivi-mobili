@@ -24,11 +24,9 @@ import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserPreferitiBinding;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentPreferitiBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.DetailUserProfileFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 
 public class DetailUserPreferitiFragment extends Fragment {
 
