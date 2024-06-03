@@ -1,6 +1,9 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.preferiti;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +37,7 @@ public class DetailUserPreferitiFragment extends Fragment {
     private ArrayList<ModelPdfComics> pdfArrayList;
     private AdapterPdfComicsFavorite adapterPdfFavorite;
     private String userId;
+    private static final String TAG = "PDF_LIST_TAG";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,6 +54,27 @@ public class DetailUserPreferitiFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
 
         loadUserFavorites(userId);
+
+        binding.searchFavoriteEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Non fare nulla
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    adapterPdfFavorite.getFilter().filter(s);
+                } catch (Exception e) {
+                    Log.d(TAG, "onTextChanged: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Non fare nulla
+            }
+        });
 
         binding.buttonBack.setOnClickListener(v -> {
             if(getActivity() != null) {

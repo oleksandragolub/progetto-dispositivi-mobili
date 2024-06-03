@@ -2,10 +2,11 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,23 +29,31 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfFavoriteBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsFavorite;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfListAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 
-public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfComicsFavorite.HolderPdfComicsFavorite>{
+public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfComicsFavorite.HolderPdfComicsFavorite> implements Filterable {
 
     private Context context;
-    private ArrayList<ModelPdfComics> pdfArrayList;
-
+    public ArrayList<ModelPdfComics> pdfArrayList, filterList;
+    private FilterPdfComicsFavorite filter;
     private RowPdfFavoriteBinding binding;
 
-    private static final String TAG = "FAV_COMICS_TAG";
+    private OnItemClickListenerFavorite onItemClickListener;
+
+    public interface OnItemClickListenerFavorite {
+        void onItemClick(ModelPdfComics model);
+    }
+
+    public void setOnItemClickListener(AdapterPdfComicsFavorite.OnItemClickListenerFavorite listener) {
+        this.onItemClickListener = listener;
+    }
 
     public AdapterPdfComicsFavorite(Context context, ArrayList<ModelPdfComics> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
+        this.filterList = pdfArrayList;
     }
 
     @NonNull
@@ -59,23 +68,6 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
         ModelPdfComics model = pdfArrayList.get(position);
 
         loadComicsDetails(model, holder);
-
-       /* holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("comicsId", model.getId());
-
-                ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
-                comicsPdfDetailFragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });*/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,31 +85,37 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
                 transaction.commit();
             }
         });
+       /* holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(model);
+                }
+            }
+        });*/
+
         holder.removeFavBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MyApplication.removeFromFavorite(context, model.getId());
             }
         });
-
     }
 
     private void loadComicsDetails(ModelPdfComics model, HolderPdfComicsFavorite holder) {
         String comicsId = model.getId();
-        Log.d(TAG, "loadComicsDetails: Comics Details of Comics ID: " + comicsId);
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String comicsTitle = ""+snapshot.child("titolo").getValue();
-                String description = ""+snapshot.child("descrizione").getValue();
-                String categoryId = ""+snapshot.child("categoryId").getValue();
-                String comicsUrl = ""+snapshot.child("url").getValue();
-                String timestamp = ""+snapshot.child("timestamp").getValue();
-                String uid = ""+snapshot.child("uid").getValue();
-                String viewsCount = ""+snapshot.child("viewsCount").getValue();
-                String downloadsCount = ""+snapshot.child("downloadsCount").getValue();
+                String comicsTitle = "" + snapshot.child("titolo").getValue();
+                String description = "" + snapshot.child("descrizione").getValue();
+                String categoryId = "" + snapshot.child("categoryId").getValue();
+                String comicsUrl = "" + snapshot.child("url").getValue();
+                String timestamp = "" + snapshot.child("timestamp").getValue();
+                String uid = "" + snapshot.child("uid").getValue();
+                String viewsCount = "" + snapshot.child("viewsCount").getValue();
+                String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
 
                 model.setFavorite(true);
                 model.setTitolo(comicsTitle);
@@ -130,21 +128,18 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
 
                 MyApplication.loadCategory(categoryId, holder.categoryTv);
-                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, holder.pdfView, holder.progressBar, null);
-                MyApplication.loadPdfSize(""+comicsUrl, ""+comicsTitle, holder.sizeTv);
+                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, holder.pdfView, holder.progressBar, null);
+                MyApplication.loadPdfSize("" + comicsUrl, "" + comicsTitle, holder.sizeTv);
 
                 holder.titleTv.setText(comicsTitle);
                 holder.descriptionTv.setText(description);
                 holder.dateTv.setText(date);
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
     }
 
     @Override
@@ -152,6 +147,13 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
         return pdfArrayList.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new FilterPdfComicsFavorite(filterList, this);
+        }
+        return filter;
+    }
 
     class HolderPdfComicsFavorite extends RecyclerView.ViewHolder {
         PDFView pdfView;
@@ -159,7 +161,7 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
         TextView titleTv, descriptionTv, categoryTv, sizeTv, dateTv;
         ImageButton removeFavBtn;
 
-        public HolderPdfComicsFavorite (@NonNull View itemView) {
+        public HolderPdfComicsFavorite(@NonNull View itemView) {
             super(itemView);
 
             titleTv = binding.titleComics;
@@ -172,5 +174,4 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
             removeFavBtn = binding.removeFavBtn;
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,24 +25,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsAdminBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsUserBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 
-public class ComicsAdminFragment extends Fragment {
 
-    private static final String TAG = "COMICS_ADMIN_TAG";
+
+public class ComicsUserFragment extends Fragment {
+
+    private static final String TAG = "COMICS_USER_TAG";
     private String categoryId, category, uid;
     private ArrayList<ModelPdfComics> pdfArrayList;
-    private AdapterPdfComicsAdmin adapterPdfAdmin;
+    private AdapterPdfComicsUser adapterPdfUser;
 
-    private FragmentComicsAdminBinding binding;
+    private FragmentComicsUserBinding binding;
     private PDFView pdfView;
     private FirebaseAuth firebaseAuth;
 
-    public static ComicsAdminFragment newInstance(String categoryId, String category, String uid) {
-        ComicsAdminFragment fragment = new ComicsAdminFragment();
+    public static ComicsUserFragment newInstance(String categoryId, String category, String uid) {
+        ComicsUserFragment fragment = new ComicsUserFragment();
         Bundle args = new Bundle();
         args.putString("categoryId", categoryId);
         args.putString("category", category);
@@ -63,7 +64,7 @@ public class ComicsAdminFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentComicsAdminBinding.inflate(inflater, container, false);
+        binding = FragmentComicsUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -87,8 +88,8 @@ public class ComicsAdminFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    if (adapterPdfAdmin != null) {
-                        adapterPdfAdmin.getFilter().filter(s);
+                    if (adapterPdfUser != null) {
+                        adapterPdfUser.getFilter().filter(s);
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "onTextChanged: " + e.getMessage());
@@ -116,20 +117,34 @@ public class ComicsAdminFragment extends Fragment {
                             ModelPdfComics model = ds.getValue(ModelPdfComics.class);
                             pdfArrayList.add(model);
                         }
-                        adapterPdfAdmin = new AdapterPdfComicsAdmin(getContext(), pdfArrayList);
-                        binding.comicsRv.setAdapter(adapterPdfAdmin);
-                        adapterPdfAdmin.setOnItemClickListener(new AdapterPdfComicsAdmin.OnItemClickListener() {
+                        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
+                        binding.comicsRv.setAdapter(adapterPdfUser);
+                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
                             @Override
                             public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailFragment(model.getId());
+                                openComicsPdfDetailUserFragment(model.getId());
                             }
                         });
+
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
+    }
+
+    private void openComicsPdfDetailUserFragment(String comicsId) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.commit();
     }
 
     private void loadMostViewedDownloadedComics(String orderBy) {
@@ -145,12 +160,12 @@ public class ComicsAdminFragment extends Fragment {
                             ModelPdfComics model = ds.getValue(ModelPdfComics.class);
                             pdfArrayList.add(model);
                         }
-                        adapterPdfAdmin = new AdapterPdfComicsAdmin(getContext(), pdfArrayList);
-                        binding.comicsRv.setAdapter(adapterPdfAdmin);
-                        adapterPdfAdmin.setOnItemClickListener(new AdapterPdfComicsAdmin.OnItemClickListener() {
+                        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
+                        binding.comicsRv.setAdapter(adapterPdfUser);
+                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
                             @Override
                             public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailFragment(model.getId());
+                                openComicsPdfDetailUserFragment(model.getId());
                             }
                         });
                     }
@@ -173,12 +188,13 @@ public class ComicsAdminFragment extends Fragment {
                     ModelPdfComics model = ds.getValue(ModelPdfComics.class);
                     pdfArrayList.add(model);
                 }
-                adapterPdfAdmin = new AdapterPdfComicsAdmin(getContext(), pdfArrayList);
-                binding.comicsRv.setAdapter(adapterPdfAdmin);
-                adapterPdfAdmin.setOnItemClickListener(new AdapterPdfComicsAdmin.OnItemClickListener() {
+                adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
+                binding.comicsRv.setAdapter(adapterPdfUser);
+
+                adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
                     @Override
                     public void onItemClick(ModelPdfComics model) {
-                        openComicsPdfDetailFragment(model.getId());
+                        openComicsPdfDetailUserFragment(model.getId());
                     }
                 });
             }
@@ -187,19 +203,6 @@ public class ComicsAdminFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-    }
-
-    private void openComicsPdfDetailFragment(String comicsId) {
-        ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        comicsPdfDetailFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
-        transaction.commit();
     }
 
     private void openFragment(Fragment fragment) {

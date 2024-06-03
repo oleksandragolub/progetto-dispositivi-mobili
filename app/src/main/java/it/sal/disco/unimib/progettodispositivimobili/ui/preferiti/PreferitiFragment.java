@@ -1,20 +1,17 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.preferiti;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,16 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentPreferitiBinding;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfileBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.UploadProfilePicFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
 
 public class PreferitiFragment extends Fragment {
 
@@ -42,6 +34,7 @@ public class PreferitiFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ArrayList<ModelPdfComics> pdfArrayList;
     private AdapterPdfComicsFavorite adapterPdfFavorite;
+    private static final String TAG = "PDF_LIST_TAG";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,8 +47,29 @@ public class PreferitiFragment extends Fragment {
 
         loadFavoriteComics();
 
+        binding.searchFavoriteEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Non fare nulla
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    adapterPdfFavorite.getFilter().filter(s);
+                } catch (Exception e) {
+                    Log.d(TAG, "onTextChanged: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Non fare nulla
+            }
+        });
+
         binding.buttonBack.setOnClickListener(v -> {
-            if(getActivity() != null) {
+            if (getActivity() != null) {
                 openFragment(new ProfileFragment());
             }
         });
@@ -71,8 +85,8 @@ public class PreferitiFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pdfArrayList.clear();
-                for(DataSnapshot ds: snapshot.getChildren()){
-                    String comicsId = ""+ds.child("comicsId").getValue();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String comicsId = "" + ds.child("comicsId").getValue();
 
                     ModelPdfComics modelPdf = new ModelPdfComics();
                     modelPdf.setId(comicsId);
@@ -80,7 +94,7 @@ public class PreferitiFragment extends Fragment {
                     pdfArrayList.add(modelPdf);
                 }
 
-                binding.subTitleTv.setText(""+pdfArrayList.size());
+                binding.subTitleTv.setText("" + pdfArrayList.size());
 
                 adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
                 binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
@@ -88,12 +102,12 @@ public class PreferitiFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Gestione degli errori
             }
         });
     }
 
-    private void openFragment(Fragment fragment){
+    private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
