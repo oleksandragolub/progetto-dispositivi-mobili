@@ -36,6 +36,7 @@ tools:context=".ui.categorie.fragments_user.CategoryUserFragment">
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/textView_search_category"
+    app:layout_constraintBottom_toTopOf="@id/guideline_end"
     tools:listitem="@layout/row_category_user" />
 
 <!-- <LinearLayout

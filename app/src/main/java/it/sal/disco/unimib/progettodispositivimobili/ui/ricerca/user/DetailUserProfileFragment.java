@@ -30,6 +30,8 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserProfileBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chats.ChatUtil;
+import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.DetailUserPreferitiFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 
 public class DetailUserProfileFragment extends Fragment {
 
@@ -53,7 +55,12 @@ public class DetailUserProfileFragment extends Fragment {
         binding = FragmentDetailUserProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        profileUserId = getArguments().getString("user2");
+        //profileUserId = getArguments().getString("user2");
+        if (getArguments() != null) {
+            profileUserId = getArguments().getString("user2");
+        } else {
+            profileUserId = "";
+        }
 
 
         showUserProfile(profileUserId);
@@ -113,7 +120,27 @@ public class DetailUserProfileFragment extends Fragment {
             }
         });
 
+        binding.buttonFavorite.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                openFavoriteFragment(profileUserId);
+            }
+        });
+
         return root;
+    }
+
+    private void openFavoriteFragment(String userId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", userId);
+
+        DetailUserPreferitiFragment preferitiFragment = new DetailUserPreferitiFragment();
+        preferitiFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, preferitiFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private String getChatId(String currentUserId, String otherUserId) {

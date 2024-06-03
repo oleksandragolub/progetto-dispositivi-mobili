@@ -55,7 +55,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="TODO"
             android:padding="5dp"
-            android:src="@drawable/baseline_favorite_border_24_black"
+            android:src="@drawable/baseline_favorite_24"
             tools:ignore="TouchTargetSizeCheck" />
 
         <TextView

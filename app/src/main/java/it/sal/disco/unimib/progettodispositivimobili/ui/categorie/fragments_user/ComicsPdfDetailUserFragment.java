@@ -30,10 +30,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class ComicsPdfDetailUserFragment extends Fragment {
 
@@ -152,6 +156,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
         return root;
     }
+
 
     private void requestManageExternalStoragePermission() {
         try {

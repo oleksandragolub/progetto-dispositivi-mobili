@@ -37,6 +37,7 @@ import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfileBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 
 
 public class ProfileFragment extends Fragment {
@@ -101,6 +102,12 @@ public class ProfileFragment extends Fragment {
         updateProfileButton.setOnClickListener(v -> {
             if(getActivity() != null) {
                 openFragment(new UpdateProfileFragment());
+            }
+        });
+
+        binding.favoriteBtn.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new PreferitiFragment());
             }
         });
 

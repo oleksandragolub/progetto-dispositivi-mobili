@@ -1,20 +1,14 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.preferiti;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,49 +19,52 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import it.sal.disco.unimib.progettodispositivimobili.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserPreferitiBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentPreferitiBinding;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentProfileBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.UpdateProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.UploadProfilePicFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.SearchUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.user.DetailUserProfileFragment;
 
-public class PreferitiFragment extends Fragment {
+public class DetailUserPreferitiFragment extends Fragment {
 
-    private FragmentPreferitiBinding binding;
+    private FragmentDetailUserPreferitiBinding binding;
     private FirebaseAuth firebaseAuth;
     private ArrayList<ModelPdfComics> pdfArrayList;
     private AdapterPdfComicsFavorite adapterPdfFavorite;
+    private String userId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentPreferitiBinding.inflate(inflater, container, false);
+        binding = FragmentDetailUserPreferitiBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Recupera l'ID dell'utente passato come argomento
+        if (getArguments() != null) {
+            userId = getArguments().getString("userId");
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        loadFavoriteComics();
+        loadUserFavorites(userId);
 
         binding.buttonBack.setOnClickListener(v -> {
             if(getActivity() != null) {
-                openFragment(new ProfileFragment());
+                openFragment(new DetailUserProfileFragment());
             }
         });
+
 
         return root;
     }
 
-    private void loadFavoriteComics() {
+    private void loadUserFavorites(String userId) {
         pdfArrayList = new ArrayList<>();
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
-        ref.child(firebaseAuth.getUid()).child("Favorites").addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId).child("Favorites");
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pdfArrayList.clear();
@@ -88,12 +85,25 @@ public class PreferitiFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Gestione degli errori
             }
         });
     }
 
+
+   /* private void openFragment(Fragment fragment){
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }*/
+
     private void openFragment(Fragment fragment){
+        Bundle bundle = new Bundle();
+        bundle.putString("user2", userId); // Assicurati di passare il profileUserId al nuovo fragment
+        fragment.setArguments(bundle);
+
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
