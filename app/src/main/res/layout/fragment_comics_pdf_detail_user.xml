@@ -42,12 +42,13 @@
             android:layout_below="@id/titleTv"/>  -->
     </RelativeLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_below="@id/toolbarRl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bookOptionsLl"
-        android:padding="10dp">
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bookOptionsLl">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -224,10 +225,48 @@
                 android:text="@string/descrizione_comics"
                 android:textColor="@color/black"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/round_btn"/>
 
+            <RelativeLayout
+                android:background="@android:color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/commentsLabelTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:padding="5dp"
+                    android:text="Comments"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <ImageButton
+                    android:id="@+id/addCommentBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:padding="5dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/baseline_add_comment_24"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/row_comment"
+                    android:background="@color/light_gray"
+                    android:layout_below="@id/addCommentBtn"/>
+
+            </RelativeLayout>
         </LinearLayout>
-
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/bookOptionsLl"

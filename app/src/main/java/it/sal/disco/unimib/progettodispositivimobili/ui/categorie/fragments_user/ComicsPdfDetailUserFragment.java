@@ -1,6 +1,8 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,23 +36,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.DialogCommentAddBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfDetailUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelComment;
 
 public class ComicsPdfDetailUserFragment extends Fragment {
 
     private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
     private FragmentComicsPdfDetailUserBinding binding;
-
+    private ArrayList<ModelComment> commentArrayList;
+    private AdapterComment adapterComment;
     private FirebaseAuth firebaseAuth;
-
     String comicsId, comicsTitle, comicsUrl;
     boolean isInMyFavorites = false;
+    String comment = "";
+    private ProgressDialog progressDialog;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -72,6 +81,10 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         }
 
         //binding.downloadComicsBtn.setVisibility(View.GONE);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Aspetta per favore");
+        progressDialog.setCanceledOnTouchOutside(false);
+
         firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null){
             checkIsFavorite();
@@ -80,6 +93,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
         if (comicsId != null) {
             loadComicsDetails();
+            loadComments();
             MyApplication.incrementComicsViewCoint(comicsId);
         } else {
             Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
@@ -160,8 +174,101 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             }
         });
 
+        binding.addCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+                }else{
+                    addCommentDialog();
+                }
+            }
+        });
 
         return root;
+    }
+
+    private void loadComments() {
+        commentArrayList = new ArrayList<>();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.child(comicsId).child("Comments").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commentArrayList.clear();
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    ModelComment model = ds.getValue(ModelComment.class);
+                    commentArrayList.add(model);
+                }
+                adapterComment = new AdapterComment(getActivity(), commentArrayList);
+                binding.commentsRv.setAdapter(adapterComment);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void addCommentDialog() {
+        DialogCommentAddBinding commentAddBinding = DialogCommentAddBinding.inflate(LayoutInflater.from(getActivity()));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
+        builder.setView(commentAddBinding.getRoot());
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        commentAddBinding.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        commentAddBinding.submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comment = commentAddBinding.commentEt.getText().toString().trim();
+
+                if(TextUtils.isEmpty(comment)){
+                    Toast.makeText(getActivity(), "Inserisci il tuo commento...", Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDialog.dismiss();
+                    addComment();
+                }
+            }
+        });
+    }
+
+    private void addComment() {
+        progressDialog.setMessage("Adding comment...");
+        progressDialog.show();
+
+        String timestamp = ""+System.currentTimeMillis();
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", ""+timestamp);
+        hashMap.put("comicsId", ""+comicsId);
+        hashMap.put("timestamp", ""+timestamp);
+        hashMap.put("comment", ""+comment);
+        hashMap.put("uid", ""+firebaseAuth.getUid());
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.child(comicsId).child("Comments").child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getActivity(), "Comment Added...", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), "Failed to add comment due to "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 
