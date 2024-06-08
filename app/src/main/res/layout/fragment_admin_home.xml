@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="start"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"
-        app:tabGravity="start"
         app:tabUnboundedRipple="false" />
 
     <androidx.viewpager.widget.ViewPager

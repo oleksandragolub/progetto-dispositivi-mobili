@@ -80,16 +80,14 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             comicsId = getArguments().getString("comicsId");
         }
 
-        //binding.downloadComicsBtn.setVisibility(View.GONE);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Aspetta per favore");
         progressDialog.setCanceledOnTouchOutside(false);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
             checkIsFavorite();
         }
-
 
         if (comicsId != null) {
             loadComicsDetails();
@@ -99,19 +97,12 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
         }
 
-       /* binding.buttonBackUser.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new CategoryUserFragment());
-            }
-        });*/
-
         binding.buttonBackUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();
             }
         });
-
 
         binding.readComicsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,20 +119,6 @@ public class ComicsPdfDetailUserFragment extends Fragment {
                 transaction.commit();
             }
         });
-
-        /*binding.downloadComicsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG_DOWNLOAD, "onClick: Checking permission");
-                if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG_DOWNLOAD, "onClick: Permission already granted, can download comics");
-                    MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
-                } else {
-                    Log.d(TAG_DOWNLOAD, "onClick: Permission was not granted, request permission...");
-                    requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                }
-            }
-        });*/
 
         binding.downloadComicsBtn.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -162,10 +139,10 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         binding.favoriteComicsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (firebaseAuth.getCurrentUser() == null){
+                if (firebaseAuth.getCurrentUser() == null) {
                     Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (isInMyFavorites){
+                    if (isInMyFavorites) {
                         MyApplication.removeFromFavorite(getActivity(), comicsId);
                     } else {
                         MyApplication.addToFavorite(getActivity(), comicsId);
@@ -177,9 +154,9 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         binding.addCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(firebaseAuth.getCurrentUser() == null){
+                if (firebaseAuth.getCurrentUser() == null) {
                     Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     addCommentDialog();
                 }
             }
@@ -196,7 +173,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 commentArrayList.clear();
-                for(DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelComment model = ds.getValue(ModelComment.class);
                     commentArrayList.add(model);
                 }
@@ -231,7 +208,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             public void onClick(View v) {
                 comment = commentAddBinding.commentEt.getText().toString().trim();
 
-                if(TextUtils.isEmpty(comment)){
+                if (TextUtils.isEmpty(comment)) {
                     Toast.makeText(getActivity(), "Inserisci il tuo commento...", Toast.LENGTH_SHORT).show();
                 } else {
                     alertDialog.dismiss();
@@ -245,14 +222,14 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         progressDialog.setMessage("Adding comment...");
         progressDialog.show();
 
-        String timestamp = ""+System.currentTimeMillis();
+        String timestamp = "" + System.currentTimeMillis();
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("id", ""+timestamp);
-        hashMap.put("comicsId", ""+comicsId);
-        hashMap.put("timestamp", ""+timestamp);
-        hashMap.put("comment", ""+comment);
-        hashMap.put("uid", ""+firebaseAuth.getUid());
+        hashMap.put("id", "" + timestamp);
+        hashMap.put("comicsId", "" + comicsId);
+        hashMap.put("timestamp", "" + timestamp);
+        hashMap.put("comment", "" + comment);
+        hashMap.put("uid", "" + firebaseAuth.getUid());
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(comicsId).child("Comments").child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -265,12 +242,11 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
-                Toast.makeText(getActivity(), "Failed to add comment due to "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to add comment due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
-
 
     private void requestManageExternalStoragePermission() {
         try {
@@ -298,37 +274,25 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         }
     }
 
-
-   /* private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    Log.d(TAG_DOWNLOAD, "Permission Granted");
-                    MyApplication.downloadComics(getActivity(), "" + comicsId, "" + comicsTitle, "" + comicsUrl);
-                } else {
-                    Log.d(TAG_DOWNLOAD, "Permission was denied...");
-                    Toast.makeText(getActivity(), "Permission was denied...", Toast.LENGTH_SHORT).show();
-                }
-            });*/
-
     private void loadComicsDetails() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                comicsTitle = ""+snapshot.child("titolo").getValue();
-                String description = ""+snapshot.child("descrizione").getValue();
-                String categoryId = ""+snapshot.child("categoryId").getValue();
-                String viewsCount = ""+snapshot.child("viewsCount").getValue();
-                String downloadsCount = ""+snapshot.child("downloadsCount").getValue();
-                comicsUrl = ""+snapshot.child("url").getValue();
-                String timestamp = ""+snapshot.child("timestamp").getValue();
+                comicsTitle = "" + snapshot.child("titolo").getValue();
+                String description = "" + snapshot.child("descrizione").getValue();
+                String categoryId = "" + snapshot.child("categoryId").getValue();
+                String viewsCount = "" + snapshot.child("viewsCount").getValue();
+                String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
+                comicsUrl = "" + snapshot.child("url").getValue();
+                String timestamp = "" + snapshot.child("timestamp").getValue();
 
                 binding.downloadComicsBtn.setVisibility(View.VISIBLE);
 
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
-                MyApplication.loadCategory(""+categoryId, binding.categoryTv);
-                MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
-                MyApplication.loadPdfSize(""+comicsUrl, ""+comicsTitle, binding.sizeTv);
+                MyApplication.loadCategory("" + categoryId, binding.categoryTv);
+                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+                MyApplication.loadPdfSize("" + comicsUrl, "" + comicsTitle, binding.sizeTv);
                 //MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
 
 
@@ -346,18 +310,22 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         });
     }
 
-    private void checkIsFavorite(){
+    private void checkIsFavorite() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
         ref.child(firebaseAuth.getUid()).child("Favorites").child(comicsId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                isInMyFavorites = snapshot.exists();
-                if(isInMyFavorites){
-                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
-                    binding.favoriteComicsBtn.setText("Rimuovi");
+                if (binding != null) { // Ensure binding is not null
+                    isInMyFavorites = snapshot.exists();
+                    if (isInMyFavorites) {
+                        binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
+                        binding.favoriteComicsBtn.setText("Rimuovi");
+                    } else {
+                        binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
+                        binding.favoriteComicsBtn.setText("Aggiungi");
+                    }
                 } else {
-                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
-                    binding.favoriteComicsBtn.setText("Aggiungi");
+                    Log.e(TAG_DOWNLOAD, "Binding is null in checkIsFavorite");
                 }
             }
 

@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -23,7 +25,6 @@
         android:theme="@style/Theme.ProgettoDispositiviMobili"
         tools:targetApi="34"
         android:requestLegacyExternalStorage="true">
-
 
         <activity
             android:name=".ui.start_app.SplashActivity"
@@ -68,12 +69,5 @@
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 
-        <activity
-            android:name=".ui.chat.ChatActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ProgettoDispositiviMobili">
-        </activity>
-
     </application>
-
 </manifest>

@@ -40,7 +40,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
         FragmentUpdateGoogleProfileBinding binding;
 
         private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
-        private String email, authMethod, username, dob, gender, descrizione, userType, uid;
+        private String email, authMethod, username, dob, gender, descrizione, userType, uid, profileImage;
         private Boolean emailVerificato = true;
         private RadioButton radioButtonRegisterGenderSelected;
         Button updateProfileButton, changeEmailButton, changePasswordButton;
@@ -184,7 +184,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
                         dob = Objects.requireNonNull(dobEditText.getText()).toString();
 
 
-                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, email, username, dob, gender, emailVerificato, authMethod, userType);
+                        ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, email, username, dob, gender, emailVerificato, authMethod, userType, profileImage);
                         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Utenti registrati");
 
                         referenceProfile.child(uid).setValue(writeUserDetails).addOnCompleteListener(databaseTask -> {
@@ -231,6 +231,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateG
                         gender = readUserDetails.getGender();
                         authMethod = readUserDetails.getAuthMethod();
                         userType = readUserDetails.getUserType();
+                        profileImage = readUserDetails.getProfileImage();
 
                         usernameEditText.setText(username);
                         dobEditText.setText(dob);

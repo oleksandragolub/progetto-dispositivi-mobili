@@ -126,7 +126,7 @@ public class HomeAdminFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

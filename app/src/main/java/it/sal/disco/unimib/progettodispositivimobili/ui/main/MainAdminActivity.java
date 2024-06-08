@@ -109,9 +109,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                 } else if (id == R.id.searchUserFragment) {
                     openFragment(new SearchUserFragment());
                     return true;
-                } else if (id == R.id.newChatFragment) {
-                    openFragment(new NewChatFragment());
-                    return true;
                 } else if (id == R.id.chatsFragment) {
                     openFragment(new ChatsFragment());
                     return true;
@@ -152,15 +149,10 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
     }
 
 
-   /* private void openFragment(Fragment fragment){
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.commit();
-    }*/
    private void openFragment(Fragment fragment) {
        FragmentTransaction transaction = fragmentManager.beginTransaction();
        transaction.replace(R.id.nav_host_fragment, fragment);
-       transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+       transaction.addToBackStack(null);
        transaction.commit();
    }
 
@@ -193,9 +185,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
             //return true;
         } else if(id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
-            //return true;
-        } else if (id == R.id.newChatFragment) {
-            openFragment(new NewChatFragment());
             //return true;
         } else if (id == R.id.chatsFragment) {
             openFragment(new ChatsFragment());

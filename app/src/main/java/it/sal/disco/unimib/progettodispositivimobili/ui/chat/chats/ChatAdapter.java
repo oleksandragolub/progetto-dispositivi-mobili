@@ -1,12 +1,14 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats;
 
-import android.content.Intent;
+import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,14 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-import it.sal.disco.unimib.progettodispositivimobili.ui.chat.ChatActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.ui.chat.ChatMessengerFragment;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder>{
+public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
     private ArrayList<Chat> chats;
 
-    public ChatAdapter(ArrayList<Chat> chats){
+    public ChatAdapter(ArrayList<Chat> chats) {
         this.chats = chats;
     }
 
@@ -42,9 +44,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder>{
         holder.chat_email_iv.setText(chats.get(position).getUserEmail());
 
         String userId;
-        if (!chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if (!chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             userId = chats.get(position).getUserId1();
-        }else{
+        } else {
             userId = chats.get(position).getUserId2();
         }
 
@@ -53,21 +55,32 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder>{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        try{
+                        try {
                             String profileImageUrl = task.getResult().getValue().toString();
 
                             if (!profileImageUrl.isEmpty())
                                 Glide.with(holder.itemView.getContext()).load(profileImageUrl).into(holder.chat_profileImage_iv);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             Toast.makeText(holder.itemView.getContext(), "Failed to get profile image link", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), ChatActivity.class);
-            intent.putExtra("chatId", chats.get(position).getChat_id());
-            holder.itemView.getContext().startActivity(intent);
+            String chatId = chats.get(position).getChat_id();
+            String userId2 = !chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ? chats.get(position).getUserId1() : chats.get(position).getUserId2();
+
+            ChatMessengerFragment fragment = new ChatMessengerFragment();
+            Bundle args = new Bundle();
+            args.putString("chatId", chatId);
+            args.putString("userId2", userId2);
+            fragment.setArguments(args);
+
+            FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
+            activity.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 

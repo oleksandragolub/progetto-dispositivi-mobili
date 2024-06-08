@@ -12,7 +12,6 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -32,10 +31,9 @@ public class RegisterActivity extends AppCompatActivity {
     private ActivityRegisterBinding binding;
     private static final String TAG = "RegisterActivity";
 
-    private String name, email, dob, password, conferma_password, gender;
+    private String name, email, dob, password, conferma_password, gender, profileImage;
     private Boolean emailVerificato = false;
     private FirebaseAuth firebaseAuth;
-    private TextInputEditText editTextEmail, editTextPassword, editTextDoB, editTextConfirmPassword, editTextUsername;
     private DatePickerDialog picker;
 
     @Override
@@ -192,6 +190,7 @@ public class RegisterActivity extends AppCompatActivity {
             hashMap.put("authMethod", "PasswordEmail");
             hashMap.put("userType", "user");
             hashMap.put("emailVerificato", emailVerificato); // Initially false, will be true after verification
+            hashMap.put("profileImage", "");
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
             ref.child(uid).setValue(hashMap).addOnSuccessListener(unused -> {
@@ -206,14 +205,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void handleRegistrationError(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
-            editTextPassword.setError("La tua password è troppo debole.");
-            editTextPassword.requestFocus();
+            binding.password.setError("La tua password è troppo debole.");
+            binding.password.requestFocus();
         } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-            editTextEmail.setError("L'email inserita non esiste oppure non è valida.");
-            editTextEmail.requestFocus();
+            binding.email.setError("L'email inserita non esiste oppure non è valida.");
+            binding.email.requestFocus();
         } else if (exception instanceof FirebaseAuthUserCollisionException) {
-            editTextEmail.setError("Questa email è già in uso.");
-            editTextEmail.requestFocus();
+            binding.email.setError("Questa email è già in uso.");
+            binding.email.requestFocus();
         } else {
             Log.e(TAG, exception.getMessage());
             Toast.makeText(RegisterActivity.this, "Errore di registrazione: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
@@ -221,12 +220,3 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-
-
-
-
-
-

@@ -12,11 +12,6 @@
             android:title="@string/title_searchUser" />
 
         <item
-            android:id="@+id/newChatFragment"
-            android:icon="@drawable/baseline_chat_24"
-            android:title="@string/title_new_chat" />
-
-        <item
             android:id="@+id/chatsFragment"
             android:icon="@drawable/baseline_chat_24"
             android:title="@string/title_chats" />

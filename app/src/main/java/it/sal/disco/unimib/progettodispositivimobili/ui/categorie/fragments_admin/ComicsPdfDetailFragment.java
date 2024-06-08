@@ -104,12 +104,6 @@ public class ComicsPdfDetailFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
         }
 
-       /* binding.buttonBack.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new CategoryAddAdminFragment());
-            }
-        });*/
-
         binding.buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

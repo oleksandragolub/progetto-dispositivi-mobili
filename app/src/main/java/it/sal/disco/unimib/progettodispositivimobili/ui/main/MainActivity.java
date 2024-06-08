@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.CategoryUserFragment;
@@ -111,11 +112,11 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.searchUserFragment) {
                     openFragment(new SearchUserFragment());
                     return true;
-                } else if (id == R.id.newChatFragment) {
-                    openFragment(new NewChatFragment());
-                    return true;
                 } else if (id == R.id.chatsFragment) {
                     openFragment(new ChatsFragment());
+                    return true;
+                } else if (id == R.id.detailUserProfileFragment) {
+                    openFragment(new DetailUserProfileFragment());
                     return true;
                 }
                 return false;
@@ -189,9 +190,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             //return true;
         } else if (id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());
-            //return true;
-        } else if (id == R.id.newChatFragment) {
-            openFragment(new NewChatFragment());
             //return true;
         } else if (id == R.id.chatsFragment) {
             openFragment(new ChatsFragment());

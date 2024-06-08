@@ -39,15 +39,14 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
 
     private List<ReadWriteUserDetails> searchList = new ArrayList<>();
     RecyclerView recyclerView;
-    SearchUserRecyclerAdapter dataAdapter;
+    private SearchUserRecyclerAdapter dataAdapter;
 
-    FragmentSearchUserBinding binding;
+    private FragmentSearchUserBinding binding;
     TextInputEditText searchInput;
     ImageButton searchButton;
-    TextView btnBack;
 
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
         View root = binding.getRoot();
 
         // Inizializzazione
-        btnBack = binding.txtBack;
         searchInput = binding.textViewUsername;
         searchButton = binding.imageSearchUser;
         recyclerView = binding.cercaUsernameRecyclerView;
@@ -66,16 +64,9 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
         dataAdapter = new SearchUserRecyclerAdapter(searchList, (SearchUserRecyclerAdapter.OnUserClickListener) this); // Passa this come listener
         recyclerView.setAdapter(dataAdapter);
 
-
         searchButton.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Ricerca in corso...", Toast.LENGTH_SHORT).show();
             performSearch();
-        });
-
-        btnBack.setOnClickListener(v -> {
-            if(getActivity() != null) {
-                openFragment(new ProfileFragment());
-            }
         });
 
         return root;
@@ -133,23 +124,8 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
         args.putString("user2", user.getUserId());
         profileFragment.setArguments(args);
 
-        Log.d("SearchUserFragment", "user1: " + currentUserUID + ", user2: " + user.getUserId()); // Confirm the IDs
+        Log.d("SearchUserFragment", "user1: " + currentUserUID + ", user2: " + user.getUserId());
 
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, profileFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void openProfilePage(ReadWriteUserDetails user) {
-        // Crea una nuova istanza della pagina di profilo e passa i dettagli dell'utente
-        DetailUserProfileFragment profileFragment = new DetailUserProfileFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("userDetails", user);
-        profileFragment.setArguments(args);
-
-        // Sostituisci il fragment corrente con la pagina di profilo
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, profileFragment);
@@ -171,5 +147,3 @@ public class SearchUserFragment extends Fragment implements SearchUserRecyclerAd
         binding = null;
     }
 }
-
-

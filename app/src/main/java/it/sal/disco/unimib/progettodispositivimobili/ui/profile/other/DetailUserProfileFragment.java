@@ -1,8 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.profile.other;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,10 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import it.sal.disco.unimib.progettodispositivimobili.ui.chat.ChatActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserProfileBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.chat.ChatMessengerFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatUtil;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.DetailUserPreferitiFragment;
 
@@ -48,22 +47,16 @@ public class DetailUserProfileFragment extends Fragment {
     String profileUserId;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDetailUserProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //profileUserId = getArguments().getString("user2");
         if (getArguments() != null) {
             profileUserId = getArguments().getString("user2");
         } else {
             profileUserId = "";
         }
 
-
-        showUserProfile(profileUserId);
-        Log.d("DetailUserProfileFragment", "Received User ID: " + profileUserId);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
@@ -72,7 +65,6 @@ public class DetailUserProfileFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Utenti registrati");
 
-        // Collegamento delle variabili agli elementi del layout
         profileImageView = binding.profileImageView;
         profileImageViewCamera = binding.profileImageViewCamera;
         usernameEditText = binding.textViewUsername;
@@ -85,22 +77,17 @@ public class DetailUserProfileFragment extends Fragment {
                 String currentUserId = mAuth.getCurrentUser().getUid();
                 String chatId = ChatUtil.generateChatId(currentUserId, profileUserId);
 
-                // Check if the chat already exists in the database
                 FirebaseDatabase.getInstance().getReference().child("Chats").child(chatId)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (!snapshot.exists()) {
-                                    // If chat does not exist, create it
-                                    ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
-                                    if (user != null) {
-                                        ChatUtil.createChat(user);  // Create chat using ChatUtil
-                                    } else {
-                                        Toast.makeText(getContext(), "User details not found.", Toast.LENGTH_SHORT).show();
-                                    }
+                                    ReadWriteUserDetails user = new ReadWriteUserDetails();
+                                    user.setUserId(profileUserId);
+                                    ChatUtil.createChat(user);
+                                    Toast.makeText(getContext(), "Questo chat è stato aggiunto nella lista dei tuoi chat.", Toast.LENGTH_SHORT).show();
                                 }
-                                // Whether the chat was just created or already existed, open the ChatActivity
-                                openChatActivity(chatId);
+                                openChatFragment(chatId, profileUserId);
                             }
 
                             @Override
@@ -115,7 +102,7 @@ public class DetailUserProfileFragment extends Fragment {
 
         btnBack.setOnClickListener(v -> {
             if(getActivity() != null) {
-                openFragment(new SearchUserFragment());
+                getParentFragmentManager().popBackStack();
             }
         });
 
@@ -124,6 +111,8 @@ public class DetailUserProfileFragment extends Fragment {
                 openFavoriteFragment(profileUserId);
             }
         });
+
+        showUserProfile(profileUserId);
 
         return root;
     }
@@ -142,26 +131,30 @@ public class DetailUserProfileFragment extends Fragment {
         transaction.commit();
     }
 
-    private String getChatId(String currentUserId, String otherUserId) {
-        // Example logic to generate chatId, you might want to handle it differently
-        if (currentUserId.compareTo(otherUserId) > 0) {
-            return currentUserId + "_" + otherUserId;
-        } else {
-            return otherUserId + "_" + currentUserId;
-        }
+    private void openChatFragment(String chatId, String userId2) {
+        ChatMessengerFragment fragment = new ChatMessengerFragment();
+        Bundle args = new Bundle();
+        args.putString("chatId", chatId);
+        args.putString("userId2", userId2);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-    private void openChatActivity(String chatId) {
-        Intent intent = new Intent(getActivity(), ChatActivity.class);
-        intent.putExtra("chatId", chatId);
-        startActivity(intent);
-    }
     private void showUserProfile(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (binding == null) {
+                    return; // The view has been destroyed, so we should not proceed
+                }
+
                 ReadWriteUserDetails userDetails = dataSnapshot.getValue(ReadWriteUserDetails.class);
                 if (userDetails != null) {
                     usernameEditText.setText(userDetails.getUsername());
@@ -169,15 +162,14 @@ public class DetailUserProfileFragment extends Fragment {
                     dobEditText.setText(userDetails.getDob());
                     genderEditText.setText(userDetails.getGender());
 
-                    String dataImage = userDetails.getDataImage();
-                   /*if (dataImage != null && !dataImage.isEmpty()) {
-                        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(dataImage);
-                        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            Picasso.get().load(uri).into(profileImageView);
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Errore nel caricamento dell'immagine del profilo", Toast.LENGTH_SHORT).show();
-                        });
-                    }*/
+                    String profileImage = "" + dataSnapshot.child("profileImage").getValue();
+
+                    if (getActivity() != null) {
+                        Glide.with(getActivity())
+                                .load(profileImage)
+                                .placeholder(R.drawable.profile_icone)
+                                .into(binding.profileImageView);
+                    }
                 } else {
                     Toast.makeText(getContext(), "Dettagli utente non trovati.", Toast.LENGTH_SHORT).show();
                 }
@@ -185,7 +177,9 @@ public class DetailUserProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getContext(), "Errore nel caricamento dei dettagli utente.", Toast.LENGTH_SHORT).show();
+                if (binding != null) {
+                    Toast.makeText(getContext(), "Errore nel caricamento dei dettagli utente.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -202,5 +196,9 @@ public class DetailUserProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public interface OnUserClickListener {
+        void onUserClick(ReadWriteUserDetails user);
     }
 }

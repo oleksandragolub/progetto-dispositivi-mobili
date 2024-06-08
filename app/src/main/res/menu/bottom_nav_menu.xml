@@ -5,25 +5,25 @@ xmlns:tools="http://schemas.android.com/tools"
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/home_icone"
+        android:icon="@drawable/baseline_home_24_white"
         android:title="@string/title_home"
         android:orderInCategory="1" />
 
     <item
         android:id="@+id/navigation_category_user"
-        android:icon="@drawable/baseline_star_rate_24"
+        android:icon="@drawable/baseline_star_rate_24_white"
         android:title="@string/title_category"
         android:orderInCategory="2"/>
 
     <item
         android:id="@+id/navigation_ricerca"
-        android:icon="@drawable/ricerca_icone"
+        android:icon="@drawable/baseline_search_24_white"
         android:title="@string/title_ricerca"
         android:orderInCategory="3" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/profile_icone"
+        android:icon="@drawable/baseline_person_24_white"
         android:title="@string/title_profile"
         android:orderInCategory="4"/>
 

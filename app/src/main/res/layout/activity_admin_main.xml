@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
+            android:background="@drawable/border_btn"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu_admin" />
     </RelativeLayout>

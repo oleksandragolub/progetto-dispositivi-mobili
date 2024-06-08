@@ -40,8 +40,8 @@ public class UserAdapter extends  RecyclerView.Adapter<UserViewHolder>{
         holder.email_iv.setText(user.getEmail());
 
         // Check if profileImage is not null and not empty before using it
-        if (user.getDataImage() != null && !user.getDataImage().isEmpty()) {
-            Glide.with(holder.itemView.getContext()).load(user.getDataImage()).into(holder.profileImage_iv);
+        if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+            Glide.with(holder.itemView.getContext()).load(user.getProfileImage()).into(holder.profileImage_iv);
         } /*else {
             // Set a default image or remove the image if null
             holder.profileImage_iv.setImageResource(R.drawable.default_profile);  // Ensure you have a default image in drawable

@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                             Boolean emailVerificato = true;
 
                             // Aggiorna il database Firebase con i dettagli dell'utente
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google", "user");
+                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google", "user", "");
                             // il tipo dell'utente puo' essere user oppure admin (inserito manualmente da console firebase)
                             reference.child(currentUser.getUid()).setValue(writeUserDetails);
                             Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();

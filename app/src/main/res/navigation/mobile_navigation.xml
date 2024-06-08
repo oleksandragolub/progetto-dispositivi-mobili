@@ -198,8 +198,6 @@
     </fragment>
 
 
-
-
     <fragment
         android:id="@+id/navigation_profile"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment"

@@ -117,25 +117,29 @@ public class AdapterComment extends  RecyclerView.Adapter<AdapterComment.HolderC
     private void loadUserDetails(ModelComment modelComment, HolderComment holder) {
         String uid = modelComment.getUid();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registarti");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
         ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String name = ""+snapshot.child("username").getValue();
-                //String profileImage = ""+snapshot.child("profileImage").getValue(); //da aggiungere in realtime database
+                String name = "" + snapshot.child("username").getValue();
+                String profileImage = ""+snapshot.child("profileImage").getValue();
 
+                if (name != null && !name.isEmpty()) {
+                    holder.nameTv.setText(name);
+                } else {
+                    holder.nameTv.setText("Anonymous"); // un valore di default se il nome è nullo o vuoto
+                }
 
-                holder.nameTv.setText(name);
-               /* try {
+                try {
                     Glide.with(context).load(profileImage).placeholder(R.drawable.baseline_person_24_gray).into(holder.profileIv);
                 } catch (Exception e){
                     holder.profileIv.setImageResource(R.drawable.baseline_person_24_gray);
-                }*/
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(context, "Failed to load user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

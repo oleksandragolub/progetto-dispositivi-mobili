@@ -63,7 +63,7 @@ public class NewChatFragment extends Fragment {
                         }
                         String uid = snapshot.getKey();
                         ReadWriteUserDetails user = snapshot.getValue(ReadWriteUserDetails.class);
-                        users.add(new ReadWriteUserDetails (uid, user.getUsername(), user.getEmail(), user.getDataImage()));
+                        users.add(new ReadWriteUserDetails (uid, user.getUsername(), user.getEmail(), user.getProfileImage()));
                     }
                     adapter.notifyDataSetChanged();
                     Log.d("SearchUserFragment", "Numero di utenti trovati: " + users.size());
