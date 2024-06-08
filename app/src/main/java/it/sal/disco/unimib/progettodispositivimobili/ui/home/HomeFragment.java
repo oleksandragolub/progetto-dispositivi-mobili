@@ -2,6 +2,7 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,9 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("HomeFragment", "Database error: " + error.getMessage());
+            }
         });
         binding.tabLayout.setupWithViewPager(viewPager);
     }
