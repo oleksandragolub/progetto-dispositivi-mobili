@@ -11,14 +11,15 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 
 public class ChatViewHolder extends RecyclerView.ViewHolder{
     CircleImageView chat_profileImage_iv;
-    TextView chat_username_iv, chat_email_iv, last_message;
+    TextView chat_username_iv, last_message;
+    View new_message_indicator;  // Aggiungi questo campo
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
 
         chat_profileImage_iv = itemView.findViewById(R.id.image_profile_pic);
         chat_username_iv = itemView.findViewById(R.id.username_text);
-        chat_email_iv = itemView.findViewById(R.id.email_text);
         last_message = itemView.findViewById(R.id.last_message);
+        new_message_indicator = itemView.findViewById(R.id.new_message_indicator);  // Inizializza l'indicatore
     }
 }

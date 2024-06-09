@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,11 +15,11 @@ import java.util.Objects;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>{
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
 
     private List<Message> messages;
 
-    public MessagesAdapter (List<Message> messages){
+    public MessagesAdapter(List<Message> messages) {
         this.messages = messages;
     }
 
@@ -50,7 +51,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             return R.layout.item_container_received_message;
     }
 
-    static class MessageViewHolder extends RecyclerView.ViewHolder{
+    static class MessageViewHolder extends RecyclerView.ViewHolder {
 
         TextView messageTv, dateTv;
 

@@ -154,14 +154,16 @@ public class ChatMessengerFragment extends Fragment {
     private void sendMessage(String chatId, String message, String date) {
         if (chatId == null) return;
 
-        HashMap<String, String> messageInfo = new HashMap<>();
+        HashMap<String, Object> messageInfo = new HashMap<>(); // Cambia il tipo del valore a Object
         messageInfo.put("text", message);
         messageInfo.put("ownerId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         messageInfo.put("date", date);
+        messageInfo.put("isRead", false); // Nuovo messaggio non letto come booleano
 
         FirebaseDatabase.getInstance().getReference().child("Chats").child(chatId)
                 .child("messages").push().setValue(messageInfo);
     }
+
 
     private void loadMessages(String chatId) {
         if (chatId == null) return;
@@ -175,11 +177,24 @@ public class ChatMessengerFragment extends Fragment {
                         List<Message> messages = new ArrayList<>();
                         for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
                             String messageId = messageSnapshot.getKey();
-                            String ownerId = messageSnapshot.child("ownerId").getValue().toString();
-                            String text = messageSnapshot.child("text").getValue().toString();
-                            String date = messageSnapshot.child("date").getValue().toString();
+                            String ownerId = messageSnapshot.child("ownerId").getValue(String.class);
+                            String text = messageSnapshot.child("text").getValue(String.class);
+                            String date = messageSnapshot.child("date").getValue(String.class);
+                            Boolean isRead = messageSnapshot.child("isRead").getValue(Boolean.class);
 
-                            messages.add(new Message(messageId, ownerId, text, date));
+                            // Aggiungi controlli di nullità
+                            if (ownerId == null) ownerId = "";
+                            if (text == null) text = "";
+                            if (date == null) date = "";
+                            if (isRead == null) isRead = false;
+
+                            // Se è un messaggio non letto e non è stato inviato dall'utente corrente, impostalo come letto
+                            if (!isRead && !ownerId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                FirebaseDatabase.getInstance().getReference().child("Chats").child(chatId)
+                                        .child("messages").child(messageId).child("isRead").setValue(true);
+                            }
+
+                            messages.add(new Message(messageId, ownerId, text, date, isRead));
                         }
 
                         binding.messagesRv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -193,9 +208,14 @@ public class ChatMessengerFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Failed to load messages", Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                 });
     }
+
+
 
 }

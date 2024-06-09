@@ -27,7 +27,6 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentChatsBi
 public class ChatsFragment extends Fragment {
     private FragmentChatsBinding binding;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,71 +37,72 @@ public class ChatsFragment extends Fragment {
         return binding.getRoot();
     }
 
-     /*  ArrayList<Chat> chats = new ArrayList<>();
-        chats.add(new Chat("123", "Test chat 1", "12323", "123456"));
-        chats.add(new Chat("123", "Test chat 2", "123123", "123456"));
-        chats.add(new Chat("123", "Test chat 3", "123123", "123456"));*/
-     private void loadChats(){
-         ArrayList<Chat> chats = new ArrayList<>();
-         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-         FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 DataSnapshot chatsNode = snapshot.child("Utenti registrati").child(uid).child("chats");
-                 if (!chatsNode.exists() || chatsNode.getValue() == null) {
-                     Toast.makeText(getContext(), "No chats available", Toast.LENGTH_SHORT).show();
-                     return;
-                 }
+    private void loadChats(){
+        ArrayList<Chat> chats = new ArrayList<>();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DataSnapshot chatsNode = snapshot.child("Utenti registrati").child(uid).child("chats");
+                if (!chatsNode.exists() || chatsNode.getValue() == null) {
+                    Toast.makeText(getContext(), "No chats available", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                 String chatsStr = chatsNode.getValue().toString();
-                 String[] chatsIds = chatsStr.split(",");
-                 if (chatsIds.length == 0) return;
+                String chatsStr = chatsNode.getValue().toString();
+                String[] chatsIds = chatsStr.split(",");
+                if (chatsIds.length == 0) return;
 
-                 for (String chatId : chatsIds) {
-                     DataSnapshot chatSnapshot = snapshot.child("Chats").child(chatId);
-                     String userId1 = chatSnapshot.child("user1").getValue(String.class);
-                     String userId2 = chatSnapshot.child("user2").getValue(String.class);
+                for (String chatId : chatsIds) {
+                    DataSnapshot chatSnapshot = snapshot.child("Chats").child(chatId);
+                    String userId1 = chatSnapshot.child("user1").getValue(String.class);
+                    String userId2 = chatSnapshot.child("user2").getValue(String.class);
 
-                     if (userId1 == null || userId2 == null) {
-                         continue;
-                     }
+                    if (userId1 == null || userId2 == null) {
+                        continue;
+                    }
 
-                     String chatUserId = (uid.equals(userId1)) ? userId2 : userId1;
-                     DataSnapshot userNode = snapshot.child("Utenti registrati").child(chatUserId);
-                     String chatName = userNode.child("username").getValue(String.class);
-                     String userEmail = userNode.child("email").getValue(String.class);
+                    String chatUserId = (uid.equals(userId1)) ? userId2 : userId1;
+                    DataSnapshot userNode = snapshot.child("Utenti registrati").child(chatUserId);
+                    String chatName = userNode.child("username").getValue(String.class);
+                    String userEmail = userNode.child("email").getValue(String.class);
 
-                     if (chatName == null || userEmail == null) {
-                         continue;
-                     }
+                    if (chatName == null || userEmail == null) {
+                        continue;
+                    }
 
-                     // Recupera l'ultimo messaggio
-                     DataSnapshot messagesNode = chatSnapshot.child("messages");
-                     String lastMessage = "";
-                     String lastMessageOwnerId = "";
-                     if (messagesNode.exists()) {
-                         for (DataSnapshot messageSnapshot : messagesNode.getChildren()) {
-                             lastMessage = messageSnapshot.child("text").getValue(String.class);
-                             lastMessageOwnerId = messageSnapshot.child("ownerId").getValue(String.class);
-                         }
-                     }
+                    // Recupera l'ultimo messaggio
+                    DataSnapshot messagesNode = chatSnapshot.child("messages");
+                    String lastMessage = "";
+                    String lastMessageOwnerId = "";
+                    Boolean lastMessageRead = true;
+                    if (messagesNode.exists()) {
+                        for (DataSnapshot messageSnapshot : messagesNode.getChildren()) {
+                            lastMessage = messageSnapshot.child("text").getValue(String.class);
+                            lastMessageOwnerId = messageSnapshot.child("ownerId").getValue(String.class);
+                            lastMessageRead = messageSnapshot.child("isRead").getValue(Boolean.class);
 
-                     Chat chat = new Chat(chatId, chatName, userId1, userId2, lastMessage, userEmail);
-                     chat.setLastMessageOwnerId(lastMessageOwnerId);  // Imposta l'ID del proprietario dell'ultimo messaggio
-                     chats.add(chat);
-                 }
+                            if (lastMessage == null) lastMessage = "";
+                            if (lastMessageOwnerId == null) lastMessageOwnerId = "";
+                            if (lastMessageRead == null) lastMessageRead = true;
+                        }
+                    }
 
-                 binding.chatsRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                 binding.chatsRv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-                 binding.chatsRv.setAdapter(new ChatAdapter(chats));
-             }
+                    Chat chat = new Chat(chatId, chatName, userId1, userId2, lastMessage, userEmail);
+                    chat.setLastMessageOwnerId(lastMessageOwnerId);  // Imposta l'ID del proprietario dell'ultimo messaggio
+                    chat.setLastMessageRead(lastMessageRead);  // Imposta lo stato di lettura dell'ultimo messaggio
+                    chats.add(chat);
+                }
 
-             @Override
-             public void onCancelled(@NonNull DatabaseError error) {
-                 Toast.makeText(getContext(), "Failed to get user chats", Toast.LENGTH_SHORT).show();
-             }
-         });
-     }
+                binding.chatsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                binding.chatsRv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+                binding.chatsRv.setAdapter(new ChatAdapter(chats));
+            }
 
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Failed to get user chats", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

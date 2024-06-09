@@ -62,6 +62,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
             holder.last_message.setText("");
         }
 
+        // Controlla se ci sono nuovi messaggi non letti
+        if (lastMessageOwnerId.equals(currentUserId)) {
+            holder.new_message_indicator.setVisibility(View.GONE);
+        } else {
+            // Supponiamo che tu abbia un campo `isRead` per ogni messaggio
+            boolean isRead = chats.get(position).isLastMessageRead();
+            if (isRead) {
+                holder.new_message_indicator.setVisibility(View.GONE);
+            } else {
+                holder.new_message_indicator.setVisibility(View.VISIBLE);
+            }
+        }
+
         FirebaseDatabase.getInstance().getReference().child("Utenti registrati").child(userId)
                 .child("profileImage").get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

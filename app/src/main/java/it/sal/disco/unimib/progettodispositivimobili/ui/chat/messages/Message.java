@@ -3,12 +3,31 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.chat.messages;
 public class Message {
 
     private String id, ownerId, text, date;
+    private boolean isRead;
 
     public Message(String id, String ownerId, String text, String date) {
         this.id = id;
         this.ownerId = ownerId;
         this.text = text;
         this.date = date;
+        this.isRead = false; // Valore predefinito
+    }
+
+    public Message(String id, String ownerId, String text, String date, boolean isRead) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.text = text;
+        this.date = date;
+        this.isRead = isRead;
+    }
+
+    // Getter e setter per isRead
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public String getId() {

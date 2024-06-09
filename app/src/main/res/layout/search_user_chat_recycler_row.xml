@@ -45,4 +45,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/image_profile_pic"/>
 
+    <View
+        android:id="@+id/new_message_indicator"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/circle_red"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/username_text"
+        app:layout_constraintStart_toEndOf="@id/last_message"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
