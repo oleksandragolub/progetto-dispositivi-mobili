@@ -184,6 +184,11 @@ public class ChatMessengerFragment extends Fragment {
 
                         binding.messagesRv.setLayoutManager(new LinearLayoutManager(getContext()));
                         binding.messagesRv.setAdapter(new MessagesAdapter(messages));
+
+                        // Scroll to the last message
+                        if (messages.size() > 0) {
+                            binding.messagesRv.scrollToPosition(messages.size() - 1);
+                        }
                     }
 
                     @Override
@@ -192,4 +197,5 @@ public class ChatMessengerFragment extends Fragment {
                     }
                 });
     }
+
 }

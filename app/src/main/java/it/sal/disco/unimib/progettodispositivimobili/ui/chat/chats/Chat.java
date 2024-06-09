@@ -4,6 +4,8 @@ public class Chat {
 
     private String chat_id, chat_name, userId1, userId2;
     private String userEmail;
+    private String lastMessage;
+    private String lastMessageOwnerId;
 
     public Chat(){
         // Costruttore vuoto richiesto da Firebase
@@ -22,6 +24,31 @@ public class Chat {
         this.userId1 = userId1;
         this.userId2 = userId2;
         this.userEmail = userEmail;
+    }
+    public Chat(String chat_id, String chat_name, String userId1, String userId2, String lastMessage, String userEmail) {
+        this.chat_id = chat_id;
+        this.chat_name = chat_name;
+        this.userId1 = userId1;
+        this.userId2 = userId2;
+        this.userEmail = userEmail;
+        this.lastMessage = lastMessage;
+    }
+
+    public String getLastMessageOwnerId() {
+        return lastMessageOwnerId;
+    }
+
+    public void setLastMessageOwnerId(String lastMessageOwnerId) {
+        this.lastMessageOwnerId = lastMessageOwnerId;
+    }
+
+    // Getter e setter per lastMessage
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
     public String getChat_id() {

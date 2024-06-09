@@ -37,9 +37,11 @@ tools:context=".ui.chat.chats.ChatsFragment">
             android:id="@+id/chats_rv"
             android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/search_user_chat_recycler_row"
             app:layout_constraintTop_toBottomOf="@id/text_chats"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
-            app:layout_constraintEnd_toStartOf="@id/guideline_right" />
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            app:layout_constraintBottom_toTopOf="@id/guideline_end"/>
 
 
         <androidx.constraintlayout.widget.Guideline

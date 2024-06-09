@@ -34,20 +34,32 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_recycler_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_chat_recycler_row, parent, false);
         return new ChatViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         holder.chat_username_iv.setText(chats.get(position).getChat_name());
-        holder.chat_email_iv.setText(chats.get(position).getUserEmail());
 
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String userId;
-        if (!chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+        if (!chats.get(position).getUserId1().equals(currentUserId)) {
             userId = chats.get(position).getUserId1();
         } else {
             userId = chats.get(position).getUserId2();
+        }
+
+        String lastMessage = chats.get(position).getLastMessage();
+        String lastMessageOwnerId = chats.get(position).getLastMessageOwnerId();
+        if (lastMessage != null) {
+            if (lastMessageOwnerId.equals(currentUserId)) {
+                holder.last_message.setText("Tu: " + lastMessage);
+            } else {
+                holder.last_message.setText(chats.get(position).getChat_name() + ": " + lastMessage);
+            }
+        } else {
+            holder.last_message.setText("");
         }
 
         FirebaseDatabase.getInstance().getReference().child("Utenti registrati").child(userId)
@@ -68,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
         holder.itemView.setOnClickListener(v -> {
             String chatId = chats.get(position).getChat_id();
-            String userId2 = !chats.get(position).getUserId1().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ? chats.get(position).getUserId1() : chats.get(position).getUserId2();
+            String userId2 = !chats.get(position).getUserId1().equals(currentUserId) ? chats.get(position).getUserId1() : chats.get(position).getUserId2();
 
             ChatMessengerFragment fragment = new ChatMessengerFragment();
             Bundle args = new Bundle();

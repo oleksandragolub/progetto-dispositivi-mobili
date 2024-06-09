@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:gravity="fill_horizontal"
-            android:background="@drawable/border_btn"
+            android:background="@drawable/border2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -76,7 +76,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/round_btn"
+            android:background="@drawable/round_btn2"
             android:hint="@string/scrivi_un_messaggio"
             android:textColor="@color/white"
             android:padding="13dp"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:padding="4dp"
-            android:background="@drawable/round_btn"
+            android:background="@drawable/round_btn2"
             app:layout_constraintBottom_toBottomOf="@id/message_et"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/message_et">
