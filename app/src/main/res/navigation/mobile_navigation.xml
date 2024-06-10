@@ -18,7 +18,20 @@
         tools:layout="@layout/fragment_home"/>
 
 
-    <!-- PARTE USER (categorie+comics) -->
+    <fragment
+        android:id="@+id/navigation_character_info"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment"
+        android:label="Characters info"
+        tools:layout="@layout/fragment_character_info"/>
+
+    <fragment
+        android:id="@+id/navigation_comics_info"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.characters.ComicsInfoFragment"
+        android:label="Comics info"
+        tools:layout="@layout/fragment_comics_info"/>
+
+
+    <!-- PARTE USER (categorie+comixes) -->
 
     <fragment
         android:id="@+id/navigation_category_user"
@@ -34,7 +47,7 @@
     <fragment
         android:id="@+id/navigation_comics_user"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfListUserFragment"
-        android:label="User: comics"
+        android:label="User: comixes"
         tools:layout="@layout/fragment_comics_pdf_list_user">
 
         <action
@@ -45,7 +58,7 @@
     <fragment
         android:id="@+id/navigation_detail_comics_user"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment"
-        android:label="User: dettagli comics"
+        android:label="User: dettagli comixes"
         tools:layout="@layout/fragment_comics_pdf_detail_user">
 
         <action
@@ -57,12 +70,12 @@
     <fragment
         android:id="@+id/navigation_view_comics_user"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfViewUserFragment"
-        android:label="User: leggere il comics"
+        android:label="User: leggere il comixes"
         tools:layout="@layout/fragment_comics_pdf_view_user"/>
 
 
 
-    <!-- PARTE ADMIN (categorie+comics) -->
+    <!-- PARTE ADMIN (categorie+comixes) -->
 
     <fragment
         android:id="@+id/navigation_category_admin"
@@ -93,13 +106,13 @@
     <fragment
         android:id="@+id/navigation_add_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfAddFragment"
-        android:label="Admin: aggiungi comics"
+        android:label="Admin: aggiungi comixes"
         tools:layout="@layout/fragment_comics_pdf_add"/>
 
     <fragment
         android:id="@+id/navigation_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfListAdminFragment"
-        android:label="Admin: list comics"
+        android:label="Admin: list comixes"
         tools:layout="@layout/fragment_comics_pdf_list_admin">
 
         <action
@@ -115,13 +128,13 @@
     <fragment
         android:id="@+id/navigation_edit_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfEditFragment"
-        android:label="Admin: modifica comics"
+        android:label="Admin: modifica comixes"
         tools:layout="@layout/fragment_comics_pdf_edit"/>
 
     <fragment
         android:id="@+id/navigation_detail_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment"
-        android:label="Admin: dettagli comics"
+        android:label="Admin: dettagli comixes"
         tools:layout="@layout/fragment_comics_pdf_detail">
 
         <action
@@ -133,7 +146,7 @@
     <fragment
         android:id="@+id/navigation_view_comics"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfViewFragment"
-        android:label="Admin: leggere il comics"
+        android:label="Admin: leggere il comixes"
         tools:layout="@layout/fragment_comics_pdf_view"/>
 
 
@@ -147,7 +160,7 @@
 
     <fragment
         android:id="@+id/navigation_ricerca"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comixes.RicercaFragment"
         android:label="Ricerca"
         tools:layout="@layout/fragment_ricerca"/>
 

@@ -23,7 +23,17 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.ComicsInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiService;
+import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.Comix;
+import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ComicResponse;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.CategoryAddAdminFragment;
@@ -32,13 +42,19 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admi
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfViewFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.chat.new_chats.NewChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainAdminActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
+
+    private static final String PUBLIC_KEY = "93e5146b36c6609ec6a87d8104728ed2";
+    private static final String PRIVATE_KEY = "80e7b32472204a8f30779ecb3e20815e84384d7b";
+    private static final String TAG = "MainActivity";
     private ActivityAdminMainBinding binding;
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
@@ -112,6 +128,12 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                 } else if (id == R.id.chatsFragment) {
                     openFragment(new ChatsFragment());
                     return true;
+                } else if (id == R.id.navigation_character_info) {
+                    openFragment(new CharacterInfoFragment());
+                    return true;
+                } else if (id == R.id.navigation_comics_info) {
+                    openFragment(new ComicsInfoFragment());
+                    return true;
                 }
                 return false;
             }
@@ -146,7 +168,55 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         ComicsQuery query = ComicsQuery.Builder.create().withOffset(0).withLimit(10).build();
         MarvelResponse<ComicsDto> all = comicApiClient.getAll(query);
          */
+
+        long ts = System.currentTimeMillis();
+        String hash = getMd5(ts + PRIVATE_KEY + PUBLIC_KEY);
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<ComicResponse> call = apiService.getComics(ts, PUBLIC_KEY, hash, "comic", "comic", true, "thisMonth", "", 100);
+        call.enqueue(new Callback<ComicResponse>() {
+            @Override
+            public void onResponse(Call<ComicResponse> call, Response<ComicResponse> response) {
+                if (response.isSuccessful()) {
+                    List<Comix> comixes = response.body().getData().getResults();
+                    if (comixes.isEmpty()) {
+                        Log.e(TAG, "No comixes found");
+                    } else {
+                        // Visualizza i fumetti come desideri, ad esempio:
+                        StringBuilder builder = new StringBuilder();
+                        for (Comix comix : comixes) {
+                            builder.append(comix.getTitle()).append("\n");
+                        }
+                        Log.d(TAG, builder.toString());
+                        // textView.setText(builder.toString()); // Aggiorna questa linea per mostrare i risultati nel layout
+                    }
+                } else {
+                    Log.e(TAG, "Request not successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ComicResponse> call, Throwable t) {
+                Log.e(TAG, "Request failed", t);
+            }
+        });
     }
+
+    private String getMd5(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : messageDigest) {
+                hexString.append(String.format("%02x", b));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
    private void openFragment(Fragment fragment) {
@@ -189,6 +259,12 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         } else if (id == R.id.chatsFragment) {
             openFragment(new ChatsFragment());
             //return true;
+        } else if (id == R.id.navigation_character_info) {
+            openFragment(new CharacterInfoFragment());
+            //return true;
+        } else if (id == R.id.navigation_comics_info) {
+            openFragment(new ComicsInfoFragment());
+            return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();

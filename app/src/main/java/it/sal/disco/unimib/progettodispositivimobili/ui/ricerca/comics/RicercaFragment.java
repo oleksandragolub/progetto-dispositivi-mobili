@@ -21,7 +21,7 @@ public class RicercaFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         RicercaViewModel ricercaViewModel =
-                new ViewModelProvider(this).get(RicercaViewModel.class);
+                new ViewModelProvider(getActivity()).get(RicercaViewModel.class);
 
         binding = FragmentRicercaBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

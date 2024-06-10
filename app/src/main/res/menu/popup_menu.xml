@@ -17,6 +17,16 @@
             android:title="@string/title_chats" />
 
         <item
+            android:id="@+id/navigation_character_info"
+            android:icon="@drawable/baseline_hexagon_24"
+            android:title="Cerca personaggio" />
+
+        <item
+            android:id="@+id/navigation_comics_info"
+            android:icon="@drawable/baseline_hexagon_24"
+            android:title="Cerca comics" />
+
+        <item
             android:id="@+id/navigation_logout"
             android:icon="@drawable/logout_icone"
             android:title="Logout" />

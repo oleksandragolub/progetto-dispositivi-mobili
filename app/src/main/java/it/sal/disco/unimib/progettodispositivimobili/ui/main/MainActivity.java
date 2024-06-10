@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -118,6 +120,12 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.detailUserProfileFragment) {
                     openFragment(new DetailUserProfileFragment());
                     return true;
+                } else if (id == R.id.navigation_character_info) {
+                    openFragment(new CharacterInfoFragment());
+                    return true;
+                } else if (id == R.id.navigation_comics_info) {
+                    openFragment(new ComicsInfoFragment());
+                    return true;
                 }
                 return false;
             }
@@ -194,6 +202,12 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         } else if (id == R.id.chatsFragment) {
             openFragment(new ChatsFragment());
             //return true;
+        } else if (id == R.id.navigation_character_info) {
+            openFragment(new CharacterInfoFragment());
+            return true;
+        } else if (id == R.id.navigation_comics_info) {
+            openFragment(new ComicsInfoFragment());
+            return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();

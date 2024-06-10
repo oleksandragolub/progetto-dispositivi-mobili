@@ -45,7 +45,7 @@ public final class ComicApiClient extends MarvelApiClient {
             comicResponse.setResponse(comicDto);
             return comicResponse;
         } else {
-            throw new MarvelApiException("Comic not found", null);
+            throw new MarvelApiException("Comix not found", null);
         }
     }
 }

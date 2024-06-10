@@ -97,31 +97,31 @@
     <string name="category_title_3">Titolo della categoria</string>
     <string name="txt_search_catalogo">Cerca una categoria</string>
     <string name="txt_search_category">Cerca una categoria</string>
-    <string name="txt_add_new_comics">Aggiungi un nuovo comics</string>
-    <string name="comics_title">Titolo del comics</string>
-    <string name="comics_description">Descrizione del comics</string>
-    <string name="comics_category">Categoria del comics</string>
-    <string name="title_comics">Titolo del comics</string>
-    <string name="description_comics">Descrizione del comics</string>
+    <string name="txt_add_new_comics">Aggiungi un nuovo comixes</string>
+    <string name="comics_title">Titolo del comixes</string>
+    <string name="comics_description">Descrizione del comixes</string>
+    <string name="comics_category">Categoria del comixes</string>
+    <string name="title_comics">Titolo del comixes</string>
+    <string name="description_comics">Descrizione del comixes</string>
     <string name="size_comics">13 MB</string>
     <string name="date_comics">dd/mm/yyyy</string>
     <string name="category_comics">Categoria</string>
-    <string name="comics">Comics</string>
+    <string name="comixes">Comics</string>
     <string name="Categoria" />
     <string name="categoria_text">Categoria\n</string>
     <string name="cerca_text">Cerca</string>
-    <string name="txt_edit_comics">Modifica i dati di un comics</string>
+    <string name="txt_edit_comics">Modifica i dati di un comixes</string>
     <string name="update_btn_2">Aggiorna</string>
     <string name="comics_detail">Dettagli</string>
-    <string name="titolo_del_comics">Titolo del comics</string>
+    <string name="titolo_del_comics">Titolo del comixes</string>
     <string name="categoria_text2">Categoria</string>
     <string name="na">N/A</string>
     <string name="date_text2">Data</string>
     <string name="size_text2">Dimensione</string>
     <string name="views_text2">Visualizzazioni</string>
     <string name="downloads_text2">Downloads</string>
-    <string name="descrizione_comics">Descrizione del comics</string>
-    <string name="txt_comics">Leggi il comics</string>
+    <string name="descrizione_comics">Descrizione del comixes</string>
+    <string name="txt_comics">Leggi il comixes</string>
     <string name="txt1">N/N</string>
     <string name="downloads_text3">Scaricato</string>
     <string name="pages_text3">Pagine</string>
@@ -129,6 +129,35 @@
     <string name="preferiti2">Aggiungi a preferiti</string>
     <string name="preferiti3">Aggiungi</string>
     <string name="count">N/A</string>
+    <string name="txt_search_personaggio">Cerca un personaggio</string>
+    <string name="name_character">Nome del personaggio</string>
+    <string name="descripzione_personaggio">Descrizione del personaggio</string>
 
 
+    <string name="superhero">Personaggio</string>
+    <string name="cerca_personaggio">Cerca un personaggio</string>
+    <string name="imagesuperhero">Image of Superhero</string>
+    <string name="empty">Il campo di ricerca è vuoto.</string>
+    <string name="close">Chiudi</string>
+    <string name="no_exist">Il personaggio non esiste.</string>
+    <string name="no_description_available">non ce</string>
+
+    <string name="network_error">Network error occurred. Please check your connection.</string>
+    <string name="service_error">Service error occurred. Please try again later.</string>
+    <string name="image_download_error">Failed to download image.</string>
+    <string name="comics">Comics</string>
+    <string name="cerca_fumetto">Cerca un comics</string>
+
+
+    <string-array name="genres_array">
+        <item>Action</item>
+        <item>Adventure</item>
+        <item>Comedy</item>
+        <item>Drama</item>
+        <item>Fantasy</item>
+        <item>Horror</item>
+        <item>Romance</item>
+        <item>Sci-Fi</item>
+        <item>Superhero</item>
+    </string-array>
 </resources>

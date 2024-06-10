@@ -70,7 +70,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Elimina").setMessage("Sei sicuro di voler eliminare questo caralogo?")
+                builder.setTitle("Elimina").setMessage("Sei sicuro di voler eliminare questo catalogo?")
                         .setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
