@@ -12,6 +12,8 @@ public class Comic {
     private String size;
     private String date;
 
+    private String imageUrl;
+
     // Getters and setters
     public int getId() {
         return id;
@@ -19,6 +21,10 @@ public class Comic {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdAsString() {
+        return String.valueOf(id);
     }
 
     public String getTitle() {
@@ -76,4 +82,13 @@ public class Comic {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }
