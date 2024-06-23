@@ -8,6 +8,9 @@ public class Comic {
     private String description;
     private Thumbnail thumbnail;
     private List<Url> urls;
+    private String category;
+    private String size;
+    private String date;
 
     // Getters and setters
     public int getId() {
@@ -48,5 +51,29 @@ public class Comic {
 
     public void setUrls(List<Url> urls) {
         this.urls = urls;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
