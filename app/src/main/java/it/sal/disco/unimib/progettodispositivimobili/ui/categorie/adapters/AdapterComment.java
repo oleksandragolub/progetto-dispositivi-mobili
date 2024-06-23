@@ -106,7 +106,7 @@ public class AdapterComment extends  RecyclerView.Adapter<AdapterComment.HolderC
                                     }
                                 });
                     }
-                }).setNegativeButton("Cencella", new DialogInterface.OnClickListener() {
+                }).setNegativeButton("Cancella", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

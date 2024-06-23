@@ -29,4 +29,14 @@ public interface MarvelApi {
             @Query("apikey") String apiKey,
             @Query("hash") String hash
     );
+
+    @GET("v1/public/comics")
+    Call<ComicDataWrapper> getComics(
+            @Query("ts") String ts,
+            @Query("apikey") String apiKey,
+            @Query("hash") String hash,
+            @Query("limit") int limit,
+            @Query("offset") int offset,
+            @Query("title") String title
+    );
 }

@@ -70,6 +70,32 @@ public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewH
         return new ComicViewHolder(view);
     }
 
+    /*@Override
+    public void onBindViewHolder(@NonNull ComicViewHolder holder, int position) {
+        Comic comic = comics.get(position);
+        holder.title.setText(comic.getTitle());
+        holder.description.setText(comic.getDescription());
+
+        String imageUrl = comic.getThumbnail().getPath() + "." + comic.getThumbnail().getExtension();
+        Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.thumbnail);
+
+        holder.itemView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("thumbnailUrl", imageUrl);
+            bundle.putString("title", comic.getTitle());
+            bundle.putString("description", comic.getDescription());
+
+            ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
+            fragment.setArguments(bundle);
+
+            FragmentActivity activity = (FragmentActivity) v.getContext();
+            activity.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+    }*/
+
     @Override
     public void onBindViewHolder(@NonNull ComicViewHolder holder, int position) {
         Comic comic = comics.get(position);
@@ -84,6 +110,7 @@ public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewH
             bundle.putString("thumbnailUrl", imageUrl);
             bundle.putString("title", comic.getTitle());
             bundle.putString("description", comic.getDescription());
+            bundle.putString("comicId", String.valueOf(comic.getId()));  // Aggiungi questa linea
 
             ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
             fragment.setArguments(bundle);
@@ -113,4 +140,3 @@ public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewH
         }
     }
 }
-
