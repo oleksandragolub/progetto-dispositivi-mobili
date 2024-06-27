@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
@@ -32,6 +33,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -41,6 +44,8 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +55,13 @@ import java.util.Locale;
 
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ComicsApi;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import okhttp3.ResponseBody;
 
 public class MyApplication extends Application {
 
@@ -332,7 +344,6 @@ public class MyApplication extends Application {
 
             }
         });
-
     }
 
     public static void downloadComics(Context context, String comicsId, String comicsTitle, String comicsUrl) {
@@ -404,6 +415,189 @@ public class MyApplication extends Application {
             progressDialog.dismiss();
         }
     }
+
+    public static void downloadMarvelComics(Context context, String comicsId, String comicsTitle, String comicsUrl) {
+        String TAG_DOWNLOAD = "DOWNLOAD_TAG";
+        Log.d(TAG_DOWNLOAD, "downloadMarvelComics: downloading comics...");
+        String nameWithExtension = comicsTitle + ".pdf";
+        Log.d(TAG_DOWNLOAD, "downloadMarvelComics: NAME: " + nameWithExtension);
+
+        if (comicsUrl == null || comicsUrl.isEmpty()) {
+            Log.e(TAG_DOWNLOAD, "downloadMarvelComics: comicsUrl is null or empty");
+            Toast.makeText(context, "Failed to download due to invalid comics URL.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Per favore aspetta");
+        progressDialog.setMessage("Downloading " + nameWithExtension + "...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
+        Call<ResponseBody> call = apiService.downloadComicPdf(comicsUrl);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    boolean writtenToDisk = saveDownloadedMarvelComics(context, progressDialog, response.body(), nameWithExtension, comicsId);
+                    if (writtenToDisk) {
+                        incrementComicsDownloadMarvelCount(comicsId);
+                    }
+                } else {
+                    Log.d(TAG_DOWNLOAD, "onFailure: Failed to download, response code: " + response.code());
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Failed to download, response code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG_DOWNLOAD, "onFailure: Failed to download due to " + t.getMessage());
+                progressDialog.dismiss();
+                Toast.makeText(context, "Failed to download due to " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private static boolean saveDownloadedMarvelComics(Context context, ProgressDialog progressDialog, ResponseBody body, String nameWithExtension, String comicsId) {
+        Log.d(TAG_DOWNLOAD, "saveDownloadedMarvelComics: Saving downloaded comics");
+        try {
+            File downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (!downloadsFolder.exists()) {
+                downloadsFolder.mkdirs();
+            }
+
+            File file = new File(downloadsFolder, nameWithExtension);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(file);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+
+                    Log.d(TAG_DOWNLOAD, "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+                Toast.makeText(context, "Saved to Download Folder", Toast.LENGTH_SHORT).show();
+                Log.d(TAG_DOWNLOAD, "saveDownloadedMarvelComics: Saved to Download Folder");
+                progressDialog.dismiss();
+                return true;
+            } catch (IOException e) {
+                Log.d(TAG_DOWNLOAD, "saveDownloadedMarvelComics: Failed to save due to " + e.getMessage());
+                Toast.makeText(context, "Failed to save due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            Log.d(TAG_DOWNLOAD, "saveDownloadedMarvelComics: Failed to save due to " + e.getMessage());
+            Toast.makeText(context, "Failed to save due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            return false;
+        }
+    }
+
+    private static void incrementComicsDownloadMarvelCount(String comicsId) {
+        Log.d(TAG_DOWNLOAD, "incrementComicsDownloadMarvelCount: Incrementing Comics Download Count");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel");
+        ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
+                Log.d(TAG_DOWNLOAD, "onDataChange: Downloads Count: " + downloadsCount);
+
+                if (downloadsCount.equals("") || downloadsCount.equals("null")) {
+                    downloadsCount = "0";
+                }
+
+                long newDownloadsCount = Long.parseLong(downloadsCount) + 1;
+                Log.d(TAG_DOWNLOAD, "onDataChange: New Download Count: " + newDownloadsCount);
+
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("downloadsCount", newDownloadsCount);
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("ComicsMarvel");
+                reference.child(comicsId).updateChildren(hashMap).addOnSuccessListener(unused -> Log.d(TAG_DOWNLOAD, "onSuccess: Downloads Count updated...")).addOnFailureListener(e -> Log.d(TAG_DOWNLOAD, "onFailure: Failed to update Downloads Count due to " + e.getMessage()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG_DOWNLOAD, "onCancelled: Failed to update Downloads Count due to " + error.getMessage());
+            }
+        });
+    }
+
+    public static void incrementMarvelComicsViewCount(String comicsId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(comicsId);
+        ref.child("viewsCount").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Integer currentValue = currentData.getValue(Integer.class);
+                if (currentValue == null) {
+                    currentData.setValue(1);
+                } else {
+                    currentData.setValue(currentValue + 1);
+                }
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                if (error != null) {
+                    Log.e("INCREMENT_VIEW_COUNT", "Failed to increment view count for comicId: " + comicsId + " due to " + error.getMessage());
+                }
+            }
+        });
+    }
+
+    private static void incrementMarvelComicsDownloadCount(String comicsId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(comicsId);
+        ref.child("downloadsCount").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Integer currentValue = currentData.getValue(Integer.class);
+                if (currentValue == null) {
+                    currentData.setValue(1);
+                } else {
+                    currentData.setValue(currentValue + 1);
+                }
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                if (error != null) {
+                    Log.e("INCREMENT_DOWNLOAD_COUNT", "Failed to increment download count for comicId: " + comicsId + " due to " + error.getMessage());
+                }
+            }
+        });
+    }
+
+
 
    /* public static void loadPdfPageCount(Context context, String pdfUrl, TextView pagesTv){
         StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
