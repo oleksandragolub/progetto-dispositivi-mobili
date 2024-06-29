@@ -101,7 +101,7 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
                 holder.titleTv.setText(comicsTitle);
                 holder.descriptionTv.setText(description);
 
-                MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, holder.pdfView, holder.progressBar);
+                MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, holder.pdfView, holder.progressBar, null);
             }
 
             @Override

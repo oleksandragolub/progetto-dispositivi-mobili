@@ -291,10 +291,10 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
                 MyApplication.loadCategory("" + categoryId, binding.categoryTv);
-               // MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
-                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar);
+                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+               // MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar);
                 MyApplication.loadPdfSize("" + comicsUrl, "" + comicsTitle, binding.sizeTv);
-                //MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
+                MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
 
 
                 binding.titleTv.setText(comicsTitle);

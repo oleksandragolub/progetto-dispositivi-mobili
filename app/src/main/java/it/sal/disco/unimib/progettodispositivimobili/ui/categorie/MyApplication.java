@@ -207,7 +207,7 @@ public class MyApplication extends Application {
         });
     }*/
 
-    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
+    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
         String TAG = "PDF_LOAD_SINGLE_TAG";
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -239,9 +239,9 @@ public class MyApplication extends Application {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 Log.d(TAG, "loadComplete: pdf loaded");
 
-                               /* if(pagesTv != null){
+                                if(pagesTv != null){
                                     pagesTv.setText(""+nbPages);
-                                }*/
+                                }
                             }
                         })
                         .load();
@@ -655,7 +655,7 @@ public class MyApplication extends Application {
 
 
 
-   /* public static void loadPdfPageCount(Context context, String pdfUrl, TextView pagesTv){
+    public static void loadPdfPageCount(Context context, String pdfUrl, TextView pagesTv){
         StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
         storageReference.getBytes(MAX_BYTES_PDF).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -674,7 +674,7 @@ public class MyApplication extends Application {
 
             }
         });
-    }*/
+    }
 
     public static void addToFavorite(Context context, String comicsId){
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

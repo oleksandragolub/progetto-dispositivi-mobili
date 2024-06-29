@@ -75,8 +75,8 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
         holder.descriptionTv.setText(description);
         //holder.dateTv.setText(date);
 
-        //MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
-        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
+        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
+       // MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
         MyApplication.loadCategory("" + categoryId, holder.categoryTv);
         //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTv);
 

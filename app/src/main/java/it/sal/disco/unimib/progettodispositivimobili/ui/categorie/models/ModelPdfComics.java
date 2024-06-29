@@ -9,11 +9,7 @@ public class ModelPdfComics {
     boolean favorite = false;
     private boolean fromApi = false;
 
-   /* public ModelPdfComics(){
-
-    }*/
-
-    public ModelPdfComics() {
+    public ModelPdfComics(){
 
     }
 
