@@ -162,8 +162,7 @@ public class MyApplication extends Application {
         });
     }
 
-
-    /*public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
+   /* public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
         String TAG = "PDF_LOAD_SINGLE_TAG";
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -208,7 +207,7 @@ public class MyApplication extends Application {
         });
     }*/
 
-    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
+    public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
         String TAG = "PDF_LOAD_SINGLE_TAG";
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
@@ -240,9 +239,9 @@ public class MyApplication extends Application {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 Log.d(TAG, "loadComplete: pdf loaded");
 
-                                if(pagesTv != null){
+                               /* if(pagesTv != null){
                                     pagesTv.setText(""+nbPages);
-                                }
+                                }*/
                             }
                         })
                         .load();
@@ -256,6 +255,63 @@ public class MyApplication extends Application {
             }
         });
     }
+
+    public static void loadPdfFromApi(String pdfUrl, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
+        String TAG = "PDF_LOAD_API_TAG";
+        ApiClient.getClient().create(ComicsApi.class).downloadComicPdf(pdfUrl).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        byte[] bytes = response.body().bytes();
+                        pdfView.fromBytes(bytes)
+                                .pages(0) // Display only the first page
+                                .spacing(0)
+                                .swipeHorizontal(false)
+                                .enableSwipe(false)
+                                .onError(new OnErrorListener() {
+                                    @Override
+                                    public void onError(Throwable t) {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        Log.d(TAG, "onError: " + t.getMessage());
+                                    }
+                                }).onPageError(new OnPageErrorListener() {
+                                    @Override
+                                    public void onPageError(int page, Throwable t) {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        Log.d(TAG, "onPageError: " + t.getMessage());
+                                    }
+                                }).onLoad(new OnLoadCompleteListener() {
+                                    @Override
+                                    public void loadComplete(int nbPages) {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        Log.d(TAG, "loadComplete: pdf loaded");
+
+                                        if (pagesTv != null) {
+                                            pagesTv.setText("" + nbPages);
+                                        }
+                                    }
+                                })
+                                .load();
+                    } catch (IOException e) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Log.d(TAG, "onResponse: failed to load bytes due to " + e.getMessage());
+                    }
+                } else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "onResponse: failed to get response");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Log.d(TAG, "onFailure: failed to get file from url due to " + t.getMessage());
+            }
+        });
+    }
+
+
 
     public static void loadCategory(String categoryId, TextView categoryTV) {
         String TAG = "PDF_LOAD_CATEGORY_TAG";

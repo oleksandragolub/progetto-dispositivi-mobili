@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,39 +68,19 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
     public void onBindViewHolder(@NonNull HolderPdfComicsFavorite holder, int position) {
         ModelPdfComics model = pdfArrayList.get(position);
 
-        loadComicsDetails(model, holder);
+        if (model.isFromApi()) {
+            loadApiComicsDetails(model, holder);
+        } else {
+            loadComicsDetails(model, holder);
+        }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("comicsId", model.getId());
-
-                ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
-                comicsPdfDetailFragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(model);
             }
         });
-       /* holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(model);
-                }
-            }
-        });*/
 
-        holder.removeFavBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyApplication.removeFromFavorite(context, model.getId());
-            }
-        });
+        holder.removeFavBtn.setOnClickListener(v -> MyApplication.removeFromFavorite(context, model.getId()));
     }
 
     private void loadComicsDetails(ModelPdfComics model, HolderPdfComicsFavorite holder) {
@@ -108,38 +89,40 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
         ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String comicsTitle = "" + snapshot.child("titolo").getValue();
-                String description = "" + snapshot.child("descrizione").getValue();
-                String categoryId = "" + snapshot.child("categoryId").getValue();
-                String comicsUrl = "" + snapshot.child("url").getValue();
-                String timestamp = "" + snapshot.child("timestamp").getValue();
-                String uid = "" + snapshot.child("uid").getValue();
-                String viewsCount = "" + snapshot.child("viewsCount").getValue();
-                String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
+                String comicsTitle = snapshot.child("titolo").getValue(String.class);
+                String description = snapshot.child("descrizione").getValue(String.class);
+                String comicsUrl = snapshot.child("url").getValue(String.class);
 
                 model.setFavorite(true);
                 model.setTitolo(comicsTitle);
                 model.setDescrizione(description);
-                model.setTimestamp(Long.parseLong(timestamp));
-                model.setCategoryId(categoryId);
-                model.setUid(uid);
                 model.setUrl(comicsUrl);
-
-                String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
-
-                MyApplication.loadCategory(categoryId, holder.categoryTv);
-                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, holder.pdfView, holder.progressBar, null);
-                MyApplication.loadPdfSize("" + comicsUrl, "" + comicsTitle, holder.sizeTv);
 
                 holder.titleTv.setText(comicsTitle);
                 holder.descriptionTv.setText(description);
-                holder.dateTv.setText(date);
+
+                MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, holder.pdfView, holder.progressBar);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void loadApiComicsDetails(ModelPdfComics model, HolderPdfComicsFavorite holder) {
+        String comicsTitle = model.getTitolo();
+        String description = model.getDescrizione();
+        String comicsUrl = model.getUrl();
+
+        holder.titleTv.setText(comicsTitle);
+        holder.descriptionTv.setText(description);
+
+        if (comicsUrl != null && !comicsUrl.isEmpty()) {
+            MyApplication.loadPdfFromApi(comicsUrl, holder.pdfView, holder.progressBar, null);
+        } else {
+            holder.progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -166,9 +149,6 @@ public class AdapterPdfComicsFavorite extends RecyclerView.Adapter<AdapterPdfCom
 
             titleTv = binding.titleComics;
             descriptionTv = binding.descriptionComics;
-            categoryTv = binding.categoryComics;
-            sizeTv = binding.sizeComics;
-            dateTv = binding.dateComics;
             pdfView = binding.pdfView;
             progressBar = binding.progressBar;
             removeFavBtn = binding.removeFavBtn;

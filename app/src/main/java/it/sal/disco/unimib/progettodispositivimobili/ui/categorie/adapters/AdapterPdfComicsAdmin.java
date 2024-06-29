@@ -86,8 +86,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         holder.dateTV.setText(formattedDate);
 
         MyApplication.loadCategory("" + categoryId, holder.categoryTV);
-        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
-        MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTV);
+        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
+       // MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
+        //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTV);
 
         holder.moreBTN.setOnClickListener(new View.OnClickListener() {
             @Override

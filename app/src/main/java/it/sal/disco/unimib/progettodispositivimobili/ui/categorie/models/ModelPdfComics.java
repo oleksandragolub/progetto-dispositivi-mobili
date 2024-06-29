@@ -1,12 +1,19 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 
+import java.util.Objects;
+
 public class ModelPdfComics {
 
     String uid, id, titolo, descrizione, categoryId, url;
     long timestamp, viewsCount, downloadsCount;
     boolean favorite = false;
+    private boolean fromApi = false;
 
-    public ModelPdfComics(){
+   /* public ModelPdfComics(){
+
+    }*/
+
+    public ModelPdfComics() {
 
     }
 
@@ -22,6 +29,27 @@ public class ModelPdfComics {
         this.downloadsCount = downloadsCount;
         this.favorite = favorite;
     }
+    public boolean isFromApi() {
+        return fromApi;
+    }
+
+    public void setFromApi(boolean fromApi) {
+        this.fromApi = fromApi;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelPdfComics that = (ModelPdfComics) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
 
     public String getUid() {
         return uid;

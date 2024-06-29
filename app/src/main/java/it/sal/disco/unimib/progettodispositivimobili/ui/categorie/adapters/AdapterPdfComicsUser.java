@@ -67,30 +67,19 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
         String description = model.getDescrizione();
         String pdfUrl = model.getUrl();
         String categoryId = model.getCategoryId();
-        long timestamp = model.getTimestamp();
+       // long timestamp = model.getTimestamp();
 
-        String date = MyApplication.formatTimestamp(timestamp);
+        //String date = MyApplication.formatTimestamp(timestamp);
 
         holder.titleTv.setText(title);
         holder.descriptionTv.setText(description);
-        holder.dateTv.setText(date);
+        //holder.dateTv.setText(date);
 
-        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
+        //MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
+        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
         MyApplication.loadCategory("" + categoryId, holder.categoryTv);
-        MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTv);
+        //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTv);
 
-       /* holder.itemView.setOnClickListener(v -> {
-            ComicsPdfDetailUserFragment fragment = new ComicsPdfDetailUserFragment();
-            Bundle args = new Bundle();
-            args.putString("comicsId", model.getId());
-            fragment.setArguments(args);
-
-            FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.nav_host_fragment, fragment);
-            transaction.addToBackStack(null); // Aggiungi il frammento al back stack
-            transaction.commit();
-        });*/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

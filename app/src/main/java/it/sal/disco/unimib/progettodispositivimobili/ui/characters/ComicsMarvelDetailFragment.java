@@ -117,7 +117,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
             }
         });
 
-        /*binding.favoriteComicsBtn.setOnClickListener(v -> {
+        binding.favoriteComicsBtn.setOnClickListener(v -> {
             if (firebaseAuth.getCurrentUser() == null) {
                 Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
             } else {
@@ -127,7 +127,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
                     addToFavorites();
                 }
             }
-        });*/
+        });
 
         loadComments();
         checkIsFavorite();
@@ -451,5 +451,44 @@ public class ComicsMarvelDetailFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void addToFavorites() {
+        String userId = firebaseAuth.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId).child("Favorites").child(comicsId);
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("comicsId", comicsId);
+        hashMap.put("titolo", comicsTitle);
+        hashMap.put("descrizione", binding.comicDescription.getText().toString());
+        hashMap.put("url", comicsUrl);
+        //hashMap.put("timestamp", System.currentTimeMillis());
+
+        ref.setValue(hashMap).addOnSuccessListener(aVoid -> {
+            Toast.makeText(getActivity(), "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show();
+            isInMyFavorites = true;
+            updateFavoriteButton();
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to add to favorites", Toast.LENGTH_SHORT).show());
+    }
+
+    private void removeFromFavorites() {
+        String userId = firebaseAuth.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId).child("Favorites").child(comicsId);
+
+        ref.removeValue().addOnSuccessListener(aVoid -> {
+            Toast.makeText(getActivity(), "Rimosso dai preferiti", Toast.LENGTH_SHORT).show();
+            isInMyFavorites = false;
+            updateFavoriteButton();
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to remove from favorites", Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateFavoriteButton() {
+        if (isInMyFavorites) {
+            binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
+            binding.favoriteComicsBtn.setText("Rimuovi");
+        } else {
+            binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
+            binding.favoriteComicsBtn.setText("Aggiungi");
+        }
     }
 }

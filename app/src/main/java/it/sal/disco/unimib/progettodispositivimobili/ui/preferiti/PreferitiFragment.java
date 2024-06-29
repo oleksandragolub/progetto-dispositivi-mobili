@@ -1,4 +1,3 @@
-
 package it.sal.disco.unimib.progettodispositivimobili.ui.preferiti;
 
 import android.os.Bundle;
@@ -40,11 +39,14 @@ public class PreferitiFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         binding = FragmentPreferitiBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        pdfArrayList = new ArrayList<>();
+        adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
+        binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
 
         loadFavoriteComics();
 
@@ -79,31 +81,73 @@ public class PreferitiFragment extends Fragment {
     }
 
     private void loadFavoriteComics() {
-        pdfArrayList = new ArrayList<>();
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");
         ref.child(firebaseAuth.getUid()).child("Favorites").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pdfArrayList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    String comicsId = "" + ds.child("comicsId").getValue();
-
-                    ModelPdfComics modelPdf = new ModelPdfComics();
-                    modelPdf.setId(comicsId);
-
-                    pdfArrayList.add(modelPdf);
+                    String comicsId = ds.child("comicsId").getValue(String.class);
+                    if (comicsId != null) {
+                        ModelPdfComics modelPdf = new ModelPdfComics();
+                        modelPdf.setId(comicsId);
+                        if (ds.hasChild("titolo") || ds.hasChild("descrizione") || ds.hasChild("url")) {
+                            modelPdf.setFromApi(true);
+                            modelPdf.setTitolo(ds.child("titolo").getValue(String.class));
+                            modelPdf.setDescrizione(ds.child("descrizione").getValue(String.class));
+                            modelPdf.setUrl(ds.child("url").getValue(String.class));
+                        }
+                        pdfArrayList.add(modelPdf);
+                    }
                 }
-
-                binding.subTitleTv.setText("" + pdfArrayList.size());
-
-                adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
-                binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
+                loadFavoriteApiComics();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Gestione degli errori
+            }
+        });
+    }
+
+    private void loadFavoriteApiComics() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati")
+                .child(firebaseAuth.getUid())
+                .child("Favorites");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (binding == null) {
+                    return; // Exit if the binding is null
+                }
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String comicsId = ds.child("comicsId").getValue(String.class);
+                    if (comicsId != null) {
+                        String titolo = ds.child("titolo").getValue(String.class);
+                        String descrizione = ds.child("descrizione").getValue(String.class);
+                        String url = ds.child("url").getValue(String.class);
+
+                        ModelPdfComics modelPdf = new ModelPdfComics();
+                        modelPdf.setId(comicsId);
+                        modelPdf.setTitolo(titolo != null ? titolo : "Unknown Title");
+                        modelPdf.setDescrizione(descrizione != null ? descrizione : "No Description Available");
+                        modelPdf.setUrl(url != null ? url : "No URL Available");
+                        modelPdf.setFromApi(true); // Imposta questo flag per distinguere i dati API
+
+                        if (!pdfArrayList.contains(modelPdf)) {
+                            pdfArrayList.add(modelPdf);
+                        }
+                    }
+                }
+
+                adapterPdfFavorite.notifyDataSetChanged();
+                binding.subTitleTv.setText("" + pdfArrayList.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
             }
         });
     }
