@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.characters;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,10 +21,8 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsInfoBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.ComicDataWrapper;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.MarvelComicService;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ApiClient;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ComicsApi;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -29,7 +29,7 @@ import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.ComicsInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiService;
 import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.Comix;

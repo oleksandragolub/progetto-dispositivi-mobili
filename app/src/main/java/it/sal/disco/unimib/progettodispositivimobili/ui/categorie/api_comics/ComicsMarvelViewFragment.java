@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.characters;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
 import android.net.Uri;
 import android.os.AsyncTask;

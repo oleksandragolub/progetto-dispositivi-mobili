@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,7 +26,9 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentPreferitiBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 
 public class PreferitiFragment extends Fragment {
@@ -74,6 +77,15 @@ public class PreferitiFragment extends Fragment {
         binding.buttonBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 openFragment(new ProfileFragment());
+            }
+        });
+
+        // Setup item click listener
+        adapterPdfFavorite.setOnItemClickListener(model -> {
+            if (model.isFromApi()) {
+                openComicsMarvelDetailFragment(model);
+            } else {
+                openComicsPdfDetailUserFragment(model);
             }
         });
 
@@ -158,6 +170,72 @@ public class PreferitiFragment extends Fragment {
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void openComicsPdfDetailUserFragment(String comicsId) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openComicsPdfDetailUserFragment(ModelPdfComics model) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("modelPdfComics", model);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openComicsMarvelDetailFragment(ModelPdfComics model) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(model.getId());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String thumbnailUrl = snapshot.hasChild("thumbnailUrl") ? snapshot.child("thumbnailUrl").getValue(String.class) : "";
+                    String title = snapshot.hasChild("title") ? snapshot.child("title").getValue(String.class) : "";
+                    String description = snapshot.hasChild("description") ? snapshot.child("description").getValue(String.class) : "";
+
+                    Log.d(TAG, "Fetched data - title: " + title + ", description: " + description + ", thumbnailUrl: " + thumbnailUrl);
+
+                    model.setTitolo(title);
+                    model.setDescrizione(description);
+                    model.setUrl(thumbnailUrl);
+
+                    ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("modelPdfComics", model);
+                    comicsMarvelDetailFragment.setArguments(args);
+
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } else {
+                    Log.e(TAG, "Comics not found for comicsId: " + model.getId());
+                    Toast.makeText(getActivity(), "Comics not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "openComicsMarvelDetailFragment: Failed to fetch comic details", error.toException());
+                Toast.makeText(getActivity(), "Failed to fetch comic details", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

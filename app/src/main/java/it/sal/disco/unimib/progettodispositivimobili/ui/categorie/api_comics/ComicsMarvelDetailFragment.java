@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.characters;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -39,12 +39,12 @@ import java.util.HashMap;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.DialogCommentAddBinding;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsMarvelDetailBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelComment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ApiClient;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve.ComicsApi;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +62,8 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
     private String comicsTitle;
     private String comicsUrl;
+    private String thumbnailUrl;
+    private String title, description;
 
     @Nullable
     @Override
@@ -72,29 +74,35 @@ public class ComicsMarvelDetailFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(getActivity());
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String thumbnailUrl = bundle.getString("thumbnailUrl");
-            String title = bundle.getString("title");
-            String description = bundle.getString("description");
-            comicsId = bundle.getString("comicId");
-
-            Glide.with(this).load(thumbnailUrl).into(binding.comicThumbnail);
-            binding.comicTitle.setText(title);
-            binding.comicDescription.setText(description);
-
-            comicsTitle = title; // Save the title for download
-
-            // Fetch the PDF URL and other details
-            initializeAndFetchComicDetails(comicsId);
+        ModelPdfComics modelPdfComics = null;
+        if (getArguments() != null) {
+            modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
         }
+
+        if (modelPdfComics != null) {
+            comicsId = modelPdfComics.getId();
+            thumbnailUrl = modelPdfComics.getUrl();
+            title = modelPdfComics.getTitolo();
+            description = modelPdfComics.getDescrizione();
+        } else {
+            Log.e(TAG_DOWNLOAD, "ModelPdfComics is null");
+            Toast.makeText(getActivity(), "Comics ID is null", Toast.LENGTH_SHORT).show();
+            return view;
+        }
+
+        binding.comicTitle.setText(title);
+        binding.comicDescription.setText(description);
+        comicsTitle = title;
+
+        Glide.with(this).load(thumbnailUrl).into(binding.comicThumbnail);
+
+        initializeAndFetchComicDetails(comicsId);
 
         view.findViewById(R.id.buttonBackUser).setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         binding.readComicsBtn.setOnClickListener(v -> {
             if (comicsUrl != null && !comicsUrl.isEmpty()) {
                 openPdfViewer(comicsUrl);
-                // Increment view count when the comic is read
                 MyApplication.incrementMarvelComicsViewCount(comicsId);
             } else {
                 Toast.makeText(getActivity(), "Comic URL not available. Please try again later.", Toast.LENGTH_SHORT).show();
@@ -135,12 +143,30 @@ public class ComicsMarvelDetailFragment extends Fragment {
         return view;
     }
 
+
     private void initializeAndFetchComicDetails(String comicId) {
+        if (comicId == null || comicId.isEmpty()) {
+            Log.e(TAG_DOWNLOAD, "initializeAndFetchComicDetails: comicId is null or empty");
+            return;
+        }
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(comicId);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.hasChild("comicsId")) {
+                    ref.child("comicsId").setValue(comicsId);
+                }
+                if (!snapshot.hasChild("title")) {
+                    ref.child("title").setValue(title);
+                }
+                if (!snapshot.hasChild("description")) {
+                    ref.child("description").setValue(description);
+                }
+                if (!snapshot.hasChild("thumbnailUrl")) {
+                    ref.child("thumbnailUrl").setValue(thumbnailUrl);
+                }
                 if (!snapshot.hasChild("viewsCount")) {
                     ref.child("viewsCount").setValue(0);
                 }

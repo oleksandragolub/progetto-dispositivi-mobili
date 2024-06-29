@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.characters.archieve;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve;
 
 import com.google.gson.JsonObject;
 

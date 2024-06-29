@@ -25,7 +25,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.ComicsInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -35,7 +35,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfViewUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatsFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.chat.new_chats.NewChatFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;

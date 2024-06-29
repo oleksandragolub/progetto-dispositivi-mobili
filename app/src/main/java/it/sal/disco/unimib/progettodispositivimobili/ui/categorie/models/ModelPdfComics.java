@@ -1,8 +1,9 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ModelPdfComics {
+public class ModelPdfComics implements Serializable {
 
     String uid, id, titolo, descrizione, categoryId, url;
     long timestamp, viewsCount, downloadsCount;

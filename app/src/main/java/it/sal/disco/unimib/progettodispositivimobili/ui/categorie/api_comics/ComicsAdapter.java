@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.characters;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
 
 public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewHolder> {
@@ -44,11 +45,14 @@ public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewH
         Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.thumbnail);
 
         holder.itemView.setOnClickListener(v -> {
+            ModelPdfComics modelPdfComics = new ModelPdfComics();
+            modelPdfComics.setId(comic.getId());
+            modelPdfComics.setTitolo(comic.getTitle());
+            modelPdfComics.setDescrizione(comic.getDescription());
+            modelPdfComics.setUrl(comic.getThumbnail());
+
             Bundle bundle = new Bundle();
-            bundle.putString("thumbnailUrl", comic.getThumbnail());
-            bundle.putString("title", comic.getTitle());
-            bundle.putString("description", comic.getDescription());
-            bundle.putString("comicId", comic.getId());
+            bundle.putSerializable("modelPdfComics", modelPdfComics);
 
             ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
             detailFragment.setArguments(bundle);
