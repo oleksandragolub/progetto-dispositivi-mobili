@@ -45,6 +45,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.Constants;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelComment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class ComicsPdfDetailUserFragment extends Fragment {
 
@@ -53,10 +54,11 @@ public class ComicsPdfDetailUserFragment extends Fragment {
     private ArrayList<ModelComment> commentArrayList;
     private AdapterComment adapterComment;
     private FirebaseAuth firebaseAuth;
-    String comicsId, comicsTitle, comicsUrl;
+    private String comicsId, comicsTitle, comicsUrl;
     boolean isInMyFavorites = false;
     String comment = "";
     private ProgressDialog progressDialog;
+    private ModelPdfComics modelPdfComics;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -77,7 +79,12 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         View root = binding.getRoot();
 
         if (getArguments() != null) {
-            comicsId = getArguments().getString("comicsId");
+            if (getArguments().containsKey("comicsId")) {
+                comicsId = getArguments().getString("comicsId");
+            } else if (getArguments().containsKey("modelPdfComics")) {
+                modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
+                comicsId = modelPdfComics != null ? modelPdfComics.getId() : null;
+            }
         }
 
         progressDialog = new ProgressDialog(getActivity());

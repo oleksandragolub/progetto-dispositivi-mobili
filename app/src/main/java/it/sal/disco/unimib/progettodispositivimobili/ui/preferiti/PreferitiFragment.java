@@ -122,6 +122,7 @@ public class PreferitiFragment extends Fragment {
         });
     }
 
+
     private void loadFavoriteApiComics() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati")
                 .child(firebaseAuth.getUid())

@@ -1,6 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.model;
 
-import it.sal.disco.unimib.progettodispositivimobili.util.DateUtil;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.util;
+package it.sal.disco.unimib.progettodispositivimobili.ui.characters.util;
 
 public class MarvelApiException extends Exception {
     private final int httpCode;

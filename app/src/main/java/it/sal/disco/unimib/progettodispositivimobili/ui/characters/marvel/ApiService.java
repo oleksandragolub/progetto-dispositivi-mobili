@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.marvel;
+package it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

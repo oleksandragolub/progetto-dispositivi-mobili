@@ -30,10 +30,10 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiClient;
-import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ApiService;
-import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.Comix;
-import it.sal.disco.unimib.progettodispositivimobili.ui.marvel.ComicResponse;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel.ApiService;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel.Comix;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel.ComicResponse;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.CategoryAddAdminFragment;
@@ -44,7 +44,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatsFragment
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,11 +112,11 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                 } else if (id == R.id.navigation_view_comics) {
                     openFragment(new ComicsPdfViewFragment());
                     return true;
+                } else if (id == R.id.navigation_ricerca) {
+                    openFragment(new ComicsInfoFragment());
+                    return true;
                 } else if (id == R.id.navigation_preferiti) {
                     openFragment(new PreferitiFragment());
-                    return true;
-                } else if (id == R.id.navigation_ricerca) {
-                    openFragment(new RicercaFragment());
                     return true;
                 } else if (id == R.id.navigation_profile) {
                     openFragment(new ProfileFragment());
@@ -130,9 +129,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                     return true;
                 } else if (id == R.id.navigation_character_info) {
                     openFragment(new CharacterInfoFragment());
-                    return true;
-                } else if (id == R.id.navigation_comics_info) {
-                    openFragment(new ComicsInfoFragment());
                     return true;
                 }
                 return false;
@@ -262,9 +258,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
             //return true;
-        } else if (id == R.id.navigation_comics_info) {
-            openFragment(new ComicsInfoFragment());
-            return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();

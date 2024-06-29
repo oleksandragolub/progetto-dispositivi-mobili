@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.util;
+package it.sal.disco.unimib.progettodispositivimobili.ui.characters.util;
 
 import com.google.gson.Gson;
 import java.io.IOException;

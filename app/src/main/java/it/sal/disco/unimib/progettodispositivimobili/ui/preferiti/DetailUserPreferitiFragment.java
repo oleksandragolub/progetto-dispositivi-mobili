@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserPreferitiBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsFavorite;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 
@@ -80,7 +83,6 @@ public class DetailUserPreferitiFragment extends Fragment {
             }
         });
 
-
         return root;
     }
 
@@ -97,6 +99,12 @@ public class DetailUserPreferitiFragment extends Fragment {
                     ModelPdfComics modelPdf = new ModelPdfComics();
                     modelPdf.setId(comicsId);
 
+                    if (ds.hasChild("titolo") || ds.hasChild("descrizione") || ds.hasChild("url")) {
+                        modelPdf.setFromApi(true);
+                        modelPdf.setTitolo(ds.child("titolo").getValue(String.class));
+                        modelPdf.setDescrizione(ds.child("descrizione").getValue(String.class));
+                        modelPdf.setUrl(ds.child("url").getValue(String.class));
+                    }
                     pdfArrayList.add(modelPdf);
                 }
 
@@ -104,6 +112,14 @@ public class DetailUserPreferitiFragment extends Fragment {
 
                 adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
                 binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
+
+                adapterPdfFavorite.setOnItemClickListener(model -> {
+                    if (model.isFromApi()) {
+                        openComicsMarvelDetailFragment(model);
+                    } else {
+                        openComicsPdfDetailUserFragment(model);
+                    }
+                });
             }
 
             @Override
@@ -112,15 +128,6 @@ public class DetailUserPreferitiFragment extends Fragment {
             }
         });
     }
-
-
-   /* private void openFragment(Fragment fragment){
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
 
     private void openFragment(Fragment fragment){
         Bundle bundle = new Bundle();
@@ -132,6 +139,59 @@ public class DetailUserPreferitiFragment extends Fragment {
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void openComicsPdfDetailUserFragment(ModelPdfComics model) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("modelPdfComics", model);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openComicsMarvelDetailFragment(ModelPdfComics model) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(model.getId());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String thumbnailUrl = snapshot.hasChild("thumbnailUrl") ? snapshot.child("thumbnailUrl").getValue(String.class) : "";
+                    String title = snapshot.hasChild("title") ? snapshot.child("title").getValue(String.class) : "";
+                    String description = snapshot.hasChild("description") ? snapshot.child("description").getValue(String.class) : "";
+
+                    Log.d(TAG, "Fetched data - title: " + title + ", description: " + description + ", thumbnailUrl: " + thumbnailUrl);
+
+                    model.setTitolo(title);
+                    model.setDescrizione(description);
+                    model.setUrl(thumbnailUrl);
+
+                    ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("modelPdfComics", model);
+                    comicsMarvelDetailFragment.setArguments(args);
+
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } else {
+                    Log.e(TAG, "Comics not found for comicsId: " + model.getId());
+                    Toast.makeText(getActivity(), "Comics not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "openComicsMarvelDetailFragment: Failed to fetch comic details", error.toException());
+                Toast.makeText(getActivity(), "Failed to fetch comic details", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

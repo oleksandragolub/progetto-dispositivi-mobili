@@ -24,12 +24,6 @@
         android:label="Characters info"
         tools:layout="@layout/fragment_character_info"/>
 
-    <fragment
-        android:id="@+id/navigation_comics_info"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment"
-        android:label="Comics info"
-        tools:layout="@layout/fragment_comics_info"/>
-
 
     <!-- PARTE USER (categorie+comixes) -->
 
@@ -160,7 +154,7 @@
 
     <fragment
         android:id="@+id/navigation_ricerca"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comixes.RicercaFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment"
         android:label="Ricerca"
         tools:layout="@layout/fragment_ricerca"/>
 

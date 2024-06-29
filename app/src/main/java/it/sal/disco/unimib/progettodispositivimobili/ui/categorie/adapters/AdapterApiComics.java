@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
+package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,14 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
 
-public class ComicsAdapter extends RecyclerView.Adapter<ComicsAdapter.ComicViewHolder> {
+public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.ComicViewHolder> {
     private List<Comic> comics;
     private FragmentActivity activity;
 
-    public ComicsAdapter(List<Comic> comics, FragmentActivity activity) {
+    public AdapterApiComics(List<Comic> comics, FragmentActivity activity) {
         this.comics = comics;
         this.activity = activity;
     }

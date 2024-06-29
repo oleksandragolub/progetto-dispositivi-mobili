@@ -20,6 +20,7 @@ import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsInfoBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
@@ -31,7 +32,7 @@ public class ComicsInfoFragment extends Fragment {
     private EditText txtSearch;
     private ProgressBar progress;
     private RecyclerView recyclerViewComics;
-    private ComicsAdapter comicsAdapter;
+    private AdapterApiComics comicsAdapter;
     private static final String TAG = "ComicInfoFragment";
     private FragmentComicsInfoBinding binding;
 
@@ -103,7 +104,7 @@ public class ComicsInfoFragment extends Fragment {
                 showAlert(getString(R.string.no_exist));
             } else {
                 recyclerViewComics.setVisibility(View.VISIBLE);
-                comicsAdapter = new ComicsAdapter(comics, getActivity());
+                comicsAdapter = new AdapterApiComics(comics, getActivity());
                 recyclerViewComics.setAdapter(comicsAdapter);
             }
         });

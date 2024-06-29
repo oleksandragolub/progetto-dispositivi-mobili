@@ -37,7 +37,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.chat.chats.ChatsFragment
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     openFragment(new PreferitiFragment());
                     return true;
                 } else if (id == R.id.navigation_ricerca) {
-                    openFragment(new RicercaFragment());
+                    openFragment(new ComicsInfoFragment());
                     return true;
                 } else if (id == R.id.navigation_profile) {
                     openFragment(new ProfileFragment());
@@ -121,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     return true;
                 } else if (id == R.id.navigation_character_info) {
                     openFragment(new CharacterInfoFragment());
-                    return true;
-                } else if (id == R.id.navigation_comics_info) {
-                    openFragment(new ComicsInfoFragment());
                     return true;
                 }
                 return false;
@@ -203,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             //return true;
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
-            return true;
-        } else if (id == R.id.navigation_comics_info) {
-            openFragment(new ComicsInfoFragment());
             return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth

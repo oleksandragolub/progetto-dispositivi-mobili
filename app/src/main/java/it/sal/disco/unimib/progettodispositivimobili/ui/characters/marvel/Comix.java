@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.ui.marvel;
+package it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel;
 
 import com.google.gson.annotations.SerializedName;
 

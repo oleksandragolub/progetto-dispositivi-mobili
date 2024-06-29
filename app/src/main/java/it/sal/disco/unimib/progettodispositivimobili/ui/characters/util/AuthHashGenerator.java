@@ -1,4 +1,4 @@
-package it.sal.disco.unimib.progettodispositivimobili.util;
+package it.sal.disco.unimib.progettodispositivimobili.ui.characters.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
