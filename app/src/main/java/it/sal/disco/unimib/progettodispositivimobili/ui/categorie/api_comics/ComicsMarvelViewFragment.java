@@ -40,7 +40,7 @@ public class ComicsMarvelViewFragment extends Fragment {
         if (getArguments() != null) {
             String pdfUrl = getArguments().getString("pdfUrl");
             String title = getArguments().getString("title");
-            binding.toolbarTitleTv.setText(title); // Set the title here
+            binding.toolbarTitleTv.setText(title);
             new DownloadFileTask().execute(pdfUrl);
         }
 

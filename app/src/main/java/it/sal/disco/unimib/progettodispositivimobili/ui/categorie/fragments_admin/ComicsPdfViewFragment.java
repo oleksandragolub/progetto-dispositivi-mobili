@@ -72,6 +72,10 @@ public class ComicsPdfViewFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String pdfUrl = ""+snapshot.child("url").getValue();
                 Log.d(TAG, "onDataChange: PDF URL: " + pdfUrl);
+                String title = ""+snapshot.child("titolo").getValue();
+                Log.d(TAG, "onDataChange: Title: " + title);
+
+                binding.toolbarTitleTv.setText(title);
 
                 loadComicsFromUrl(pdfUrl);
             }

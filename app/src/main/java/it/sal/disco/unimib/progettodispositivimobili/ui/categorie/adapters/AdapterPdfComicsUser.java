@@ -77,7 +77,7 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
 
         MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
        // MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
-        MyApplication.loadCategory("" + categoryId, holder.categoryTv);
+        //MyApplication.loadCategory("" + categoryId, holder.categoryTv);
         //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTv);
 
 
@@ -115,9 +115,9 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
 
             titleTv = binding.titleComics;
             descriptionTv = binding.descriptionComics;
-            categoryTv = binding.categoryComics;
-            sizeTv = binding.sizeComics;
-            dateTv = binding.dateComics;
+            //categoryTv = binding.categoryComics;
+            //sizeTv = binding.sizeComics;
+            //dateTv = binding.dateComics;
             pdfView = binding.pdfView;
             progressBar = binding.progressBar;
         }

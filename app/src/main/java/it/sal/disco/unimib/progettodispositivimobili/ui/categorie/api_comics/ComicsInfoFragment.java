@@ -16,11 +16,20 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsInfoBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
@@ -32,9 +41,10 @@ public class ComicsInfoFragment extends Fragment {
     private EditText txtSearch;
     private ProgressBar progress;
     private RecyclerView recyclerViewComics;
-    private AdapterApiComics comicsAdapter;
-    private static final String TAG = "ComicInfoFragment";
+    private AdapterComics comicsAdapter;
+    private List<ModelPdfComics> comicsList;
     private FragmentComicsInfoBinding binding;
+    private static final String TAG = "ComicInfoFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +54,7 @@ public class ComicsInfoFragment extends Fragment {
         return root;
     }
 
-    public void initViews(View root) {
+    private void initViews(View root) {
         txtSearch = root.findViewById(R.id.txtSearch);
         progress = root.findViewById(R.id.progress);
         recyclerViewComics = root.findViewById(R.id.recyclerViewComics);
@@ -53,34 +63,48 @@ public class ComicsInfoFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnGetComicInfoOnClick(v);
+                if (!txtSearch.getText().toString().isEmpty()) {
+                    progress.setVisibility(View.VISIBLE);
+                    searchComics(txtSearch.getText().toString());
+                } else {
+                    showAlert(getString(R.string.empty));
+                }
             }
         });
 
         recyclerViewComics.setLayoutManager(new LinearLayoutManager(getContext()));
+        comicsList = new ArrayList<>();
+        comicsAdapter = new AdapterComics(comicsList, getActivity());
+        recyclerViewComics.setAdapter(comicsAdapter);
     }
 
-    public void btnGetComicInfoOnClick(View view) {
-        if (txtSearch.getText().toString().isEmpty()) {
-            showAlert(getString(R.string.empty));
-        } else {
-            progress.setVisibility(View.VISIBLE);
-            getComicInfo(txtSearch.getText().toString(), 10); // Puoi cambiare il limite a tuo piacere
-        }
+    private void searchComics(String query) {
+        comicsList.clear();
+        comicsAdapter.notifyDataSetChanged();
+        searchApiComics(query);
+        searchManualComics(query);
     }
 
-    public void getComicInfo(String title, int limit) {
-        Log.d(TAG, "Requesting data for: " + title);
-
+    private void searchApiComics(String query) {
         ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-        Call<List<Comic>> call = apiService.getComics(title, limit);
+        Call<List<Comic>> call = apiService.getComics(query, 10);
 
         call.enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> comics = response.body();
-                    showComicList(comics);
+                    Log.d(TAG, "API Comics found: " + response.body().size());
+                    for (Comic comic : response.body()) {
+                        ModelPdfComics model = new ModelPdfComics();
+                        model.setId(comic.getId());
+                        model.setTitolo(comic.getTitle());
+                        model.setDescrizione(comic.getDescription());
+                        model.setUrl(comic.getThumbnail());
+                        model.setFromApi(true);
+                        comicsList.add(model);
+                    }
+                    comicsAdapter.notifyDataSetChanged();
+                    updateRecyclerViewVisibility();
                 } else {
                     showAlert(getString(R.string.service_error) + " Code: " + response.code());
                 }
@@ -95,19 +119,40 @@ public class ComicsInfoFragment extends Fragment {
         });
     }
 
-    public void showComicList(List<Comic> comics) {
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().runOnUiThread(() -> {
-            if (comics.isEmpty()) {
-                showAlert(getString(R.string.no_exist));
-            } else {
-                recyclerViewComics.setVisibility(View.VISIBLE);
-                comicsAdapter = new AdapterApiComics(comics, getActivity());
-                recyclerViewComics.setAdapter(comicsAdapter);
+    private void searchManualComics(String query) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.orderByChild("titolo").startAt(query).endAt(query + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Log.d(TAG, "Manual Comics found: " + snapshot.getChildrenCount());
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                        model.setFromApi(false);
+                        comicsList.add(model);
+                    }
+                    comicsAdapter.notifyDataSetChanged();
+                    updateRecyclerViewVisibility();
+                } else {
+                    Log.d(TAG, "No Manual Comics found for query: " + query);
+                }
+                progress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                showAlert(getString(R.string.service_error) + " " + error.getMessage());
+                progress.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private void updateRecyclerViewVisibility() {
+        if (comicsList.isEmpty()) {
+            recyclerViewComics.setVisibility(View.GONE);
+        } else {
+            recyclerViewComics.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showAlert(String message) {
