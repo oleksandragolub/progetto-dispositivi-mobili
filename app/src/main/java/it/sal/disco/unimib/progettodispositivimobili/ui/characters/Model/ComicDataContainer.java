@@ -2,6 +2,8 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model;
 
 import java.util.List;
 
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
+
 public class ComicDataContainer {
     private int total;
     private List<Comic> results;

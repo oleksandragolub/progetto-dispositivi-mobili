@@ -62,6 +62,13 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ApiComicViewHolder apiHolder = (ApiComicViewHolder) holder;
             apiHolder.title.setText(comic.getTitolo());
             apiHolder.description.setText(comic.getDescrizione());
+
+            /* String metadata = "Year: " + (comic.getYear() != null ? comic.getYear() : "Unknown") +
+                    "\nLanguage: " + (comic.getLanguage() != null ? comic.getLanguage() : "Unknown") +
+                    "\nCollection: " + (comic.getCollection() != null ? comic.getCollection() : "Unknown") +
+                    "\nSubject: " + (comic.getSubject() != null ? comic.getSubject() : "Unknown");
+            holder.metadata.setText(metadata);*/
+
             Glide.with(apiHolder.itemView.getContext()).load(comic.getUrl()).into(apiHolder.thumbnail);
             apiHolder.itemView.setOnClickListener(v -> openComicDetailFragment(comic));
         } else {
@@ -96,7 +103,7 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     static class ApiComicViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description;
+        TextView title, description, metadata;
         ImageView thumbnail;
 
         public ApiComicViewHolder(@NonNull View itemView) {
@@ -104,6 +111,7 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             title = itemView.findViewById(R.id.comicTitle);
             description = itemView.findViewById(R.id.comicDescription);
             thumbnail = itemView.findViewById(R.id.comicThumbnail);
+            //metadata = itemView.findViewById(R.id.comicMetadata);
         }
     }
 

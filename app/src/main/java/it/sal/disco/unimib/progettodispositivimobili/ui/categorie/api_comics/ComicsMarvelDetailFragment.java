@@ -63,7 +63,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
     private String comicsTitle;
     private String comicsUrl;
     private String thumbnailUrl;
-    private String title, description;
+    private String title, description, year, language, collection, subject;
 
     @Nullable
     @Override
@@ -84,6 +84,10 @@ public class ComicsMarvelDetailFragment extends Fragment {
             thumbnailUrl = modelPdfComics.getUrl();
             title = modelPdfComics.getTitolo();
             description = modelPdfComics.getDescrizione();
+            year = modelPdfComics.getYear();
+            language = modelPdfComics.getLanguage();
+            collection = modelPdfComics.getCollection();
+            subject = modelPdfComics.getSubject();
         } else {
             Log.e(TAG_DOWNLOAD, "ModelPdfComics is null");
             Toast.makeText(getActivity(), "Comics ID is null", Toast.LENGTH_SHORT).show();
@@ -155,6 +159,18 @@ public class ComicsMarvelDetailFragment extends Fragment {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.hasChild("year")) {
+                    ref.child("year").setValue(year);
+                }
+                if (!snapshot.hasChild("language")) {
+                    ref.child("language").setValue(language);
+                }
+                if (!snapshot.hasChild("collection")) {
+                    ref.child("collection").setValue(collection);
+                }
+                if (!snapshot.hasChild("subject")) {
+                    ref.child("subject").setValue(subject);
+                }
                 if (!snapshot.hasChild("comicsId")) {
                     ref.child("comicsId").setValue(comicsId);
                 }
@@ -207,6 +223,16 @@ public class ComicsMarvelDetailFragment extends Fragment {
                         Log.e("API_RESPONSE", "pdf_url key is missing");
                         comicsUrl = "";
                     }
+
+                    String year = jsonObject.has("year") ? jsonObject.get("year").getAsString() : "N/A";
+                    String language = jsonObject.has("language") ? jsonObject.get("language").getAsString() : "N/A";
+                    String collection = jsonObject.has("collection") ? jsonObject.get("collection").getAsString() : "N/A";
+                    String subject = jsonObject.has("subject") ? jsonObject.get("subject").getAsString() : "N/A";
+
+                    binding.yearTv.setText(year);
+                    binding.linguaTv.setText(language);
+                    binding.collezioniTv.setText(collection);
+                    binding.generiTv.setText(subject);
 
                     String viewsCount = "N/A";
                     if (jsonObject.has("viewsCount")) {
@@ -262,15 +288,28 @@ public class ComicsMarvelDetailFragment extends Fragment {
                     String size = snapshot.hasChild("size") ? snapshot.child("size").getValue().toString() : "N/A";
                     String pages = snapshot.hasChild("pages") ? snapshot.child("pages").getValue().toString() : "N/A";
 
+                    String year = snapshot.hasChild("year") ? snapshot.child("year").getValue().toString() : "N/A";
+                    String language = snapshot.hasChild("language") ? snapshot.child("language").getValue().toString() : "N/A";
+                    String collection = snapshot.hasChild("collection") ? snapshot.child("collection").getValue().toString() : "N/A";
+                    String subject = snapshot.hasChild("subject") ? snapshot.child("subject").getValue().toString() : "N/A";
+
                     binding.viewsTv.setText(viewsCount);
                     binding.downloadsTv.setText(downloadsCount);
                     binding.sizeTv.setText(size);
                     binding.pagesTv.setText(pages);
+                    binding.yearTv.setText(year);
+                    binding.linguaTv.setText(language);
+                    binding.collezioniTv.setText(collection);
+                    binding.generiTv.setText(subject);
                 } else {
                     binding.viewsTv.setText("N/A");
                     binding.downloadsTv.setText("N/A");
                     binding.sizeTv.setText("N/A");
                     binding.pagesTv.setText("N/A");
+                    binding.yearTv.setText("N/A");
+                    binding.linguaTv.setText("N/A");
+                    binding.collezioniTv.setText("N/A");
+                    binding.generiTv.setText("N/A");
                 }
             }
 

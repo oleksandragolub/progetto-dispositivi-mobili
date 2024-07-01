@@ -19,20 +19,20 @@
             android:id="@+id/category_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/category_title_3"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:layout_marginLeft="10dp" />
+            android:text="@string/category_title_3"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-      <!--  <ImageButton
-            android:id="@+id/deleteBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/round_btn"
-            android:src="@drawable/baseline_delete_24_white" /> -->
+        <!--  <ImageButton
+              android:id="@+id/deleteBtn"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
+              android:background="@drawable/round_btn"
+              android:src="@drawable/baseline_delete_24_white" /> -->
 
     </LinearLayout>
 

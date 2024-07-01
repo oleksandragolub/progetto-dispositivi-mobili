@@ -1,6 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,10 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 
 public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.ComicViewHolder> {
+    private static final String TAG = "AdapterApiComics";
     private List<Comic> comics;
     private FragmentActivity activity;
 
@@ -45,12 +47,22 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
         String imageUrl = comic.getThumbnail();
         Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.thumbnail);
 
+      /* String metadata = "Year: " + (comic.getYear() != null ? comic.getYear() : "Unknown") +
+                "\nLanguage: " + (comic.getLanguage() != null ? comic.getLanguage() : "Unknown") +
+                "\nCollection: " + (comic.getCollection() != null ? comic.getCollection() : "Unknown") +
+                "\nSubject: " + (comic.getSubject() != null ? comic.getSubject() : "Unknown");
+        holder.metadata.setText(metadata);*/
+
         holder.itemView.setOnClickListener(v -> {
             ModelPdfComics modelPdfComics = new ModelPdfComics();
             modelPdfComics.setId(comic.getId());
             modelPdfComics.setTitolo(comic.getTitle());
             modelPdfComics.setDescrizione(comic.getDescription());
             modelPdfComics.setUrl(comic.getThumbnail());
+            modelPdfComics.setYear(comic.getYear());
+            modelPdfComics.setLanguage(comic.getLanguage());
+            modelPdfComics.setCollection(comic.getCollection());
+            modelPdfComics.setSubject(comic.getSubject());
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("modelPdfComics", modelPdfComics);
@@ -63,6 +75,7 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
             transaction.addToBackStack(null);
             transaction.commit();
         });
+
     }
 
     @Override
@@ -71,7 +84,7 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
     }
 
     static class ComicViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description;
+        TextView title, description, metadata, year, language, collection, subject;
         ImageView thumbnail;
 
         public ComicViewHolder(@NonNull View itemView) {
@@ -79,6 +92,7 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
             title = itemView.findViewById(R.id.comicTitle);
             description = itemView.findViewById(R.id.comicDescription);
             thumbnail = itemView.findViewById(R.id.comicThumbnail);
+            //metadata = itemView.findViewById(R.id.comicMetadata);
         }
     }
 }

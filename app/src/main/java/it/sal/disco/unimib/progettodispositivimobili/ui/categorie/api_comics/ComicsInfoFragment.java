@@ -30,8 +30,8 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsI
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.Model.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,11 +95,16 @@ public class ComicsInfoFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d(TAG, "API Comics found: " + response.body().size());
                     for (Comic comic : response.body()) {
+                        Log.d(TAG, "Comic Metadata - Year: " + comic.getYear() + ", Language: " + comic.getLanguage() + ", Collection: " + comic.getCollection() + ", Subject: " + comic.getSubject());
                         ModelPdfComics model = new ModelPdfComics();
                         model.setId(comic.getId());
                         model.setTitolo(comic.getTitle());
                         model.setDescrizione(comic.getDescription());
                         model.setUrl(comic.getThumbnail());
+                        model.setYear(comic.getYear());
+                        model.setLanguage(comic.getLanguage());
+                        model.setCollection(comic.getCollection());
+                        model.setSubject(comic.getSubject());
                         model.setFromApi(true);
                         comicsList.add(model);
                     }
@@ -118,6 +123,7 @@ public class ComicsInfoFragment extends Fragment {
             }
         });
     }
+
 
     private void searchManualComics(String query) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");

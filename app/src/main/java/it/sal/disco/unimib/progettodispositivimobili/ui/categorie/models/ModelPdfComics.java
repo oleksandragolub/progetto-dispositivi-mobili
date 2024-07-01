@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class ModelPdfComics implements Serializable {
 
-    String uid, id, titolo, descrizione, categoryId, url;
+    String uid, id, titolo, descrizione, categoryId, url, year, language, collection, subject;
     long timestamp, viewsCount, downloadsCount;
     boolean favorite = false;
     private boolean fromApi = false;
@@ -126,5 +126,37 @@ public class ModelPdfComics implements Serializable {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getCollection() {
+        return collection;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
