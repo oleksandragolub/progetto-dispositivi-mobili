@@ -39,6 +39,23 @@ tools:context=".ui.categorie.fragments_admin.CategoryAddAdminFragment">
     app:layout_constraintTop_toBottomOf="@+id/textView_search_category"
     tools:listitem="@layout/row_category" />
 
+ <!--   <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="More"
+        android:padding="13dp"
+        android:minHeight="50dp"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="@drawable/round_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecyclerViewCategory"
+        app:layout_constraintBottom_toTopOf="@id/BottomL1"/> -->
+
 <LinearLayout
     android:id="@+id/BottomL1"
     android:layout_width="match_parent"
@@ -69,7 +86,8 @@ tools:context=".ui.categorie.fragments_admin.CategoryAddAdminFragment">
         android:layout_height="50dp"
         android:layout_marginLeft="5dp"
         android:background="@drawable/round_btn"
-        android:src="@drawable/baseline_upload_24_white"/>
+        android:src="@drawable/baseline_upload_24_white"
+        />
 
 </LinearLayout>
 

@@ -19,7 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MarvelComicsListFragment extends Fragment {
+/*public class MarvelComicsListFragment extends Fragment {
     private static final String PUBLIC_KEY = "93e5146b36c6609ec6a87d8104728ed2";
     private static final String PRIVATE_KEY = "80e7b32472204a8f30779ecb3e20815e84384d7b";
     private static final String TAG = "MarvelComicsListFragment";
@@ -79,4 +79,4 @@ public class MarvelComicsListFragment extends Fragment {
             throw new RuntimeException(e);
         }
     }
-}
+}*/

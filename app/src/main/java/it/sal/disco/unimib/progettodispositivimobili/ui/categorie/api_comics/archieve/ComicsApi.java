@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -32,5 +33,9 @@ public interface ComicsApi {
 
     @GET
     Call<ResponseBody> downloadComicPdf(@Url String fileUrl);
+
+    @GET("comics/metadata/collection")
+    Call<JsonObject> getComicsByCollection(@Query("start") int start, @Query("limit") int limit);
+
 
 }

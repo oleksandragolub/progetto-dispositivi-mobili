@@ -299,7 +299,7 @@ public class ComicsPdfDetailFragment extends Fragment {
                 binding.downloadComicsBtn.setVisibility(View.VISIBLE);
 
                 String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
-                MyApplication.loadCategory(""+categoryId, binding.categoryTv);
+                MyApplication.loadCategory(""+categoryId, binding.collezioniTv);
                 MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
                 //MyApplication.loadPdfFromUrlSinglePage(""+comicsUrl, ""+comicsTitle, binding.pdfView, binding.progressBar);
                 MyApplication.loadPdfSize(""+comicsUrl, ""+comicsTitle, binding.sizeTv);
@@ -311,7 +311,7 @@ public class ComicsPdfDetailFragment extends Fragment {
                 binding.descriptionTv.setText(description);
                 binding.viewsTv.setText(viewsCount.replace("null", "N/A"));
                 binding.downloadsTv.setText(downloadsCount.replace("null", "N/A"));
-                binding.dateTv.setText(date);
+                binding.yearTv.setText(date);
             }
 
             @Override

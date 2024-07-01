@@ -62,8 +62,8 @@
 
                 <RelativeLayout
                     android:id="@+id/pdfRL"
-                    android:layout_width="110dp"
-                    android:layout_height="150dp"
+                    android:layout_width="130dp"
+                    android:layout_height="195dp"
                     android:layout_marginEnd="5dp"
                     android:background="@color/gray">
 
@@ -94,17 +94,18 @@
                     android:layout_toEndOf="@id/pdfRL"
                     android:layout_below="@id/titleTv">
 
-                    <TableRow>
+                    <TableRow
+                        android:layout_marginTop="5dp">
                         <TextView
-                            android:id="@+id/categoryLabelTv"
+                            android:id="@+id/yearLabelTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/categoria_text2" />
+                            android:text="@string/anno_text2" />
 
                         <TextView
-                            android:id="@+id/categoryTv"
+                            android:id="@+id/yearTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -116,15 +117,35 @@
                     <TableRow
                         android:layout_marginTop="5dp">
                         <TextView
-                            android:id="@+id/dateLabelTv"
+                            android:id="@+id/linguaLabelTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/date_text2" />
+                            android:text="@string/Lingua_text2" />
 
                         <TextView
-                            android:id="@+id/dateTv"
+                            android:id="@+id/linguaTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
+                            android:text="@string/na" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:id="@+id/pagesLabelTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:text="@string/pages_text3" />
+
+                        <TextView
+                            android:id="@+id/pagesTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -181,7 +202,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/downloads_text3" />
+                            android:text="@string/downloads_text4" />
 
                         <TextView
                             android:id="@+id/downloadsTv"
@@ -196,15 +217,35 @@
                     <TableRow
                         android:layout_marginTop="5dp">
                         <TextView
-                            android:id="@+id/pagesLabelTv"
+                            android:id="@+id/generiLabelTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/pages_text3" />
+                            android:text="@string/generi_text2" />
 
                         <TextView
-                            android:id="@+id/pagesTv"
+                            android:id="@+id/generiTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
+                            android:text="@string/na" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:id="@+id/collezioniLabelTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:text="@string/collezioni_text2" />
+
+                        <TextView
+                            android:id="@+id/collezioniTv"
                             style="@style/TextAppearance.MaterialComponents.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
