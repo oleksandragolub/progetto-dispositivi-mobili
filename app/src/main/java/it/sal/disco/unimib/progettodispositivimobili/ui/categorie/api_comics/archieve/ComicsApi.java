@@ -37,5 +37,6 @@ public interface ComicsApi {
     @GET("comics/metadata/collection")
     Call<JsonObject> getComicsByCollection(@Query("start") int start, @Query("limit") int limit);
 
-
+    @GET("comics/collection")
+    Call<List<Comic>> getComicsByCollection(@Query("start") int start, @Query("limit") int limit, @Query("collectionId") String collectionId);
 }

@@ -41,6 +41,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.DialogCommentAd
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsMarvelDetailBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelComment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
@@ -486,16 +487,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(comicId);
         ref.child("size").setValue(size);
     }
-
-
-
-
-
-
-
-
-
-
 
     private void checkIsFavorite() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati");

@@ -2,9 +2,10 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Comic {
+public class Comic implements Serializable {
     private String id;
     private String title;
     private String description;
@@ -23,6 +24,9 @@ public class Comic {
 
     @SerializedName("subjects")
     private List<String> subjectList;
+
+    // Additional field to distinguish between API and manual data
+    private boolean fromApi;
 
     // Getters and setters
     public String getId() {
@@ -103,5 +107,13 @@ public class Comic {
 
     public void setSubjectList(List<String> subjectList) {
         this.subjectList = subjectList;
+    }
+
+    public boolean isFromApi() {
+        return fromApi;
+    }
+
+    public void setFromApi(boolean fromApi) {
+        this.fromApi = fromApi;
     }
 }

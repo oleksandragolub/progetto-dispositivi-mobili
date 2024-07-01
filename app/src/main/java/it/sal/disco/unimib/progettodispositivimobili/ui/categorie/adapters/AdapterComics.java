@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.github.barteksc.pdfviewer.PDFView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -25,21 +28,32 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.Com
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
-public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     private static final int VIEW_TYPE_API = 0;
     private static final int VIEW_TYPE_MANUAL = 1;
     private List<ModelPdfComics> comicsList;
+    private List<ModelPdfComics> comicsListFiltered;
     private FragmentActivity activity;
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(ModelPdfComics comic);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
 
     public AdapterComics(List<ModelPdfComics> comicsList, FragmentActivity activity) {
         this.comicsList = comicsList;
+        this.comicsListFiltered = comicsList;
         this.activity = activity;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return comicsList.get(position).isFromApi() ? VIEW_TYPE_API : VIEW_TYPE_MANUAL;
+        return comicsListFiltered.get(position).isFromApi() ? VIEW_TYPE_API : VIEW_TYPE_MANUAL;
     }
 
     @NonNull
@@ -56,54 +70,72 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ModelPdfComics comic = comicsList.get(position);
+        ModelPdfComics comic = comicsListFiltered.get(position);
 
         if (holder.getItemViewType() == VIEW_TYPE_API) {
             ApiComicViewHolder apiHolder = (ApiComicViewHolder) holder;
             apiHolder.title.setText(comic.getTitolo());
             apiHolder.description.setText(comic.getDescrizione());
 
-            /* String metadata = "Year: " + (comic.getYear() != null ? comic.getYear() : "Unknown") +
-                    "\nLanguage: " + (comic.getLanguage() != null ? comic.getLanguage() : "Unknown") +
-                    "\nCollection: " + (comic.getCollection() != null ? comic.getCollection() : "Unknown") +
-                    "\nSubject: " + (comic.getSubject() != null ? comic.getSubject() : "Unknown");
-            holder.metadata.setText(metadata);*/
-
             Glide.with(apiHolder.itemView.getContext()).load(comic.getUrl()).into(apiHolder.thumbnail);
-            apiHolder.itemView.setOnClickListener(v -> openComicDetailFragment(comic));
+            apiHolder.itemView.setOnClickListener(v -> {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(comic);
+                }
+            });
         } else {
             ManualComicViewHolder manualHolder = (ManualComicViewHolder) holder;
             manualHolder.titleTv.setText(comic.getTitolo());
             manualHolder.descriptionTv.setText(comic.getDescrizione());
             MyApplication.loadPdfFromUrlSinglePage(comic.getUrl(), comic.getTitolo(), manualHolder.pdfView, manualHolder.progressBar, null);
-            // MyApplication.loadCategory(comic.getCategoryId(), manualHolder.categoryTv);
-            manualHolder.itemView.setOnClickListener(v -> openComicDetailFragment(comic));
+            manualHolder.itemView.setOnClickListener(v -> {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(comic);
+                }
+            });
         }
     }
 
     @Override
     public int getItemCount() {
-        return comicsList.size();
+        return comicsListFiltered.size();
     }
 
-    private void openComicDetailFragment(ModelPdfComics comic) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("modelPdfComics", comic);
-        Fragment detailFragment;
-        if (comic.isFromApi()) {
-            detailFragment = new ComicsMarvelDetailFragment();
-        } else {
-            detailFragment = new ComicsPdfDetailUserFragment();
-        }
-        detailFragment.setArguments(bundle);
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+
+                if (constraint == null || constraint.length() == 0) {
+                    results.count = comicsList.size();
+                    results.values = comicsList;
+                } else {
+                    String searchStr = constraint.toString().toUpperCase();
+                    List<ModelPdfComics> resultData = new ArrayList<>();
+
+                    for (ModelPdfComics comic : comicsList) {
+                        if (comic.getTitolo().toUpperCase().contains(searchStr)) {
+                            resultData.add(comic);
+                        }
+                    }
+                    results.count = resultData.size();
+                    results.values = resultData;
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                comicsListFiltered = (List<ModelPdfComics>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     static class ApiComicViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, metadata;
+        TextView title, description;
         ImageView thumbnail;
 
         public ApiComicViewHolder(@NonNull View itemView) {
@@ -111,12 +143,11 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             title = itemView.findViewById(R.id.comicTitle);
             description = itemView.findViewById(R.id.comicDescription);
             thumbnail = itemView.findViewById(R.id.comicThumbnail);
-            //metadata = itemView.findViewById(R.id.comicMetadata);
         }
     }
 
     static class ManualComicViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTv, descriptionTv, categoryTv, sizeTv, dateTv;
+        TextView titleTv, descriptionTv;
         PDFView pdfView;
         ProgressBar progressBar;
 

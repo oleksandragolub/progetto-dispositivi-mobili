@@ -1,6 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,7 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsInfoBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
@@ -76,6 +78,14 @@ public class ComicsInfoFragment extends Fragment {
         comicsList = new ArrayList<>();
         comicsAdapter = new AdapterComics(comicsList, getActivity());
         recyclerViewComics.setAdapter(comicsAdapter);
+
+        comicsAdapter.setOnItemClickListener(comic -> {
+            if (comic.isFromApi()) {
+                openComicsMarvelDetailFragment(comic);
+            } else {
+                openComicsPdfDetailUserFragment(comic);
+            }
+        });
     }
 
     private void searchComics(String query) {
@@ -124,7 +134,6 @@ public class ComicsInfoFragment extends Fragment {
         });
     }
 
-
     private void searchManualComics(String query) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.orderByChild("titolo").startAt(query).endAt(query + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -169,5 +178,29 @@ public class ComicsInfoFragment extends Fragment {
         alert.setMessage(message);
         alert.setPositiveButton(R.string.close, null);
         alert.show();
+    }
+
+    private void openComicsMarvelDetailFragment(ModelPdfComics comic) {
+        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("modelPdfComics", comic);
+        comicsMarvelDetailFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openComicsPdfDetailUserFragment(ModelPdfComics comic) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("modelPdfComics", comic);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
