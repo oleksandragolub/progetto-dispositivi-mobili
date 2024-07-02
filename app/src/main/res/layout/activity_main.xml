@@ -16,10 +16,8 @@
             android:id="@+id/top_appbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/dark_red"
             app:layout_anchorGravity="top"
-            app:title="Horizon Tales"
-            app:titleTextColor="@color/white" />
+            app:title="Horizon Tales" />
 
         <FrameLayout
             android:id="@+id/nav_host_fragment"

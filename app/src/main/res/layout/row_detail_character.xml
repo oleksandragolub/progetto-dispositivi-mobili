@@ -19,8 +19,7 @@
             android:id="@+id/imageRL"
             android:layout_width="100dp"
             android:layout_height="140dp"
-            android:layout_marginEnd="5dp"
-            android:background="@color/gray">
+            android:layout_marginEnd="5dp">
 
             <ImageView
                 android:id="@+id/imageView"

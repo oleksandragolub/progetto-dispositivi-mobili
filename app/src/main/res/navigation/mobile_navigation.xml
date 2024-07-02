@@ -160,7 +160,7 @@
 
     <fragment
         android:id="@+id/navigation_ricerca"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comixes.RicercaFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.ricerca.comics.RicercaFragment"
         android:label="Ricerca"
         tools:layout="@layout/fragment_ricerca"/>
 

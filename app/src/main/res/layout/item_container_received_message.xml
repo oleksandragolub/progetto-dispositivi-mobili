@@ -55,7 +55,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="17sp"
-            android:textColor="@color/light_gray"
             tools:text="Scrivi un messaggio"/>
 
         <TextView
@@ -63,7 +62,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:textColor="@color/light_gray"
             tools:text="12.01.2022 13:30"
             android:textSize="13sp"
             android:layout_marginTop="10dp"/>
