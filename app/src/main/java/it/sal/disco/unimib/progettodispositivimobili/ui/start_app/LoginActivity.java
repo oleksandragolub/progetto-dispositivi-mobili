@@ -9,7 +9,9 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
@@ -62,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        AppCompatButton btnGoogleSignIn = findViewById(R.id.btn_login_google);
+        Button btnGoogleSignIn = findViewById(R.id.btn_login_google);
 
         btnGoogleSignIn.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -250,26 +252,59 @@ public class LoginActivity extends AppCompatActivity {
             String textEmail = String.valueOf(editTextEmail.getText());
             String textPassword = String.valueOf(editTextPassword.getText());
 
-            if(TextUtils.isEmpty(textEmail)){
-                Toast.makeText(LoginActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
-                editTextEmail.setError("Email richiesta");
-                editTextEmail.requestFocus();
-                //return;
-            } else if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
+            //Questo pezzo di codice non serve più, questo caso è impossibile con il nuovo textWatcher (vedi sotto)
+            /*
+                if(TextUtils.isEmpty(textEmail)){
+                    Toast.makeText(LoginActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
+                    editTextEmail.setError("Email richiesta");
+                    editTextEmail.requestFocus();
+                    //return;
+                }
+             */
+            if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
                 Toast.makeText(LoginActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
                 editTextEmail.setError("Email valida richiesta");
                 editTextEmail.requestFocus();
                 //return;
-            } else if(TextUtils.isEmpty(textPassword)){
+            }
+            //Codice superfluo #2
+            /*
+            else if(TextUtils.isEmpty(textPassword)){
                 Toast.makeText(LoginActivity.this, "Inserisci la tua password", Toast.LENGTH_SHORT).show();
                 editTextPassword.setError("Password richiesta");
                 editTextPassword.requestFocus();
                 //return;
-            } else {
+            }
+             */
+             else {
                 loginUser(textEmail, textPassword);
             }
         });
+
+        editTextEmail.addTextChangedListener(textWatcher);
+        editTextPassword.addTextChangedListener(textWatcher);
     }
+
+    //Abilita/disabilita il bottone login se email e password sono inserite/vuote
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String textEmailWatcher = String.valueOf(editTextEmail.getText());
+            String textPasswordWatcher = String.valueOf(editTextPassword.getText());
+
+            buttonLogin.setEnabled(!textEmailWatcher.isEmpty() && !textPasswordWatcher.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void loginUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
