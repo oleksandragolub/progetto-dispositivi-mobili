@@ -118,7 +118,7 @@ public class UpdateEmailFragment extends Fragment {
                             buttonVerifyUser.setEnabled(false);
                             buttonUpdateEmail.setEnabled(true);
 
-                            buttonUpdateEmail.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
+                            buttonUpdateEmail.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.md_theme_error));
 
                             buttonUpdateEmail.setOnClickListener(v1 -> {
                                 userNewEmail = editTextNewEmail.getText().toString();

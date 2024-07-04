@@ -15,10 +15,8 @@
             android:id="@+id/top_appbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/dark_red"
             app:layout_anchorGravity="top"
-            app:title="Horizon Tales"
-            app:titleTextColor="@color/white" />
+            app:title="Horizon Tales" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -244,7 +242,6 @@
                 android:background="@drawable/round_btn"
                 android:text="@string/btn_register"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@id/guideline_right"
@@ -278,7 +275,6 @@
                     android:layout_marginStart="10dp"
                     android:text="@string/button_allora_entra"
                     android:textAllCaps="false"
-                    android:textColor="@color/dark_red"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>

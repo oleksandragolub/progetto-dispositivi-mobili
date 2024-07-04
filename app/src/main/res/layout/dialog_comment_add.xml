@@ -24,7 +24,6 @@
         android:padding="5dp"
         android:text="Aggiungi un commento"
         android:textAlignment="center"
-        android:textColor="@color/dark_red"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -55,7 +54,6 @@
         android:background="@drawable/round_btn"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
         android:textAllCaps="false" />
 
 </RelativeLayout>

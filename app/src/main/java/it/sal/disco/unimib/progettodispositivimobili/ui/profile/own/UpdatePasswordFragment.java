@@ -106,7 +106,7 @@ public class UpdatePasswordFragment extends Fragment {
 
                         Toast.makeText(getActivity(), "La password è stata verificata." + " Adesso puoi aggiornare la tua password!", Toast.LENGTH_SHORT).show();
 
-                        buttonChangePwd.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
+                        buttonChangePwd.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.md_theme_error));
 
                         buttonChangePwd.setOnClickListener(v1 -> changePwd(currentUser));
                     } else {

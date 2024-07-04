@@ -41,6 +41,8 @@
         <activity
             android:name=".ui.start_app.LoginActivity"
             android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
         </activity>
 

@@ -128,7 +128,6 @@
                         android:background="@drawable/round_btn"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/white"
                         android:textAllCaps="false" />
 
                 </LinearLayout>
@@ -161,7 +160,6 @@
                         android:layout_marginStart="10dp"
                         android:text="@string/txt_back"
                         android:textAllCaps="false"
-                        android:textColor="@color/dark_red"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
