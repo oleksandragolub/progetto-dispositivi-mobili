@@ -36,18 +36,16 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ReadWriteUserDet
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUpdateProfileBinding;
 
 public class UpdateProfileFragment extends Fragment {
-
-    FragmentUpdateProfileBinding binding;
-
+    private FragmentUpdateProfileBinding binding;
     private TextInputEditText usernameEditText, dobEditText, descrizioneEditText;
     private String email, authMethod, username, dob, gender, descrizione, uid, userType, profileImage;
     private Boolean emailVerificato = true;
     private RadioButton radioButtonRegisterGenderSelected;
-    Button updateProfileButton, changeEmailButton, changePasswordButton;
-    RadioGroup radioGroupRegisterGender;
-    TextView btnBack;
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    private Button updateProfileButton, changeEmailButton, changePasswordButton;
+    private RadioGroup radioGroupRegisterGender;
+    private TextView btnBack;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     @SuppressLint("SetTextI18n")
     @Override

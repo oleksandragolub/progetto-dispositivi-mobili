@@ -1,6 +1,8 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +49,7 @@ public class ComicsInfoFragment extends Fragment {
     private List<ModelPdfComics> comicsList;
     private FragmentComicsInfoBinding binding;
     private static final String TAG = "ComicInfoFragment";
+    private AppCompatImageView buttonFilter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class ComicsInfoFragment extends Fragment {
         txtSearch = root.findViewById(R.id.txtSearch);
         progress = root.findViewById(R.id.progress);
         recyclerViewComics = root.findViewById(R.id.recyclerViewComics);
+        buttonFilter = root.findViewById(R.id.buttonFilter);
 
         Button button = root.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +75,12 @@ public class ComicsInfoFragment extends Fragment {
                 } else {
                     showAlert(getString(R.string.empty));
                 }
+            }
+        });
+
+        buttonFilter.setOnClickListener(v -> {
+            if(getActivity() != null) {
+                openFragment(new ComicsAvanzatoInfoFragment());
             }
         });
 
@@ -200,6 +210,14 @@ public class ComicsInfoFragment extends Fragment {
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openFragment(Fragment fragment){
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

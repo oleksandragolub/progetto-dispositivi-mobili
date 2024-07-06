@@ -23,16 +23,25 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/buttonFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:src="@drawable/baseline_search_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <TextView
                     android:id="@+id/txtTitle"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="casual"
                     android:gravity="center"
@@ -41,43 +50,40 @@
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/buttonFilter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/textView_search_comics"
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <EditText
+                android:id="@+id/txtSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:orientation="horizontal">
+                android:drawableStart="@drawable/baseline_search_24_gray"
+                android:ems="10"
+                android:fontFamily="casual"
+                android:hint="@string/cerca_fumetto"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
-                <EditText
-                    android:id="@+id/txtSearch"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:drawableStart="@drawable/baseline_search_24_gray"
-                    android:ems="10"
-                    android:fontFamily="casual"
-                    android:hint="@string/cerca_fumetto"
-                    android:importantForAutofill="no"
-                    android:inputType="textPersonName"
-                    android:minHeight="48dp"
-                    tools:ignore="DuplicateSpeakableTextCheck" />
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="sans-serif-condensed-medium"
-                    android:onClick="btnGetInfoOnClick"
-                    android:text="@string/cerca_text"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="btnGetInfoOnClick"
+                android:text="@string/cerca_text"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/round_btn"
+                android:layout_marginTop="8dp"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewComics"
@@ -92,18 +98,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="100dp"
                 android:visibility="invisible" />
-
-            <!--       <androidx.recyclerview.widget.RecyclerView
-                       android:id="@+id/recyclerViewComics"
-                       android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:layout_below="@id/textView_search_comics"
-                       app:stackFromEnd="true"
-                       app:reverseLayout="true"
-                       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                       tools:listitem="@layout/row_pdf_user"/>  -->
-
-
 
         </LinearLayout>
 

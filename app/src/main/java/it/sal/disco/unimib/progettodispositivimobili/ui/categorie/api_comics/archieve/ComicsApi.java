@@ -39,4 +39,16 @@ public interface ComicsApi {
 
     @GET("comics/collection")
     Call<List<Comic>> getComicsByCollection(@Query("start") int start, @Query("limit") int limit, @Query("collectionId") String collectionId);
+
+    @GET("comics/advanced_search")
+    Call<List<Comic>> getComicsByAdvancedSearch(
+            @Query("collection") String collection,
+            @Query("language") String language,
+            @Query("year") String year,
+            @Query("genre") String genre,
+            @Query("limit") int limit
+    );
+
+    @GET("comics/subject")
+    Call<List<Comic>> getTopComicsBySubject(@Query("subject") String subject, @Query("limit") int limit);
 }

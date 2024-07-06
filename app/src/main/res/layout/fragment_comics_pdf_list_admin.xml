@@ -64,10 +64,40 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comicsRv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_below="@id/textView_search_category"
+        android:layout_above="@+id/LinearLayout2"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/row_pdf_admin"/>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_domanda3"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/moreNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/button_risp_comics"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_red"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
 

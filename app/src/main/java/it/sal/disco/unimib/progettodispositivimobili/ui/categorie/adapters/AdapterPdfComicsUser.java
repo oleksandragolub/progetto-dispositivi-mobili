@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfUserBinding;
@@ -33,9 +34,6 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
     public ArrayList<ModelPdfComics> pdfArrayList, filterList;
     private FilterPdfComicsUser filter;
     private RowPdfUserBinding binding;
-
-    private static final String TAG = "ADAPTER_PDF_USER_TAG";
-
     private OnItemClickListenerUser onItemClickListener;
 
     public interface OnItemClickListenerUser {
@@ -62,31 +60,18 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
     @Override
     public void onBindViewHolder(@NonNull HolderPdfUser holder, int position) {
         ModelPdfComics model = pdfArrayList.get(position);
-        String comicsId = model.getId();
         String title = model.getTitolo();
         String description = model.getDescrizione();
         String pdfUrl = model.getUrl();
-        String categoryId = model.getCategoryId();
-       // long timestamp = model.getTimestamp();
-
-        //String date = MyApplication.formatTimestamp(timestamp);
 
         holder.titleTv.setText(title);
         holder.descriptionTv.setText(description);
-        //holder.dateTv.setText(date);
 
-        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
-       // MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
-        //MyApplication.loadCategory("" + categoryId, holder.categoryTv);
-        //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTv);
+        MyApplication.loadPdfFromUrlSinglePage(pdfUrl, title, holder.pdfView, holder.progressBar, null);
 
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(model);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(model);
             }
         });
     }
@@ -106,18 +91,14 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
 
     class HolderPdfUser extends RecyclerView.ViewHolder {
 
-        TextView titleTv, descriptionTv, categoryTv, sizeTv, dateTv;
+        TextView titleTv, descriptionTv;
         PDFView pdfView;
         ProgressBar progressBar;
 
         public HolderPdfUser(@NonNull View itemView) {
             super(itemView);
-
             titleTv = binding.titleComics;
             descriptionTv = binding.descriptionComics;
-            //categoryTv = binding.categoryComics;
-            //sizeTv = binding.sizeComics;
-            //dateTv = binding.dateComics;
             pdfView = binding.pdfView;
             progressBar = binding.progressBar;
         }

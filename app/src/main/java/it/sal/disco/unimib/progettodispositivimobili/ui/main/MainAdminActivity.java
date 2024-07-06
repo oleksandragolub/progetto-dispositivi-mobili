@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityAdminMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.marvel.ApiClient;
@@ -74,8 +75,11 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
 
 
     private void signOutFromGoogle() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> Log.d("GoogleSignOut", "User signed out from Google"));
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+        googleSignInClient.signOut().addOnCompleteListener(this, task -> Log.d("GoogleSignOut", "User signed out from Google"));
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,13 +134,22 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                 } else if (id == R.id.navigation_character_info) {
                     openFragment(new CharacterInfoFragment());
                     return true;
+                } else if (id == R.id.navigation_comics_avanzato) {
+                    openFragment(new ComicsAvanzatoInfoFragment());
+                    return true;
                 }
                 return false;
             }
         });
 
         fragmentManager = getSupportFragmentManager();
-        openFragment(new HomeAdminFragment());
+        if (currentUser == null) {
+            navigateToLogin();
+        } else {
+            // Carica il frammento di default
+            openFragment(new HomeAdminFragment());
+        }
+
 
         if(currentUser == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -198,6 +211,13 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         });
     }
 
+    private void navigateToLogin() {
+        Intent intent = new Intent(MainAdminActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private String getMd5(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -257,6 +277,9 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
             //return true;
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
+            //return true;
+        } else if (id == R.id.navigation_comics_avanzato) {
+            openFragment(new ComicsAvanzatoInfoFragment());
             //return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth

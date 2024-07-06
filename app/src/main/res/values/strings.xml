@@ -153,6 +153,13 @@
     <string name="downloads_text4">Scaricati</string>
     <string name="collezioni_text2">Collezioni</string>
     <string name="generi_text2">Generi</string>
+    <string name="txt_domanda3">Vorresti vedere piu\' comics?</string>
+    <string name="button_risp_comics">Clicca qua!</string>
+    <string name="select_collection">Select Collection</string>
+    <string name="select_language">Select Language</string>
+    <string name="select_year">Select Year</string>
+    <string name="select_genre">Select Genre</string>
+    <string name="filtri">Filtri da applicare</string>
 
 
     <string-array name="genres_array">

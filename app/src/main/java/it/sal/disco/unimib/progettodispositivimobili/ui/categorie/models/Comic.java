@@ -8,10 +8,12 @@ import java.util.List;
 public class Comic implements Serializable {
     private String id;
     private String title;
-    private String description;
     private String thumbnail;
     private String year;
     private String language;
+
+    @SerializedName("description")
+    private Object description;
 
     @SerializedName("collection")
     private String collection;
@@ -46,10 +48,15 @@ public class Comic implements Serializable {
     }
 
     public String getDescription() {
-        return description;
+        if (description instanceof String) {
+            return (String) description;
+        } else if (description instanceof java.util.List) {
+            return String.join(", ", (java.util.List<String>) description);
+        }
+        return "No Description Available";
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Object description) {
         this.description = description;
     }
 

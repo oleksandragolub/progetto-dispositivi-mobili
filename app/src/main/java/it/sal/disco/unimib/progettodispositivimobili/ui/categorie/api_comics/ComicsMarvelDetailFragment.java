@@ -81,7 +81,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
         }
 
         if (modelPdfComics != null) {
-            comicsId = modelPdfComics.getId();
+            comicsId = sanitizeFirebaseKey(modelPdfComics.getId());
             thumbnailUrl = modelPdfComics.getUrl();
             title = modelPdfComics.getTitolo();
             description = modelPdfComics.getDescrizione();
@@ -146,6 +146,14 @@ public class ComicsMarvelDetailFragment extends Fragment {
         checkIsFavorite();
 
         return view;
+    }
+
+    private String sanitizeFirebaseKey(String key) {
+        return key.replace(".", "")
+                .replace("#", "")
+                .replace("$", "")
+                .replace("[", "")
+                .replace("]", "");
     }
 
 

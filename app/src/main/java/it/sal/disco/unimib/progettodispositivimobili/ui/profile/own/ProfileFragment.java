@@ -2,15 +2,12 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile.own;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ReadWriteUserDetails;
@@ -40,16 +35,18 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragm
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "PROFILE_TAG";
-    FragmentProfileBinding binding;
-    ImageView profileImageView, profileImageViewCamera;
-    TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText;
-    TextView deleteProfileButton;
-    Button updateProfileButton;
-    ProgressBar progressBar;
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    private FragmentProfileBinding binding;
+    private ImageView profileImageView, profileImageViewCamera;
+    private TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText;
+    private TextView deleteProfileButton;
+    private Button updateProfileButton;
+    private ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private ValueEventListener profileEventListener;
+    private ValueEventListener emailVerifiedListener;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -75,12 +72,7 @@ public class ProfileFragment extends Fragment {
         currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-            Activity activity = getActivity();
-            if (activity != null) {
-                activity.finish();
-            }
+            navigateToLogin();
         } else {
             progressBar.setVisibility(View.VISIBLE);
             checkIfEmailVerified(currentUser);
@@ -88,24 +80,27 @@ public class ProfileFragment extends Fragment {
         }
 
         binding.profileImageViewCamera.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new UploadProfilePicFragment());
-            }
+            openFragment(new UploadProfilePicFragment());
         });
 
         updateProfileButton.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new UpdateProfileFragment());
-            }
+            openFragment(new UpdateProfileFragment());
         });
 
         binding.favoriteBtn.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new PreferitiFragment());
-            }
+            openFragment(new PreferitiFragment());
         });
 
         return root;
+    }
+
+    private void navigateToLogin() {
+        removeFirebaseListeners();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     private void openFragment(Fragment fragment) {
@@ -117,12 +112,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void checkIfEmailVerified(FirebaseUser currentUser) {
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        emailVerifiedListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ReadWriteUserDetails userDetails = snapshot.getValue(ReadWriteUserDetails.class);
                 if (userDetails != null) {
-                    if (userDetails.getAuthMethod() != null && userDetails.getAuthMethod().equals("PasswordEmail")) {
+                    if ("PasswordEmail".equals(userDetails.getAuthMethod())) {
                         showAlertDialog();
                     }
                 }
@@ -133,7 +128,8 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
-        });
+        };
+        reference.addListenerForSingleValueEvent(emailVerifiedListener);
     }
 
     private void showAlertDialog() {
@@ -153,70 +149,57 @@ public class ProfileFragment extends Fragment {
 
     private void showUserProfile(FirebaseUser currentUser) {
         String userID = currentUser.getUid();
-        reference.child(userID).addValueEventListener(new ValueEventListener() {
+        profileEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (binding != null) {
-                    String email = "" + snapshot.child("email").getValue();
-                    String username = "" + snapshot.child("username").getValue();
-                    String dob = "" + snapshot.child("dob").getValue();
-                    String gender = "" + snapshot.child("gender").getValue();
-                    String authMethod = "" + snapshot.child("authMethod").getValue();
-                    String profileImage = "" + snapshot.child("profileImage").getValue();
+                    if (snapshot.exists()) {
+                        String email = snapshot.child("email").getValue(String.class);
+                        String username = snapshot.child("username").getValue(String.class);
+                        String dob = snapshot.child("dob").getValue(String.class);
+                        String gender = snapshot.child("gender").getValue(String.class);
+                        String authMethod = snapshot.child("authMethod").getValue(String.class);
+                        String profileImage = snapshot.child("profileImage").getValue(String.class);
 
-                    usernameEditText.setText(username);
-                    emailEditText.setText(email);
-                    dobEditText.setText(dob);
-                    genderEditText.setText(gender);
+                        usernameEditText.setText(username);
+                        emailEditText.setText(email);
+                        dobEditText.setText(dob);
+                        genderEditText.setText(gender);
 
-                    if (getActivity() != null) {
-                        Glide.with(getActivity())
-                                .load(profileImage)
-                                .placeholder(R.drawable.profile_icone)
-                                .into(binding.profileImageView);
+                        if (getActivity() != null && profileImage != null) {
+                            Glide.with(getActivity())
+                                    .load(profileImage)
+                                    .placeholder(R.drawable.profile_icone)
+                                    .into(binding.profileImageView);
+                        }
+
+                        if ("Google".equals(authMethod) && (dob.isEmpty() || gender.isEmpty())) {
+                            showCompletionAlert();
+                        }
+
+                        if ("PasswordEmail".equals(authMethod)) {
+                            deleteProfileButton.setOnClickListener(v -> openFragment(new DeleteProfileFragment()));
+                            updateProfileButton.setOnClickListener(v -> openFragment(new UpdateProfileFragment()));
+                        } else if ("Google".equals(authMethod)) {
+                            deleteProfileButton.setOnClickListener(v -> openFragment(new DeleteGoogleProfileFragment()));
+                            updateProfileButton.setOnClickListener(v -> openFragment(new UpdateGoogleProfileFragment()));
+                        }
+                    } else {
+                        Log.e(TAG, "Snapshot non esiste");
                     }
-
-                    if ("Google".equals(authMethod) && (dob.isEmpty() || gender.isEmpty())) {
-                        showCompletionAlert();
-                    }
-
-                    if (authMethod.equals("PasswordEmail")) {
-                        deleteProfileButton.setOnClickListener(v -> {
-                            if (getActivity() != null) {
-                                openFragment(new DeleteProfileFragment());
-                            }
-                        });
-
-                        updateProfileButton.setOnClickListener(v -> {
-                            if (getActivity() != null) {
-                                openFragment(new UpdateProfileFragment());
-                            }
-                        });
-                    } else if (authMethod.equals("Google")) {
-                        deleteProfileButton.setOnClickListener(v -> {
-                            if (getActivity() != null) {
-                                openFragment(new DeleteGoogleProfileFragment());
-                            }
-                        });
-
-                        updateProfileButton.setOnClickListener(v -> {
-                            if (getActivity() != null) {
-                                openFragment(new UpdateGoogleProfileFragment());
-                            }
-                        });
-                    }
+                    progressBar.setVisibility(View.GONE);
                 } else {
                     Log.e(TAG, "Binding is null");
                 }
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Qualcosa e' andato storto!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Qualcosa è andato storto!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
-        });
+        };
+        reference.child(userID).addValueEventListener(profileEventListener);
     }
 
     private void showCompletionAlert() {
@@ -224,9 +207,7 @@ public class ProfileFragment extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Completa il tuo profilo");
             builder.setMessage("Devi completare i campi obbligatori del tuo profilo prima di procedere.");
-            builder.setPositiveButton("OK", (dialog, which) -> {
-                openFragment(new UpdateGoogleProfileFragment());
-            });
+            builder.setPositiveButton("OK", (dialog, which) -> openFragment(new UpdateGoogleProfileFragment()));
             builder.setCancelable(false);
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -238,6 +219,20 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        removeFirebaseListeners();
         binding = null;
+    }
+
+    private void removeFirebaseListeners() {
+        if (reference != null && profileEventListener != null) {
+            reference.removeEventListener(profileEventListener);
+            profileEventListener = null;
+            Log.d(TAG, "Profile event listener removed");
+        }
+        if (reference != null && emailVerifiedListener != null) {
+            reference.removeEventListener(emailVerifiedListener);
+            emailVerifiedListener = null;
+            Log.d(TAG, "Email verified listener removed");
+        }
     }
 }

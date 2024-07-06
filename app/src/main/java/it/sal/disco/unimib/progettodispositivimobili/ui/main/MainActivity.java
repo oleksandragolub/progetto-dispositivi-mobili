@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
@@ -121,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.navigation_character_info) {
                     openFragment(new CharacterInfoFragment());
                     return true;
+                } else if (id == R.id.navigation_comics_avanzato) {
+                    openFragment(new ComicsAvanzatoInfoFragment());
+                    return true;
                 }
                 return false;
             }
@@ -200,6 +204,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
             return true;
+        } else if (id == R.id.navigation_comics_avanzato) {
+            openFragment(new ComicsAvanzatoInfoFragment());
+            //return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();

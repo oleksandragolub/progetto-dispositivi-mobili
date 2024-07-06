@@ -5,6 +5,14 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+
+    <fragment
+        android:id="@+id/navigation_comics_avanzato"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment"
+        android:label="Ricerca Avanzata"
+        tools:layout="@layout/fragment_comics_avanzato_info"/>
+
+
     <fragment
         android:id="@+id/navigation_admin_home"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment"

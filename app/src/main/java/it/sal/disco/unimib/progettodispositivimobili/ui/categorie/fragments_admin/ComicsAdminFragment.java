@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,10 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class ComicsAdminFragment extends Fragment {
@@ -35,10 +37,12 @@ public class ComicsAdminFragment extends Fragment {
     private String categoryId, category, uid;
     private ArrayList<ModelPdfComics> pdfArrayList;
     private AdapterPdfComicsAdmin adapterPdfAdmin;
+    private AdapterApiComics adapterComicsApi;
 
     private FragmentComicsAdminBinding binding;
-    private PDFView pdfView;
     private FirebaseAuth firebaseAuth;
+
+    private List<Comic> comicsList; // Aggiungi questa variabile per mantenere la lista dei fumetti
 
     public static ComicsAdminFragment newInstance(String categoryId, String category, String uid) {
         ComicsAdminFragment fragment = new ComicsAdminFragment();
@@ -99,7 +103,27 @@ public class ComicsAdminFragment extends Fragment {
             }
         });
 
+        if (comicsList != null) {
+            updateComicsList(comicsList); // Aggiorna la lista dei fumetti se è già stata impostata
+        }
+
         return root;
+    }
+
+    public void setComicsList(List<Comic> comicsList) {
+        this.comicsList = comicsList; // Salva la lista dei fumetti
+        if (binding != null) {
+            updateComicsList(comicsList); // Aggiorna la lista dei fumetti solo se il binding è inizializzato
+        }
+    }
+
+    private void updateComicsList(List<Comic> comicsList) {
+        if (adapterComicsApi == null) {
+            adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
+            binding.comicsRv.setAdapter(adapterComicsApi);
+        } else {
+            adapterComicsApi.updateComics(comicsList);
+        }
     }
 
     private void loadCategorizedComics() {
@@ -197,14 +221,6 @@ public class ComicsAdminFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
-        transaction.commit();
-    }
-
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -212,9 +228,6 @@ public class ComicsAdminFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (pdfView != null) {
-            pdfView.recycle();  // Rilascia le risorse del PDFView
-        }
         binding = null;
     }
 }

@@ -12,22 +12,18 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.github.barteksc.pdfviewer.PDFView;
-
 import java.util.ArrayList;
-
+import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
@@ -39,8 +35,6 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     private FilterPdfComicsAdmin filter;
     private RowPdfAdminBinding binding;
     private ProgressDialog progressDialog;
-
-    private static final String TAG = "PDF_ADAPTER_TAG";
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
@@ -55,7 +49,6 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         this.context = context;
         this.pdfArrayList = pdfArrayList;
         this.filterList = pdfArrayList;
-
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Per favore, aspetta");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -71,38 +64,20 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     @Override
     public void onBindViewHolder(@NonNull HolderPdfAdmin holder, int position) {
         ModelPdfComics model = pdfArrayList.get(position);
-
         String title = model.getTitolo();
         String description = model.getDescrizione();
-        long timestamp = model.getTimestamp();
-        String pdfId = model.getId();
-        String categoryId = model.getCategoryId();
         String pdfUrl = model.getUrl();
-
-        String formattedDate = MyApplication.formatTimestamp(timestamp);
 
         holder.titleTV.setText(title);
         holder.descriptionTV.setText(description);
-        holder.dateTV.setText(formattedDate);
 
-        MyApplication.loadCategory("" + categoryId, holder.categoryTV);
-       // MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar);
-        MyApplication.loadPdfFromUrlSinglePage("" + pdfUrl, "" + title, holder.pdfView, holder.progressBar, null);
-        //MyApplication.loadPdfSize("" + pdfUrl, "" + title, holder.sizeTV);
+        MyApplication.loadPdfFromUrlSinglePage(pdfUrl, title, holder.pdfView, holder.progressBar, null);
 
-        holder.moreBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moreOptionsDialog(model, holder);
-            }
-        });
+        holder.moreBTN.setOnClickListener(v -> moreOptionsDialog(model, holder));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(model);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(model);
             }
         });
     }
@@ -115,17 +90,14 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         String[] options = {"Modifica", "Elimina"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Scegli l'opzione").setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    openComicsPdfEditFragment(model.getId());
-                } else if (which == 1) {
-                    MyApplication.deleteComics(context,
-                            "" + comicsId,
-                            "" + comicsUrl,
-                            "" + comicsTitolo);
-                }
+        builder.setTitle("Scegli l'opzione").setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                openComicsPdfEditFragment(model.getId());
+            } else if (which == 1) {
+                MyApplication.deleteComics(context,
+                        "" + comicsId,
+                        "" + comicsUrl,
+                        "" + comicsTitolo);
             }
         }).show();
     }
@@ -143,6 +115,12 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         transaction.commit();
     }
 
+    public void addMoreComics(List<ModelPdfComics> newComics) {
+        int startPosition = pdfArrayList.size();
+        pdfArrayList.addAll(newComics);
+        notifyItemRangeInserted(startPosition, newComics.size());
+    }
+
     @Override
     public int getItemCount() {
         return pdfArrayList.size();
@@ -157,22 +135,17 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     }
 
     class HolderPdfAdmin extends RecyclerView.ViewHolder {
-
+        TextView titleTV, descriptionTV;
         PDFView pdfView;
         ProgressBar progressBar;
-        TextView titleTV, descriptionTV, categoryTV, sizeTV, dateTV;
         ImageButton moreBTN;
 
         public HolderPdfAdmin(@NonNull View itemView) {
             super(itemView);
-
-            pdfView = binding.pdfView;
-            progressBar = binding.progressBar;
             titleTV = binding.titleComics;
             descriptionTV = binding.descriptionComics;
-            categoryTV = binding.categoryComics;
-            sizeTV = binding.sizeComics;
-            dateTV = binding.dateComics;
+            pdfView = binding.pdfView;
+            progressBar = binding.progressBar;
             moreBTN = binding.moreBtn;
         }
     }
