@@ -5,6 +5,10 @@
    android:layout_width="match_parent"
    android:layout_height="match_parent">
 
+    <!--
+        ricordarsi di eliminare questo commento, è solo per test
+    -->
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
