@@ -16,6 +16,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -25,8 +27,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -41,15 +45,14 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragm
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
-
-    private ActivityMainBinding binding;
+    private static final String TAG = "MainActivity";
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
-    BottomNavigationView bottomNavigationView;
-    MaterialToolbar toolbar;
+    private BottomNavigationView bottomNavigationView;
+    private MaterialToolbar toolbar;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-
+    private DatabaseReference userRef;
     //variabile per tracciare se il form del profilo è stato completato
     private boolean isProfileFormComplete = false;
 
@@ -61,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-
     private void signOutFromGoogle() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> Log.d("GoogleSignOut", "User signed out from Google"));
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+        googleSignInClient.signOut().addOnCompleteListener(this, task -> Log.d("GoogleSignOut", "User signed out from Google"));
     }
 
     @Override
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        fragmentManager = getSupportFragmentManager();
 
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
@@ -125,14 +130,22 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.navigation_comics_avanzato) {
                     openFragment(new ComicsAvanzatoInfoFragment());
                     return true;
+                } else if (id == R.id.nav_marvel_comics_detail) {
+                    openFragment(new ComicsMarvelDetailFragment());
+                    //return true;
                 }
                 return false;
             }
         });
 
         fragmentManager = getSupportFragmentManager();
-        openFragment(new HomeFragment());
-
+        if (currentUser == null) {
+            navigateToLogin();
+        } else {
+            if (savedInstanceState == null) {
+                openFragment(new HomeFragment());
+            }
+        }
         if(currentUser == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
@@ -145,22 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             // Imposta anche l'elemento della BottomNavigationView su quello corrispondente, se necessario
             bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
         }
-
-        //metto temporaneamente qua, serve per configurare l'api e prelevare il contenuto
-        // ma non so ancora come salvare quello che è stato trovato e se funziona
-        //incluse le api-key che non vanno inserite direttamente nel codice ma non so come.
-        /*
-        private static final String publicKey = "0b15cb829ed0192799209be00f95e553";
-        private static final String privateKey = "966d2baf127271cc1af5bff030e9998be0df51af";
-
-        MarvelApiConfig marvelApiConfig = new MarvelApiConfig.Builder(publicKey, privateKey).debug().build();
-        ComicApiClient comicApiClient = new ComicApiClient(marvelApiConfig);
-        ComicsQuery query = ComicsQuery.Builder.create().withOffset(0).withLimit(10).build();
-        MarvelResponse<ComicsDto> all = comicApiClient.getAll(query);
-         */
-
     }
-
 
     private void openFragment(Fragment fragment){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -173,12 +171,10 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == R.id.action_custom_icon) {
             View menuItemView = findViewById(R.id.action_custom_icon);
             PopupMenu popupMenu = new PopupMenu(this, menuItemView);
@@ -204,9 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
             return true;
-        } else if (id == R.id.navigation_comics_avanzato) {
-            openFragment(new ComicsAvanzatoInfoFragment());
-            //return true;
+        } else if (id == R.id.nav_marvel_comics_detail) {
+            openFragment(new ComicsMarvelDetailFragment());
+            return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();
@@ -219,5 +215,30 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /* private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        signOutFromGoogle();
+        navigateToLogin();
+    }*/
+
+    private void logOut() {
+        // Rimuovi i listener del database prima del logout
+       /* ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (profileFragment != null) {
+            profileFragment.removeFirebaseListeners();
+        }*/
+
+        FirebaseAuth.getInstance().signOut();
+        signOutFromGoogle();
+        navigateToLogin();
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

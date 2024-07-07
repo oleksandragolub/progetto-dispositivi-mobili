@@ -22,11 +22,6 @@
             android:title="Cerca personaggio" />
 
         <item
-            android:id="@+id/navigation_comics_avanzato"
-            android:icon="@drawable/baseline_star_rate_24"
-            android:title="Ricerca avanzata" />
-
-        <item
             android:id="@+id/navigation_logout"
             android:icon="@drawable/logout_icone"
             android:title="Logout" />

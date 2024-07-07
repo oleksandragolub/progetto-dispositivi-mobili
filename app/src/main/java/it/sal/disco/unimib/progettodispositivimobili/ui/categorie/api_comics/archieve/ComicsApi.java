@@ -19,6 +19,10 @@ public interface ComicsApi {
     @GET("comic/pdf")
     Call<JsonObject> getComicPdf(@Query("identifier") String identifier);
 
+    @GET("comics")
+    Call<List<Comic>> getComics(@Query("query") String query, @Query("limit") int limit, @Query("offset") int offset);
+
+
     @GET("comics/metadata/year")
     Call<JsonObject> getComicsByYear();
 

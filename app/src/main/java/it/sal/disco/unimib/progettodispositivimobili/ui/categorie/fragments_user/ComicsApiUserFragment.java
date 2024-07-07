@@ -29,7 +29,6 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
@@ -41,13 +40,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class ComicsUserFragment extends Fragment {
+public class ComicsApiUserFragment extends Fragment {
 
-    private static final String TAG = "COMICS_USER_TAG";
+    private static final String TAG = "COMICS_API_USER_TAG";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
-    private ArrayList<ModelPdfComics> pdfArrayList;
-    private AdapterPdfComicsUser adapterPdfUser;
+   // private ArrayList<ModelPdfComics> pdfArrayList;
+    //private AdapterPdfComicsUser adapterPdfUser;
     private AdapterApiComics adapterComicsApi;
     private FragmentComicsUserBinding binding;
     private PDFView pdfView;
@@ -56,8 +55,8 @@ public class ComicsUserFragment extends Fragment {
     private int currentComicCount = 0;
     private static final int COMICS_LOAD_LIMIT = 20;
 
-    public static ComicsUserFragment newInstance(String categoryId, String category, String uid) {
-        ComicsUserFragment fragment = new ComicsUserFragment();
+    public static ComicsApiUserFragment newInstance(String categoryId, String category, String uid) {
+        ComicsApiUserFragment fragment = new ComicsApiUserFragment();
         Bundle args = new Bundle();
         args.putString("categoryId", categoryId);
         args.putString("category", category);
@@ -85,28 +84,7 @@ public class ComicsUserFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        Log.d(TAG, "onCreateView: Category: " + category);
-
-        pdfArrayList = new ArrayList<>();
-        comicsList = new ArrayList<>();
-
-        adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
-        adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
-
-        adapterPdfUser = new AdapterPdfComicsUser(getContext(), (ArrayList<ModelPdfComics>) pdfArrayList);
-
-
-        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-            @Override
-            public void onItemClick(ModelPdfComics model) {
-                openComicsPdfDetailUserFragment(model.getId());
-            }
-        });
-
-        binding.comicsRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.comicsRv.setAdapter(adapterComicsApi);
-
-        // Imposta l'adapter inizialmente
+       /* Log.d(TAG, "onCreateView: Category: " + category);
         if (category.equals("All")) {
             loadAllComics();
         } else if (category.equals("Most Viewed")) {
@@ -115,9 +93,15 @@ public class ComicsUserFragment extends Fragment {
             loadMostViewedDownloadedComics("downloadsCount");
         } else {
             loadCategorizedComics();
-        }
+        }*/
 
-        loadMoreComics();
+        comicsList = new ArrayList<>();
+        adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
+        adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
+        binding.comicsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.comicsRv.setAdapter(adapterComicsApi);
+
+        loadMoreComics(); // Carica i primi fumetti
 
         binding.searchEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -127,9 +111,7 @@ public class ComicsUserFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    if (adapterPdfUser != null) {
-                        adapterPdfUser.getFilter().filter(s);
-                    } else if (adapterComicsApi != null) {
+                    if (adapterComicsApi != null) {
                         adapterComicsApi.getFilter().filter(s);
                     }
                 } catch (Exception e) {
@@ -167,13 +149,9 @@ public class ComicsUserFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Comic> moreComics = response.body();
                     Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
-                    for (Comic comic : moreComics) {
-                        comic.setFromApi(true); // Imposta il campo fromApi
-                    }
                     comicsList.addAll(moreComics);
                     adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
                     currentComicCount += moreComics.size();
-                    Log.d(TAG, "Total comics count: " + comicsList.size());
                 } else {
                     Log.e(TAG, "API response unsuccessful. Code: " + response.code());
                 }
@@ -186,7 +164,7 @@ public class ComicsUserFragment extends Fragment {
         });
     }
 
-    private void loadCategorizedComics() {
+   /* private void loadCategorizedComics() {
         pdfArrayList = new ArrayList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.orderByChild("categoryId").equalTo(categoryId)
@@ -285,7 +263,7 @@ public class ComicsUserFragment extends Fragment {
         transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
         transaction.addToBackStack(null); // Aggiungi il frammento al back stack
         transaction.commit();
-    }
+    }*/
 
     private void openComicDetailFragment(Comic comic) {
         ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
@@ -331,9 +309,6 @@ public class ComicsUserFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (pdfView != null) {
-            pdfView.recycle();  // Rilascia le risorse del PDFView
-        }
         binding = null;
     }
 }

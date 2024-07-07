@@ -29,7 +29,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
-
     private static final int VIEW_TYPE_API = 0;
     private static final int VIEW_TYPE_MANUAL = 1;
     private List<ModelPdfComics> comicsList;
@@ -76,7 +75,6 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ApiComicViewHolder apiHolder = (ApiComicViewHolder) holder;
             apiHolder.title.setText(comic.getTitolo());
             apiHolder.description.setText(comic.getDescrizione());
-
             Glide.with(apiHolder.itemView.getContext()).load(comic.getUrl()).into(apiHolder.thumbnail);
             apiHolder.itemView.setOnClickListener(v -> {
                 if (onItemClickListener != null) {
@@ -107,14 +105,12 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
-
                 if (constraint == null || constraint.length() == 0) {
                     results.count = comicsList.size();
                     results.values = comicsList;
                 } else {
                     String searchStr = constraint.toString().toUpperCase();
                     List<ModelPdfComics> resultData = new ArrayList<>();
-
                     for (ModelPdfComics comic : comicsList) {
                         if (comic.getTitolo().toUpperCase().contains(searchStr)) {
                             resultData.add(comic);
@@ -160,3 +156,4 @@ public class AdapterComics extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 }
+

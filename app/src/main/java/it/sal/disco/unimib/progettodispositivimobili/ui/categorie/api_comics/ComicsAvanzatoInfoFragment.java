@@ -386,7 +386,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                 language.isEmpty() ? null : language,
                 year.isEmpty() ? null : year,
                 genre.isEmpty() ? null : genre,
-                10
+                20
         );
 
         call.enqueue(new Callback<List<Comic>>() {

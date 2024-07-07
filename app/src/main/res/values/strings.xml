@@ -160,6 +160,7 @@
     <string name="select_year">Select Year</string>
     <string name="select_genre">Select Genre</string>
     <string name="filtri">Filtri da applicare</string>
+    <string name="no_more_comics">Non ci sono piu comics</string>
 
 
     <string-array name="genres_array">

@@ -2,7 +2,6 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -21,9 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
-import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfEditFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
@@ -89,7 +88,7 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
 
         String[] options = {"Modifica", "Elimina"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
         builder.setTitle("Scegli l'opzione").setItems(options, (dialog, which) -> {
             if (which == 0) {
                 openComicsPdfEditFragment(model.getId());
@@ -113,6 +112,12 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void setComicsList(List<ModelPdfComics> newComics) {
+        this.pdfArrayList.clear();
+        this.pdfArrayList.addAll(newComics);
+        notifyDataSetChanged();
     }
 
     public void addMoreComics(List<ModelPdfComics> newComics) {

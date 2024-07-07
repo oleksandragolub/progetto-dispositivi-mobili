@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -23,32 +24,36 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentAdminHomeBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsAdminFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsPdfDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsApiAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCategory;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeAdminFragment extends Fragment {
-    private ComicsApi comicsApi;
-    private ArrayList<ModelCategory> categoryArrayList;
-    public ViewPagerAdapter viewPagerAdapter;
-    private FragmentAdminHomeBinding binding;
-
     private static final String TAG = "HomeAdminFragment";
+    private FragmentAdminHomeBinding binding;
+    private ComicsApi comicsApi;
+    private ViewPagerAdapter viewPagerAdapter;
+    private ArrayList<ModelCategory> categoryArrayList;
+    private Set<String> loadedCategoriesSet = new HashSet<>();
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAdminHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -61,20 +66,24 @@ public class HomeAdminFragment extends Fragment {
     }
 
     private void setupViewPagerAdapter(ViewPager viewPager) {
-        viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, getActivity());
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, getActivity());
 
         categoryArrayList = new ArrayList<>();
 
-        // Carica le collezioni tramite API
-        loadCollections(viewPager);
+        // Carica le categorie manuali dal database
+        loadManualCategories(viewPager);
 
+        // Carica le collezioni tramite API
+        loadCollections(viewPager, 0);
+    }
+
+    private void loadManualCategories(ViewPager viewPager) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 categoryArrayList.clear();
 
-                // Codice esistente per aggiungere categorie predefinite
                 ModelCategory modelAll = new ModelCategory("01", "All", "", 1);
                 ModelCategory modelMostViewed = new ModelCategory("02", "Most Viewed", "", 1);
                 ModelCategory modelMostDownloaded = new ModelCategory("03", "Most Downloaded", "", 1);
@@ -103,17 +112,17 @@ public class HomeAdminFragment extends Fragment {
                 Log.e(TAG, "Database error: " + error.getMessage());
             }
         });
-        binding.tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void loadCollections(ViewPager viewPager) {
-        comicsApi.getComicsByCollection(0, 10).enqueue(new Callback<JsonObject>() {
+    private void loadCollections(ViewPager viewPager, int attempt) {
+        comicsApi.getComicsByCollection(0, 30).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     JsonObject collections = response.body();
                     for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
                         String collectionName = entry.getKey();
+                        Log.d(TAG, "Loading collection: " + collectionName);
                         loadComicsForCollection(collectionName, viewPager);
                     }
                 } else {
@@ -124,23 +133,32 @@ public class HomeAdminFragment extends Fragment {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e(TAG, "API error for collections. Message: " + t.getMessage());
+                if (attempt < 3) {  // Retry up to 3 times
+                    loadCollections(viewPager, attempt + 1);
+                }
             }
         });
     }
 
     private void loadComicsForCollection(String collection, ViewPager viewPager) {
-        comicsApi.getComicsByCollection(0, 10, collection).enqueue(new Callback<List<Comic>>() {
+        comicsApi.getComicsByCollection(0, 5, collection).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Comic> comics = response.body();
-                    ModelCategory modelCategory = new ModelCategory(collection, collection, "", 1);
-                    categoryArrayList.add(modelCategory);
-                    ComicsAdminFragment fragment = ComicsAdminFragment.newInstance(modelCategory.getId(), modelCategory.getCategory(), modelCategory.getUid());
-                    fragment.setComicsList(comics);
+                    Log.d(TAG, "Loaded " + comics.size() + " comics for collection: " + collection);
 
-                    viewPagerAdapter.addFragment(fragment, modelCategory.getCategory());
-                    viewPagerAdapter.notifyDataSetChanged();
+                    ModelCategory modelCategory = new ModelCategory(collection, collection, "", 1);
+                    if (!loadedCategoriesSet.contains(modelCategory.getId())) {
+                        loadedCategoriesSet.add(modelCategory.getId());
+                        categoryArrayList.add(modelCategory);
+
+                        ComicsApiAdminFragment fragment = ComicsApiAdminFragment.newInstance(modelCategory.getId(), modelCategory.getCategory(), modelCategory.getUid());
+                        fragment.setComicsList(comics); // Imposta la lista dei fumetti
+
+                        viewPagerAdapter.addFragment(fragment, modelCategory.getCategory());
+                        viewPagerAdapter.notifyDataSetChanged();
+                    }
                 } else {
                     Log.e(TAG, "API response unsuccessful for collection: " + collection + ", Code: " + response.code());
                 }
@@ -155,15 +173,16 @@ public class HomeAdminFragment extends Fragment {
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<ComicsAdminFragment> fragmentList = new ArrayList<>();
-        private ArrayList<String> fragmentTitleList = new ArrayList<>();
-        private Context context;
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> fragmentTitleList = new ArrayList<>();
+        private final Context context;
 
         public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior, Context context) {
             super(fm, behavior);
             this.context = context;
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return fragmentList.get(position);
@@ -174,33 +193,55 @@ public class HomeAdminFragment extends Fragment {
             return fragmentList.size();
         }
 
-        private void addFragment(ComicsAdminFragment fragment, String title) {
+        public void addFragment(Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
         }
 
+        @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
         }
     }
 
-    private void openComicsPdfDetailFragment(String comicsId) {
-        ComicsPdfDetailFragment comicsPdfDetailFragment = new ComicsPdfDetailFragment();
+    private void openComicDetailFragment(Comic comic) {
+        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        comicsPdfDetailFragment.setArguments(args);
+        ModelPdfComics modelPdfComics = new ModelPdfComics();
+        modelPdfComics.setId(comic.getId());
+        modelPdfComics.setTitolo(comic.getTitle());
+        modelPdfComics.setDescrizione(comic.getDescription());
+        modelPdfComics.setUrl(comic.getThumbnail());
+        modelPdfComics.setYear(comic.getYear());
+        modelPdfComics.setLanguage(comic.getLanguage());
+        modelPdfComics.setCollection(comic.getCollection());
+        modelPdfComics.setSubject(comic.getSubject());
+        args.putSerializable("modelPdfComics", modelPdfComics);
+        detailFragment.setArguments(args);
 
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailFragment);
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, detailFragment);  // Assicurati di utilizzare l'ID corretto
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
+    private void openComicsPdfDetailUserFragment(String comicsId) {
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
+        comicsPdfDetailUserFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
 }

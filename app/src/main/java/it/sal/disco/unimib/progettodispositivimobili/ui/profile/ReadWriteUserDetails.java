@@ -3,7 +3,9 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.IgnoreExtraProperties;
 
+@IgnoreExtraProperties
 public class ReadWriteUserDetails {
     private String userId;
     public String username, dob, gender, email, authMethod, userType, profileImage;
@@ -65,7 +67,7 @@ public class ReadWriteUserDetails {
         this.userType = userType;
     }
 
-   public ReadWriteUserDetails(String userId, String username, String dob, String gender, String email, Boolean emailVerificato, String authMethod) {
+    public ReadWriteUserDetails(String userId, String username, String dob, String gender, String email, Boolean emailVerificato, String authMethod) {
         this.userId = userId;
         this.username = username;
         this.dob = dob;

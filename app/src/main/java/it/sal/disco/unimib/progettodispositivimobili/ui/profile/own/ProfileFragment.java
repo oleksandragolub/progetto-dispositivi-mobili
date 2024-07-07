@@ -79,17 +79,9 @@ public class ProfileFragment extends Fragment {
             showUserProfile(currentUser);
         }
 
-        binding.profileImageViewCamera.setOnClickListener(v -> {
-            openFragment(new UploadProfilePicFragment());
-        });
-
-        updateProfileButton.setOnClickListener(v -> {
-            openFragment(new UpdateProfileFragment());
-        });
-
-        binding.favoriteBtn.setOnClickListener(v -> {
-            openFragment(new PreferitiFragment());
-        });
+        binding.profileImageViewCamera.setOnClickListener(v -> openFragment(new UploadProfilePicFragment()));
+        updateProfileButton.setOnClickListener(v -> openFragment(new UpdateProfileFragment()));
+        binding.favoriteBtn.setOnClickListener(v -> openFragment(new PreferitiFragment()));
 
         return root;
     }
@@ -195,7 +187,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Qualcosa è andato storto!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Qualcosa è andato storto!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
         };
@@ -223,7 +215,7 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
-    private void removeFirebaseListeners() {
+    public void removeFirebaseListeners() {  // Cambia l'accesso del metodo a pubblico
         if (reference != null && profileEventListener != null) {
             reference.removeEventListener(profileEventListener);
             profileEventListener = null;
