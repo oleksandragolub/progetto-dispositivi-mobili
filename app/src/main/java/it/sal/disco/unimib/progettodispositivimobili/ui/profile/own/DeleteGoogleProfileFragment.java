@@ -74,7 +74,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDeleteG
             builder.setPositiveButton("Continua", (dialog, which) -> revokeAccessAndDeleteAccount());
             builder.setNegativeButton("Cancella", (dialog, which) -> openFragment(new ProfileFragment()));
             AlertDialog alertDialog = builder.create();
-            alertDialog.setOnShowListener(dialog -> alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red)));
+            alertDialog.setOnShowListener(dialog -> alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.md_theme_error)));
             alertDialog.show();
         }
 

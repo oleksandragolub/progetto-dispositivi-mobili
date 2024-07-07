@@ -31,8 +31,7 @@
             android:text="@string/txt_comics"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/white" />
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/toolbarSubtitleTv"
@@ -40,7 +39,6 @@
             android:layout_height="wrap_content"
             android:text="@string/txt1"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/white"
             android:layout_below="@id/toolbarTitleTv"/>
     </RelativeLayout>
 

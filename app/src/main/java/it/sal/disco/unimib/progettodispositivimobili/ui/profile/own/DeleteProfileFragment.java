@@ -111,7 +111,7 @@ public class DeleteProfileFragment extends Fragment {
 
                         Toast.makeText(getActivity(), "La password è stata verificata." + "Adesso puoi eliminare il tuo profilo!", Toast.LENGTH_SHORT).show();
 
-                        buttonDeleteUser.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.dark_red));
+                        buttonDeleteUser.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), R.color.md_theme_error));
 
                         buttonDeleteUser.setOnClickListener(v1 -> showAlertDialog());
                     } else {
@@ -143,7 +143,7 @@ public class DeleteProfileFragment extends Fragment {
 
         AlertDialog alertDialog = builder.create();
 
-        alertDialog.setOnShowListener(dialog -> alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red)));
+        alertDialog.setOnShowListener(dialog -> alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.md_theme_error)));
 
         alertDialog.show();
     }

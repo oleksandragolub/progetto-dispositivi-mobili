@@ -1,15 +1,21 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.start_app;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
@@ -54,7 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLogin;
     TextView text_ForgotPassword, text_registerNow;
 
-    private void signIn() {
+
+    private void signIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
@@ -72,20 +79,23 @@ public class LoginActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK) {
+                if(result.getResultCode() == RESULT_OK){
                     Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                     try {
                         GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
                         firebaseAuthWithGoogle(signInAccount);
                     } catch (ApiException e) {
+                        // Gestione dell'errore di autenticazione
                         handleSignInError(e);
                     }
                 } else {
+                    // Gestione della situazione in cui il risultato non è OK
                     Toast.makeText(LoginActivity.this, "Sign in cancelled", Toast.LENGTH_SHORT).show();
                 }
             });
 
     private void handleSignInError(ApiException e) {
+        // Ottieni il codice di errore e prepara un messaggio di errore appropriato
         int statusCode = e.getStatusCode();
         String errorMessage = "Failed to sign in: ";
         switch (statusCode) {
@@ -98,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             case GoogleSignInStatusCodes.SIGN_IN_FAILED:
                 errorMessage += "Sign in failed";
                 break;
+            // Aggiungi altri casi se necessario
             default:
                 errorMessage += "Unknown error";
                 break;
@@ -107,19 +118,22 @@ public class LoginActivity extends AppCompatActivity {
         Log.e("GoogleSignIn", "Sign in error: " + e.getStatusCode());
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account){
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
                 currentUser = mAuth.getCurrentUser();
 
+                // Verifica se l'utente esiste già
                 reference.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
+                        if(dataSnapshot.exists()){
+                            // L'utente esiste, quindi si sta accedendo
                             Toast.makeText(LoginActivity.this, "Accesso nel proprio account effettuato con successo!", Toast.LENGTH_SHORT).show();
                         } else {
+                            // L'utente non esiste, è una nuova registrazione
                             String uid = currentUser.getUid();
                             String textUsername = String.valueOf(account.getDisplayName());
                             String textEmail = String.valueOf(account.getEmail());
@@ -127,7 +141,9 @@ public class LoginActivity extends AppCompatActivity {
                             String textGender = "";
                             Boolean emailVerificato = true;
 
+                            // Aggiorna il database Firebase con i dettagli dell'utente
                             ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(uid, textEmail, textUsername, textDoB, textGender, emailVerificato, "Google", "user", "");
+                            // il tipo dell'utente puo' essere user oppure admin (inserito manualmente da console firebase)
                             reference.child(currentUser.getUid()).setValue(writeUserDetails);
                             Toast.makeText(LoginActivity.this, "Registrazione tramite Google effettuata con successo!", Toast.LENGTH_SHORT).show();
                         }
@@ -136,10 +152,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Gestisci l'errore
                         Log.e(TAG, "Database error: " + databaseError.getMessage());
                     }
                 });
             } else {
+                // Gestisce gli errori di autenticazione, inclusi eventuali problemi di rete o credenziali errate
                 if (task.getException() instanceof ApiException) {
                     ApiException apiException = (ApiException) task.getException();
                     handleSignInError(apiException);
@@ -150,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUI(FirebaseUser currentUser) {
+    private void updateUI(FirebaseUser currentUser){
         if (currentUser == null) {
             Log.e(TAG, "Tentativo di aggiornare UI quando currentUser è null");
             return;
@@ -164,10 +182,12 @@ public class LoginActivity extends AppCompatActivity {
                     ReadWriteUserDetails userDetails = dataSnapshot.getValue(ReadWriteUserDetails.class);
                     if (userDetails != null) {
                         if ("admin".equals(userDetails.getUserType())) {
+                            // L'utente è un admin, avvia MainAdminActivity
                             Intent adminIntent = new Intent(LoginActivity.this, MainAdminActivity.class);
                             startActivity(adminIntent);
                             finish();
                         } else {
+                            // L'utente non è un admin, avvia MainActivity
                             Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(mainIntent);
                             finish();
@@ -190,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     private void startMainActivity() {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
@@ -207,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        if (currentUser == null) {
+        if(currentUser==null){
             signIn();
         } else {
             updateUI(currentUser);
@@ -235,23 +256,59 @@ public class LoginActivity extends AppCompatActivity {
             String textEmail = String.valueOf(editTextEmail.getText());
             String textPassword = String.valueOf(editTextPassword.getText());
 
-            if (TextUtils.isEmpty(textEmail)) {
-                Toast.makeText(LoginActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
-                editTextEmail.setError("Email richiesta");
-                editTextEmail.requestFocus();
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+            //Questo pezzo di codice non serve più, questo caso è impossibile con il nuovo textWatcher (vedi sotto)
+            /*
+                if(TextUtils.isEmpty(textEmail)){
+                    Toast.makeText(LoginActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
+                    editTextEmail.setError("Email richiesta");
+                    editTextEmail.requestFocus();
+                    //return;
+                }
+             */
+            if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
                 Toast.makeText(LoginActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
                 editTextEmail.setError("Email valida richiesta");
                 editTextEmail.requestFocus();
-            } else if (TextUtils.isEmpty(textPassword)) {
+                //return;
+            }
+            //Codice superfluo #2
+            /*
+            else if(TextUtils.isEmpty(textPassword)){
                 Toast.makeText(LoginActivity.this, "Inserisci la tua password", Toast.LENGTH_SHORT).show();
                 editTextPassword.setError("Password richiesta");
                 editTextPassword.requestFocus();
-            } else {
+                //return;
+            }
+             */
+             else {
                 loginUser(textEmail, textPassword);
             }
         });
+
+        editTextEmail.addTextChangedListener(textWatcher);
+        editTextPassword.addTextChangedListener(textWatcher);
     }
+
+    //Abilita/disabilita il bottone login se email e password sono inserite/vuote
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String textEmailWatcher = String.valueOf(editTextEmail.getText());
+            String textPasswordWatcher = String.valueOf(editTextPassword.getText());
+
+            buttonLogin.setEnabled(!textEmailWatcher.isEmpty() && !textPasswordWatcher.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void loginUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -260,15 +317,19 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser currentUser = mAuth.getCurrentUser();
                         if (currentUser != null) {
                             if (currentUser.isEmailVerified()) {
+                                // Update the emailVerificato field in the database
                                 updateEmailVerificationStatus(currentUser.getUid(), true);
+                                // Proceed to main activity or user profile
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             } else {
+                                // Inform user to verify email and do not proceed to main activity
                                 showVerificationAlert();
-                                mAuth.signOut();
+                                mAuth.signOut(); // Optional: sign out user until they verify their email
                             }
                         }
                     } else {
+                        // Handle failed login
                         handleLoginError(task.getException());
                     }
                 });
@@ -286,8 +347,10 @@ public class LoginActivity extends AppCompatActivity {
         builder.setTitle("Email non verificata");
         builder.setMessage("Per favore verifica la tua email prima di accedere. Controlla la tua casella di posta per il link di verifica.");
 
+        // Bottone "Cancella" per chiudere il dialog
         builder.setNegativeButton("Cancella", (dialog, which) -> dialog.dismiss());
 
+        // Bottone "Invia di nuovo" per re-inviare il messaggio di verifica
         builder.setPositiveButton("Invia di nuovo", (dialog, which) -> {
             currentUser = mAuth.getCurrentUser();
             if (currentUser != null) {
