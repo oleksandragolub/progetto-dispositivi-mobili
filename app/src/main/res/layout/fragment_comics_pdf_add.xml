@@ -131,7 +131,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textView_input_layout_comics_category"
+        android:id="@+id/textView_input_layout_comics_anno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -146,10 +146,85 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textView_comics_anno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/comics_lingua"
+            android:enabled="true"
+            android:inputType="text"
+            android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textView_input_layout_comics_lingua"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:boxBackgroundColor="?android:attr/panelBackground"
+        app:layout_constraintStart_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toStartOf="@id/guideline_left"
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_anno"
+        app:startIconDrawable="@drawable/baseline_control_camera_24"
+        app:endIconMode="clear_text"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textView_comics_lingua"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/comics_lingua"
+            android:enabled="true"
+            android:inputType="text"
+            android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textView_input_layout_comics_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:boxBackgroundColor="?android:attr/panelBackground"
+        app:layout_constraintStart_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toStartOf="@id/guideline_left"
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_lingua"
+        app:startIconDrawable="@drawable/baseline_control_camera_24"
+        app:endIconMode="clear_text"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textView_comics_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/comics_category"
+            android:hint="@string/comics_category_collezione"
+            android:enabled="true"
+            android:inputType="text"
+            android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textView_input_layout_comics_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:boxBackgroundColor="?android:attr/panelBackground"
+        app:layout_constraintStart_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toStartOf="@id/guideline_left"
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_category"
+        app:startIconDrawable="@drawable/baseline_control_camera_24"
+        app:endIconMode="clear_text"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textView_comics_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/comics_subject"
             android:enabled="true"
             android:inputType="text"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
@@ -170,7 +245,7 @@
         android:textAllCaps="false"
         app:layout_constraintStart_toEndOf="@id/guideline_right"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_category"/>
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_subject"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_begin"
