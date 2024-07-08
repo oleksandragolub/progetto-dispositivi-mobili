@@ -164,6 +164,7 @@
     <string name="comics_lingua">Lingua del comics</string>
     <string name="comics_category_collezione">Categoria/collezione del comics</string>
     <string name="comics_subject">Genere del comics</string>
+    <string name="comics_anno">Anno del comics</string>
 
 
     <string-array name="genres_array">

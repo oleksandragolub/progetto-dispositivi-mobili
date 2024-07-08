@@ -81,14 +81,12 @@ public class CategoryUserFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-       // binding.buttonMore.setOnClickListener(v -> loadMoreCategories());
-
         return root;
     }
 
     private void loadCategories(int start, int limit) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (binding == null) {
@@ -102,6 +100,7 @@ public class CategoryUserFragment extends Fragment {
                         Log.d(TAG, "Loaded category from Firebase: " + model.getCategory());
                     }
                 }
+                adapterCategory.notifyDataSetChanged();
                 loadApiCollections(start, limit); // Load API collections after manual categories
             }
 
@@ -120,7 +119,6 @@ public class CategoryUserFragment extends Fragment {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     JsonObject collections = response.body();
-                    int initialSize = categoryArrayList.size();
                     boolean hasNewData = false;
                     for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
                         String collectionName = entry.getKey();
@@ -134,12 +132,7 @@ public class CategoryUserFragment extends Fragment {
                         }
                     }
                     if (hasNewData) {
-                        if (initialSize == 0) {
-                            adapterCategory = new AdapterCategoryUser(getActivity(), categoryArrayList);
-                            binding.RecyclerViewCategory.setAdapter(adapterCategory);
-                        } else {
-                            adapterCategory.notifyItemRangeInserted(initialSize, categoryArrayList.size() - initialSize);
-                        }
+                        adapterCategory.notifyDataSetChanged();
                     } else {
                         Log.d(TAG, "No new data loaded from API");
                     }
@@ -173,7 +166,6 @@ public class CategoryUserFragment extends Fragment {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     JsonObject collections = response.body();
-                    int initialSize = categoryArrayList.size();
                     boolean hasNewData = false;
                     for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
                         String collectionName = entry.getKey();
@@ -187,12 +179,7 @@ public class CategoryUserFragment extends Fragment {
                         }
                     }
                     if (hasNewData) {
-                        if (initialSize == 0) {
-                            adapterCategory = new AdapterCategoryUser(getActivity(), categoryArrayList);
-                            binding.RecyclerViewCategory.setAdapter(adapterCategory);
-                        } else {
-                            adapterCategory.notifyItemRangeInserted(initialSize, categoryArrayList.size() - initialSize);
-                        }
+                        adapterCategory.notifyDataSetChanged();
                     } else {
                         Log.d(TAG, "No new data loaded from API");
                     }
@@ -213,12 +200,6 @@ public class CategoryUserFragment extends Fragment {
                 Toast.makeText(getActivity(), "Retry failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void loadMoreCategories() {
-        currentStartIndex += limit;
-        Log.d(TAG, "Loading more categories, start index: " + currentStartIndex);
-        loadApiCollections(currentStartIndex, limit);
     }
 
     @Override

@@ -72,18 +72,14 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             });
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentComicsPdfDetailUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (getArguments() != null) {
-            if (getArguments().containsKey("comicsId")) {
-                comicsId = getArguments().getString("comicsId");
-            } else if (getArguments().containsKey("modelPdfComics")) {
-                modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
-                comicsId = modelPdfComics != null ? modelPdfComics.getId() : null;
+        if (getArguments() != null && getArguments().containsKey("modelPdfComics")) {
+            modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
+            if (modelPdfComics != null) {
+                comicsId = modelPdfComics.getId();
             }
         }
 
@@ -104,27 +100,19 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
         }
 
-        binding.buttonBackUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
+        binding.buttonBackUser.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        binding.readComicsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
-                Bundle args = new Bundle();
-                args.putString("comicsId", comicsId);
-                comicsPdfViewUserFragment.setArguments(args);
+        binding.readComicsBtn.setOnClickListener(v -> {
+            ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
+            Bundle args = new Bundle();
+            args.putString("comicsId", comicsId);
+            comicsPdfViewUserFragment.setArguments(args);
 
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, comicsPdfViewUserFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.nav_host_fragment, comicsPdfViewUserFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         binding.downloadComicsBtn.setOnClickListener(v -> {
@@ -143,29 +131,23 @@ public class ComicsPdfDetailUserFragment extends Fragment {
             }
         });
 
-        binding.favoriteComicsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+        binding.favoriteComicsBtn.setOnClickListener(v -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (isInMyFavorites) {
+                    MyApplication.removeFromFavorite(getActivity(), comicsId);
                 } else {
-                    if (isInMyFavorites) {
-                        MyApplication.removeFromFavorite(getActivity(), comicsId);
-                    } else {
-                        MyApplication.addToFavorite(getActivity(), comicsId);
-                    }
+                    MyApplication.addToFavorite(getActivity(), comicsId);
                 }
             }
         });
 
-        binding.addCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
-                } else {
-                    addCommentDialog();
-                }
+        binding.addCommentBtn.setOnClickListener(v -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+            } else {
+                addCommentDialog();
             }
         });
 
@@ -282,40 +264,57 @@ public class ComicsPdfDetailUserFragment extends Fragment {
     }
 
     private void loadComicsDetails() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                comicsTitle = "" + snapshot.child("titolo").getValue();
-                String description = "" + snapshot.child("descrizione").getValue();
-                String categoryId = "" + snapshot.child("categoryId").getValue();
-                String viewsCount = "" + snapshot.child("viewsCount").getValue();
-                String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
-                comicsUrl = "" + snapshot.child("url").getValue();
-                String timestamp = "" + snapshot.child("timestamp").getValue();
+        if (modelPdfComics != null) {
+            comicsTitle = modelPdfComics.getTitolo();
+            comicsUrl = modelPdfComics.getUrl();
 
-                binding.downloadComicsBtn.setVisibility(View.VISIBLE);
+            binding.downloadComicsBtn.setVisibility(View.VISIBLE);
 
-                String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
-                MyApplication.loadCategory("" + categoryId, binding.collezioniTv);
-                MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
-               // MyApplication.loadPdfFromUrlSinglePage("" + comicsUrl, "" + comicsTitle, binding.pdfView, binding.progressBar);
-                MyApplication.loadPdfSize("" + comicsUrl, "" + comicsTitle, binding.sizeTv);
-                MyApplication.loadPdfPageCount(getActivity(), ""+comicsUrl, binding.pagesTv);
+            String date = MyApplication.formatTimestamp(modelPdfComics.getTimestamp());
+            MyApplication.loadCategory(modelPdfComics.getCategoryId(), binding.collezioniTv);
+            MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+            MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
+            MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
 
+            binding.titleTv.setText(comicsTitle);
+            binding.descriptionTv.setText(modelPdfComics.getDescrizione());
+            binding.viewsTv.setText(String.valueOf(modelPdfComics.getViewsCount()));
+            binding.downloadsTv.setText(String.valueOf(modelPdfComics.getDownloadsCount()));
+            binding.yearTv.setText(date);
+        } else {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+            ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    comicsTitle = "" + snapshot.child("titolo").getValue();
+                    String description = "" + snapshot.child("descrizione").getValue();
+                    String categoryId = "" + snapshot.child("categoryId").getValue();
+                    String viewsCount = "" + snapshot.child("viewsCount").getValue();
+                    String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
+                    comicsUrl = "" + snapshot.child("url").getValue();
+                    String timestamp = "" + snapshot.child("timestamp").getValue();
 
-                binding.titleTv.setText(comicsTitle);
-                binding.descriptionTv.setText(description);
-                binding.viewsTv.setText(viewsCount.replace("null", "N/A"));
-                binding.downloadsTv.setText(downloadsCount.replace("null", "N/A"));
-                binding.yearTv.setText(date);
-            }
+                    binding.downloadComicsBtn.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
+                    MyApplication.loadCategory(categoryId, binding.collezioniTv);
+                    MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+                    MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
+                    MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
 
-            }
-        });
+                    binding.titleTv.setText(comicsTitle);
+                    binding.descriptionTv.setText(description);
+                    binding.viewsTv.setText(viewsCount.replace("null", "N/A"));
+                    binding.downloadsTv.setText(downloadsCount.replace("null", "N/A"));
+                    binding.yearTv.setText(date);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG_DOWNLOAD, "loadComicsDetails: onCancelled", error.toException());
+                }
+            });
+        }
     }
 
     private void checkIsFavorite() {

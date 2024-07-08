@@ -45,11 +45,8 @@ public class ComicsApiUserFragment extends Fragment {
     private static final String TAG = "COMICS_API_USER_TAG";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
-   // private ArrayList<ModelPdfComics> pdfArrayList;
-    //private AdapterPdfComicsUser adapterPdfUser;
     private AdapterApiComics adapterComicsApi;
     private FragmentComicsUserBinding binding;
-    private PDFView pdfView;
     private FirebaseAuth firebaseAuth;
     private ComicsApi comicsApi;
     private int currentComicCount = 0;
@@ -74,7 +71,6 @@ public class ComicsApiUserFragment extends Fragment {
             uid = getArguments().getString("uid");
         }
         comicsApi = ApiClient.getClient().create(ComicsApi.class);
-
     }
 
     @Override
@@ -83,17 +79,6 @@ public class ComicsApiUserFragment extends Fragment {
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-       /* Log.d(TAG, "onCreateView: Category: " + category);
-        if (category.equals("All")) {
-            loadAllComics();
-        } else if (category.equals("Most Viewed")) {
-            loadMostViewedDownloadedComics("viewsCount");
-        } else if (category.equals("Most Downloaded")) {
-            loadMostViewedDownloadedComics("downloadsCount");
-        } else {
-            loadCategorizedComics();
-        }*/
 
         comicsList = new ArrayList<>();
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
@@ -136,6 +121,7 @@ public class ComicsApiUserFragment extends Fragment {
             updateComicsList(comicsList); // Aggiorna la lista dei fumetti solo se il binding è inizializzato
         }
     }
+
     private void updateComicsList(List<Comic> comicsList) {
         Log.d(TAG, "updateComicsList: Updating comics list for category: " + category);
         adapterComicsApi.notifyDataSetChanged();
@@ -164,107 +150,6 @@ public class ComicsApiUserFragment extends Fragment {
         });
     }
 
-   /* private void loadCategorizedComics() {
-        pdfArrayList = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.orderByChild("categoryId").equalTo(categoryId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (binding == null) return;
-                        pdfArrayList.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                            pdfArrayList.add(model);
-                        }
-                        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
-                        binding.comicsRv.setAdapter(adapterPdfUser);
-                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                            @Override
-                            public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailUserFragment(model.getId());
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-    }
-
-    private void loadMostViewedDownloadedComics(String orderBy) {
-        pdfArrayList = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.orderByChild(orderBy).limitToLast(10)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (binding == null) return;
-                        pdfArrayList.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                            pdfArrayList.add(model);
-                        }
-                        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
-                        binding.comicsRv.setAdapter(adapterPdfUser);
-                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                            @Override
-                            public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailUserFragment(model.getId());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-    }
-
-    private void loadAllComics() {
-        pdfArrayList = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (binding == null) return;
-                pdfArrayList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                    pdfArrayList.add(model);
-                }
-                adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
-                binding.comicsRv.setAdapter(adapterPdfUser);
-
-                adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                    @Override
-                    public void onItemClick(ModelPdfComics model) {
-                        openComicsPdfDetailUserFragment(model.getId());
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-
-    private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        comicsPdfDetailUserFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
-        transaction.commit();
-    }*/
-
     private void openComicDetailFragment(Comic comic) {
         ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
@@ -277,26 +162,14 @@ public class ComicsApiUserFragment extends Fragment {
         transaction.commit();
     }
 
-    /* private void openComicDetailFragment(ModelPdfComics comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        ModelPdfComics modelPdfComics = new ModelPdfComics();
-        modelPdfComics.setId(comic.getId());
-        modelPdfComics.setTitolo(comic.getTitle());
-        modelPdfComics.setDescrizione(comic.getDescription());
-        modelPdfComics.setUrl(comic.getThumbnail());
-        modelPdfComics.setYear(comic.getYear());
-        modelPdfComics.setLanguage(comic.getLanguage());
-        modelPdfComics.setCollection(comic.getCollection());
-        modelPdfComics.setSubject(comic.getSubject());
-        args.putSerializable("modelPdfComics", modelPdfComics);
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
+    private Comic convertToComic(ModelPdfComics modelPdfComics) {
+        Comic comic = new Comic();
+        comic.setId(modelPdfComics.getId());
+        comic.setTitle(modelPdfComics.getTitolo());
+        comic.setDescription(modelPdfComics.getDescrizione());
+        comic.setThumbnail(modelPdfComics.getUrl());
+        return comic;
+    }
 
     private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();

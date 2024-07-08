@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -50,6 +51,7 @@ public class HomeFragment extends Fragment {
     public ViewPagerUserAdapter viewPagerAdapter;
     public ArrayList<ModelCategory> categoryArrayList;
     private Set<String> loadedCategoriesSet = new HashSet<>();
+    private ProgressBar progressBar; // Aggiungi questa linea
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         comicsApi = ApiClient.getClient().create(ComicsApi.class);
+
+        progressBar = root.findViewById(R.id.progressBar); // Aggiungi questa linea
 
         setupViewPagerAdapter(binding.viewPager);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
@@ -115,10 +119,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCollections(ViewPager viewPager, int attempt) {
-        comicsApi.getComicsByCollection(0, 30).enqueue(new Callback<JsonObject>() {
+        Log.d(TAG, "loadCollections: Attempt " + attempt);
+        progressBar.setVisibility(View.VISIBLE); // Mostra il ProgressBar
+        comicsApi.getComicsByCollection(0, 10).enqueue(new Callback<JsonObject>() { // Carica solo 10 collezioni inizialmente
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE); // Nascondi il ProgressBar
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "loadCollections: API response successful");
                     JsonObject collections = response.body();
                     for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
                         String collectionName = entry.getKey();
@@ -132,6 +140,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                progressBar.setVisibility(View.GONE); // Nascondi il ProgressBar
                 Log.e(TAG, "API error for collections. Message: " + t.getMessage());
                 if (attempt < 3) {  // Retry up to 3 times
                     loadCollections(viewPager, attempt + 1);
@@ -139,7 +148,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 
     private void loadComicsForCollection(String collection, ViewPager viewPager) {
         comicsApi.getComicsByCollection(0, 5, collection).enqueue(new Callback<List<Comic>>() {
@@ -170,15 +178,6 @@ public class HomeFragment extends Fragment {
                 Log.e(TAG, "API error for collection: " + collection + ", Message: " + t.getMessage());
             }
         });
-    }
-
-    private void addCategoryToViewPager(String id, String category) {
-        if (!loadedCategoriesSet.contains(id)) {
-            loadedCategoriesSet.add(id);
-            ModelCategory model = new ModelCategory(id, category, "", 1);
-            categoryArrayList.add(model);
-            viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(model.getId(), model.getCategory(), model.getUid()), model.getCategory());
-        }
     }
 
     public class ViewPagerUserAdapter extends FragmentPagerAdapter {
@@ -212,40 +211,6 @@ public class HomeFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
         }
-    }
-
-    private void openComicDetailFragment(Comic comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        ModelPdfComics modelPdfComics = new ModelPdfComics();
-        modelPdfComics.setId(comic.getId());
-        modelPdfComics.setTitolo(comic.getTitle());
-        modelPdfComics.setDescrizione(comic.getDescription());
-        modelPdfComics.setUrl(comic.getThumbnail());
-        modelPdfComics.setYear(comic.getYear());
-        modelPdfComics.setLanguage(comic.getLanguage());
-        modelPdfComics.setCollection(comic.getCollection());
-        modelPdfComics.setSubject(comic.getSubject());
-        args.putSerializable("modelPdfComics", modelPdfComics);
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);  // Assicurati di utilizzare l'ID corretto
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        comicsPdfDetailUserFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     @Override

@@ -76,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="btnGetInfoOnClick"
                 android:text="@string/cerca_text"
-                android:textColor="@color/white"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:textStyle="bold"

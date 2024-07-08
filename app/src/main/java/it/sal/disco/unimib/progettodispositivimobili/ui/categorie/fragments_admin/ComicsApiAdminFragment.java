@@ -158,26 +158,14 @@ public class ComicsApiAdminFragment extends Fragment {
         transaction.commit();
     }
 
-  /*  private void openComicDetailFragment(Comic comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        ModelPdfComics modelPdfComics = new ModelPdfComics();
-        modelPdfComics.setId(comic.getId());
-        modelPdfComics.setTitolo(comic.getTitle());
-        modelPdfComics.setDescrizione(comic.getDescription());
-        modelPdfComics.setUrl(comic.getThumbnail());
-        modelPdfComics.setYear(comic.getYear());
-        modelPdfComics.setLanguage(comic.getLanguage());
-        modelPdfComics.setCollection(comic.getCollection());
-        modelPdfComics.setSubject(comic.getSubject());
-        args.putSerializable("modelPdfComics", modelPdfComics);
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);  // Assicurati di utilizzare l'ID corretto
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
+    private Comic convertToComic(ModelPdfComics modelPdfComics) {
+        Comic comic = new Comic();
+        comic.setId(modelPdfComics.getId());
+        comic.setTitle(modelPdfComics.getTitolo());
+        comic.setDescription(modelPdfComics.getDescrizione());
+        comic.setThumbnail(modelPdfComics.getUrl());
+        return comic;
+    }
 
     private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();

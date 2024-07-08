@@ -66,7 +66,7 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
         String imageUrl = comic.getThumbnail();
         Glide.with(holder.itemView.getContext())
                 .load(imageUrl)
-                .apply(new RequestOptions().override(100, 150).timeout(5000)) // Set timeout to avoid connection issues
+                .apply(new RequestOptions().override(100, 150).timeout(500)) // Set timeout to avoid connection issues
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail);
 
@@ -79,7 +79,7 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
 
     @Override
     public int getItemCount() {
-        return comicsFiltered.size();
+        return comics.size();
     }
 
     public void updateComics(List<Comic> newComics) {

@@ -1,7 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -50,8 +49,8 @@ public class Comic implements Serializable {
     public String getDescription() {
         if (description instanceof String) {
             return (String) description;
-        } else if (description instanceof java.util.List) {
-            return String.join(", ", (java.util.List<String>) description);
+        } else if (description instanceof List) {
+            return String.join(", ", (List<String>) description);
         }
         return "No Description Available";
     }

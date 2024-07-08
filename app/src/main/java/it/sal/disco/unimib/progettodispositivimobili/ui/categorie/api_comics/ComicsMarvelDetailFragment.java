@@ -46,6 +46,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelCo
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
+import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -94,7 +95,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
             binding.comicTitle.setText(title);
             binding.comicDescription.setText(description);
-            Glide.with(this).load(thumbnailUrl).into(binding.comicThumbnail);
+            Glide.with(getActivity()).load(thumbnailUrl).into(binding.comicThumbnail);
             initializeAndFetchComicDetails(comicsId);
 
             binding.readComicsBtn.setOnClickListener(v -> {
@@ -141,6 +142,13 @@ public class ComicsMarvelDetailFragment extends Fragment {
             Toast.makeText(getActivity(), "Comics ID is null", Toast.LENGTH_SHORT).show();
         }
 
+        binding.buttonBackUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
         return view;
     }
 
@@ -151,7 +159,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
                 .replace("[", "")
                 .replace("]", "");
     }
-
 
     private void initializeAndFetchComicDetails(String comicId) {
         if (comicId == null || comicId.isEmpty()) {
@@ -416,8 +423,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
             Toast.makeText(getActivity(), "Failed to add comment due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
-
-
 
     // Inner class to download PDF file and get the page count and file size
     private class DownloadFileTask extends AsyncTask<String, Void, File> {

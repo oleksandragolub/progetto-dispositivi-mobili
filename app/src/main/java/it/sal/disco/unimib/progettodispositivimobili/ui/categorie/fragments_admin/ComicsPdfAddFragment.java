@@ -41,24 +41,18 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfAddBinding;
 
 public class ComicsPdfAddFragment extends Fragment {
-
+    private static final String TAG = "ComicsPdfAddFragment";
     private FragmentComicsPdfAddBinding binding;
-
+    private static final int PDF_PICK_CODE = 1000;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
     //private ArrayList<ModelCategory> categoryArrayList;
-
     private ArrayList<String> categoryTitleArrayList, categoryIdArrayList;
-
     private Uri pdfUri;
-
-    private static final String TAG = "ADD_PDF_TAG";
-
-    private static final int PDF_PICK_CODE = 1000;
-
-    private String title, descrizione;
-    //private String title, descrizione, category;
+    private String selectedCategoryId, selectedLanguageId, selectedYearId, selectedSubjectId;
+    private String selectedCategoryTitle, selectedLanguageTitle, selectedYearTitle, selectedSubjectTitle;
+    private String title, descrizione, category;
 
 
     @Override
@@ -116,10 +110,18 @@ public class ComicsPdfAddFragment extends Fragment {
             Toast.makeText(getActivity(), "Inserisci la descrizione...", Toast.LENGTH_SHORT).show();
             binding.textViewComicsDescription.setError("Descrizione richiesta");
             binding.textViewComicsDescription.requestFocus();
-        } /*else if(TextUtils.isEmpty(category)){
-            Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
-            binding.textViewComicsCategory.setError("Categoria richiesta");
-            binding.textViewComicsCategory.requestFocus();
+        } /*else if(TextUtils.isEmpty(selectedYearTitle)){
+            Toast.makeText(getActivity(), "Seleziona l'anno...", Toast.LENGTH_SHORT).show();
+            binding.textViewComicsAnno.setError("Anno richiesto");
+            binding.textViewComicsAnno.requestFocus();
+        } else if(TextUtils.isEmpty(selectedLanguageTitle)){
+            Toast.makeText(getActivity(), "Seleziona la lingua...", Toast.LENGTH_SHORT).show();
+            binding.textViewComicsLingua.setError("Lingua richiesta");
+            binding.textViewComicsLingua.requestFocus();
+        } else if(TextUtils.isEmpty(selectedSubjectTitle)){
+            Toast.makeText(getActivity(), "Seleziona il genere...", Toast.LENGTH_SHORT).show();
+            binding.textViewComicsSubject.setError("Genere richiesto");
+            binding.textViewComicsSubject.requestFocus();
         } */ else if(TextUtils.isEmpty(selectedCategoryTitle)){
             Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
             binding.textViewComicsCategory.setError("Categoria richiesta");
@@ -232,8 +234,6 @@ public class ComicsPdfAddFragment extends Fragment {
             }
         });
     }
-
-    private String selectedCategoryId, selectedCategoryTitle;
 
     private void categoryPickDialog() {
         Log.d(TAG, "categoryPickDialog: showing category pick dialog");

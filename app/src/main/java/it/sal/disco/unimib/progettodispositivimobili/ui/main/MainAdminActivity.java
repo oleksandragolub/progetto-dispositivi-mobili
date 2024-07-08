@@ -30,6 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelViewFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsApiAdminFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
@@ -133,7 +137,13 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
                     return true;
                 } else if (id == R.id.nav_marvel_comics_detail) {
                     openFragment(new ComicsMarvelDetailFragment());
-                    //return true;
+                    return true;
+                } else if (id == R.id.navigation_api_comics_admin) {
+                    openFragment(new ComicsApiAdminFragment());
+                    return true;
+                } else if (id == R.id.navigation_comics_admin) {
+                    openFragment(new ComicsAdminFragment());
+                    return true;
                 }
                 return false;
             }
@@ -162,12 +172,12 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         }
     }
 
-   private void openFragment(Fragment fragment) {
-       FragmentTransaction transaction = fragmentManager.beginTransaction();
-       transaction.replace(R.id.nav_host_fragment, fragment);
-       transaction.addToBackStack(null);
-       transaction.commit();
-   }
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -204,7 +214,13 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
             //return true;
         } else if (id == R.id.nav_marvel_comics_detail) {
             openFragment(new ComicsMarvelDetailFragment());
-            return true;
+            //return true;
+        } else if (id == R.id.navigation_api_comics_user) {
+            openFragment(new ComicsApiUserFragment());
+            //return true;
+        } else if (id == R.id.navigation_comics_user) {
+            openFragment(new ComicsUserFragment());
+            //return true;
         } else if (id == R.id.navigation_logout) {
             logOut();
             return true;

@@ -129,7 +129,7 @@
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+ <!--   <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textView_input_layout_comics_anno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             android:id="@+id/textView_comics_anno"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/comics_lingua"
+            android:hint="@string/comics_anno"
             android:enabled="true"
             android:inputType="text"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
@@ -177,7 +177,7 @@
             android:enabled="true"
             android:inputType="text"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout> -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textView_input_layout_comics_category"
@@ -189,7 +189,7 @@
         app:boxBackgroundColor="?android:attr/panelBackground"
         app:layout_constraintStart_toEndOf="@id/guideline_right"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_lingua"
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_description"
         app:startIconDrawable="@drawable/baseline_control_camera_24"
         app:endIconMode="clear_text"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -204,7 +204,7 @@
             android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+ <!--   <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textView_input_layout_comics_subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -227,7 +227,7 @@
             android:enabled="true"
             android:inputType="text"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout> -->
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/submit_btn"
@@ -243,7 +243,7 @@
         android:textAllCaps="false"
         app:layout_constraintStart_toEndOf="@id/guideline_right"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_subject"/>
+        app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_category"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_begin"

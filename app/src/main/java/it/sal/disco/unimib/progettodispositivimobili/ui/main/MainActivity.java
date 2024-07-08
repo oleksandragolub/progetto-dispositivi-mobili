@@ -28,6 +28,8 @@ import androidx.fragment.app.FragmentTransaction;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 } else if (id == R.id.navigation_category_user) {
                     openFragment(new CategoryUserFragment());
                     return true;
-                } else if (id == R.id.navigation_comics_user) {
+                } else if (id == R.id.navigation_list_comics_user) {
                     openFragment(new ComicsPdfListUserFragment());
                     return true;
                 } else if (id == R.id.navigation_detail_comics_user) {
@@ -132,7 +134,13 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     return true;
                 } else if (id == R.id.nav_marvel_comics_detail) {
                     openFragment(new ComicsMarvelDetailFragment());
-                    //return true;
+                    return true;
+                } else if (id == R.id.navigation_api_comics_user) {
+                    openFragment(new ComicsApiUserFragment());
+                    return true;
+                } else if (id == R.id.navigation_comics_user) {
+                    openFragment(new ComicsUserFragment());
+                    return true;
                 }
                 return false;
             }
@@ -160,12 +168,13 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         }
     }
 
-    private void openFragment(Fragment fragment){
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -199,10 +208,16 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             //return true;
         } else if (id == R.id.navigation_character_info) {
             openFragment(new CharacterInfoFragment());
-            return true;
+            //return true;
         } else if (id == R.id.nav_marvel_comics_detail) {
             openFragment(new ComicsMarvelDetailFragment());
-            return true;
+            //return true;
+        } else if (id == R.id.navigation_api_comics_user) {
+            openFragment(new ComicsApiUserFragment());
+            //return true;
+        } else if (id == R.id.navigation_comics_user) {
+            openFragment(new ComicsUserFragment());
+            //return true;
         } else if (id == R.id.navigation_logout) {
             // Effettua il logout da Firebase Auth
             FirebaseAuth.getInstance().signOut();

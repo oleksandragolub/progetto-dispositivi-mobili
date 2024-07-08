@@ -44,7 +44,6 @@
                     android:text="@string/filtri"
                     android:textAlignment="center"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/buttonBack"
@@ -63,7 +62,6 @@
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -71,7 +69,6 @@
                 android:id="@+id/spinnerCollection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_red"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
                 android:fontFamily="casual"
@@ -86,7 +83,6 @@
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -94,7 +90,6 @@
                 android:id="@+id/spinnerLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_red"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
                 android:fontFamily="casual"
@@ -109,7 +104,6 @@
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -117,7 +111,6 @@
                 android:id="@+id/spinnerYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_red"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
                 android:fontFamily="casual"
@@ -132,7 +125,6 @@
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -140,7 +132,6 @@
                 android:id="@+id/spinnerGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_red"
                 android:layout_marginBottom="16dp"
                 android:padding="8dp"
                 android:fontFamily="casual"
@@ -151,7 +142,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_btn"
-                android:textColor="@color/white"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:textStyle="bold"

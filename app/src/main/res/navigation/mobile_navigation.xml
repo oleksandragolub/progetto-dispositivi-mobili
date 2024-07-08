@@ -5,6 +5,34 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+    <fragment
+        android:id="@+id/navigation_comics_user"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment"
+        android:label="User home"
+        tools:layout="@layout/fragment_comics_user">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_api_comics_user"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment"
+        android:label="User api home"
+        tools:layout="@layout/fragment_api_comics_user">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_comics_admin"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsAdminFragment"
+        android:label="Admin home"
+        tools:layout="@layout/fragment_comics_admin">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_api_comics_admin"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsApiAdminFragment"
+        android:label="Admin api home"
+        tools:layout="@layout/fragment_api_comics_admin">
+    </fragment>
+
 
     <fragment
         android:id="@+id/navigation_comics_avanzato"
@@ -58,11 +86,11 @@
 
         <action
             android:id="@+id/action_CategoryUserFragment_to_ComicsPdfListUserFragment"
-            app:destination="@id/navigation_comics_user" />
+            app:destination="@id/navigation_list_comics_user" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_comics_user"
+        android:id="@+id/navigation_list_comics_user"
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfListUserFragment"
         android:label="User: comixes"
         tools:layout="@layout/fragment_comics_pdf_list_user">

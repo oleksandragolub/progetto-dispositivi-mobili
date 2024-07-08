@@ -35,19 +35,13 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsP
 public class ComicsPdfEditFragment extends Fragment {
 
     private FragmentComicsPdfEditBinding binding;
-
     private FirebaseAuth firebaseAuth;
-
-    private static final String TAG = "COMICS_EDIT_TAG";
-
+    private static final String TAG = "ComicsPdfEditFragment";
     private String comicsId;
-
     private ProgressDialog progressDialog;
-
     private ArrayList<String> categoryTitleArrayList, categoryIdArrayList;
-
-    private String selectedCategoryId, selectedCategoryTitle;
-
+    private String selectedCategoryId, selectedLanguageId, selectedYearId, selectedSubjectId;
+    private String selectedCategoryTitle, selectedLanguageTitle, selectedYearTitle, selectedSubjectTitle;
     private String title, description;
 
 
@@ -109,7 +103,22 @@ public class ComicsPdfEditFragment extends Fragment {
             binding.textViewInputLayoutComicsDescription.setError("Descrizione richista");
             binding.textViewInputLayoutComicsDescription.requestFocus();
             //return;
-        } else if(TextUtils.isEmpty(selectedCategoryId)){
+      /*  }  else if(TextUtils.isEmpty(selectedYearId)){
+            Toast.makeText(getActivity(), "Seleziona l'anno...", Toast.LENGTH_SHORT).show();
+            binding.textViewInputLayoutComicsAnno.setError("Anno richisto");
+            binding.textViewInputLayoutComicsAnno.requestFocus();
+            //return;
+        } else if(TextUtils.isEmpty(selectedLanguageId)){
+            Toast.makeText(getActivity(), "Seleziona la lingua...", Toast.LENGTH_SHORT).show();
+            binding.textViewInputLayoutComicsLingua.setError("Lingua richista");
+            binding.textViewInputLayoutComicsLingua.requestFocus();
+            //return;
+        } else if(TextUtils.isEmpty(selectedSubjectId)){
+            Toast.makeText(getActivity(), "Seleziona il genere...", Toast.LENGTH_SHORT).show();
+            binding.textViewInputLayoutComicsSubject.setError("Genere richisto");
+            binding.textViewInputLayoutComicsSubject.requestFocus(); */
+            //return;
+        }  else if(TextUtils.isEmpty(selectedCategoryId)){
             Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
             binding.textViewInputLayoutComicsCategory.setError("Categoria richista");
             binding.textViewInputLayoutComicsCategory.requestFocus();

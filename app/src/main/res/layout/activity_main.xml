@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/top_appbar"
-            android:layout_above="@id/bottom_navigation" />
+            android:layout_above="@id/bottom_navigation"
+            android:saveEnabled="false"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"

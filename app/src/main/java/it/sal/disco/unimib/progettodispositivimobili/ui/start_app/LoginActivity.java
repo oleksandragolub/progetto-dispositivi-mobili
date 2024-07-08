@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        AppCompatButton btnGoogleSignIn = findViewById(R.id.btn_login_google);
+        Button btnGoogleSignIn = findViewById(R.id.btn_login_google);
 
         btnGoogleSignIn.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();

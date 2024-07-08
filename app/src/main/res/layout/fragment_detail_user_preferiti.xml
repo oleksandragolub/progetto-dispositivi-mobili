@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:padding="8dp"
-            android:src="@drawable/baseline_arrow_back_ios_24" />
+            android:src="@drawable/baseline_arrow_back_ios_24_dark" />
 
         <TextView
             android:id="@+id/titleTv"

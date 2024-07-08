@@ -1,21 +1,19 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics;
 
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -48,10 +46,6 @@ public class ComicsInfoFragment extends Fragment {
     private List<ModelPdfComics> comicsList;
     private FragmentComicsInfoBinding binding;
     private static final String TAG = "ComicInfoFragment";
-    private AppCompatImageView buttonFilter;
-    private static final int COMICS_INCREMENT = 50; // number of comics to load each time
-    private int currentOffset = 0; // New variable to keep track of the offset
-    private boolean hasMoreComics = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,8 +53,12 @@ public class ComicsInfoFragment extends Fragment {
         View root = binding.getRoot();
         initViews(root);
 
-        //binding.moreNow.setOnClickListener(v -> loadMoreComics());
-
+        binding.buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openComicsAvanzatoInfoFragment();
+            }
+        });
         return root;
     }
 
@@ -68,23 +66,17 @@ public class ComicsInfoFragment extends Fragment {
         txtSearch = root.findViewById(R.id.txtSearch);
         progress = root.findViewById(R.id.progress);
         recyclerViewComics = root.findViewById(R.id.recyclerViewComics);
-        buttonFilter = root.findViewById(R.id.buttonFilter);
 
         Button button = root.findViewById(R.id.button);
-        button.setOnClickListener(v -> {
-            if (!txtSearch.getText().toString().isEmpty()) {
-                progress.setVisibility(View.VISIBLE);
-                comicsList.clear(); // clear existing comics
-                currentOffset = 0; // Reset the offset
-                searchComics(txtSearch.getText().toString(), currentOffset);
-            } else {
-                showAlert(getString(R.string.empty));
-            }
-        });
-
-        buttonFilter.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openFragment(new ComicsAvanzatoInfoFragment());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!txtSearch.getText().toString().isEmpty()) {
+                    progress.setVisibility(View.VISIBLE);
+                    searchComics(txtSearch.getText().toString());
+                } else {
+                    showAlert(getString(R.string.empty));
+                }
             }
         });
 
@@ -102,20 +94,33 @@ public class ComicsInfoFragment extends Fragment {
         });
     }
 
-    private void searchComics(String query, int offset) {
-        progress.setVisibility(View.VISIBLE);
-        searchApiComics(query, offset);
-        searchManualComics(query, offset);
+    private void searchComics(String query) {
+        comicsList.clear();
+        comicsAdapter.notifyDataSetChanged();
+        searchApiComics(query);
+        searchManualComics(query);
     }
 
-    private void searchApiComics(String query, int offset) {
+    private Comic convertToComic(ModelPdfComics modelPdfComics) {
+        Comic comic = new Comic();
+        comic.setId(modelPdfComics.getId());
+        comic.setTitle(modelPdfComics.getTitolo());
+        comic.setDescription(modelPdfComics.getDescrizione());
+        comic.setThumbnail(modelPdfComics.getUrl());
+        return comic;
+    }
+
+    private void searchApiComics(String query) {
         ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-        apiService.getComics(query, COMICS_INCREMENT, offset).enqueue(new Callback<List<Comic>>() {
+        Call<List<Comic>> call = apiService.getComics(query, 10);
+
+        call.enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> comics = response.body();
-                    for (Comic comic : comics) {
+                    Log.d(TAG, "API Comics found: " + response.body().size());
+                    for (Comic comic : response.body()) {
+                        Log.d(TAG, "Comic Metadata - Year: " + comic.getYear() + ", Language: " + comic.getLanguage() + ", Collection: " + comic.getCollection() + ", Subject: " + comic.getSubject());
                         ModelPdfComics model = new ModelPdfComics();
                         model.setId(comic.getId());
                         model.setTitolo(comic.getTitle());
@@ -127,9 +132,6 @@ public class ComicsInfoFragment extends Fragment {
                         model.setSubject(comic.getSubject());
                         model.setFromApi(true);
                         comicsList.add(model);
-                    }
-                    if (comics.size() < COMICS_INCREMENT) {
-                        hasMoreComics = false;
                     }
                     comicsAdapter.notifyDataSetChanged();
                     updateRecyclerViewVisibility();
@@ -147,53 +149,32 @@ public class ComicsInfoFragment extends Fragment {
         });
     }
 
-    private void searchManualComics(String query, int offset) {
+    private void searchManualComics(String query) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.orderByChild("titolo")
-                .startAt(query)
-                .endAt(query + "\uf8ff")
-                .limitToFirst(COMICS_INCREMENT + offset) // Apply offset
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int count = 0;
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (count < offset) {
-                                count++;
-                                continue;
-                            }
-                            ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                            if (model != null) {
-                                model.setFromApi(false);
-                                comicsList.add(model);
-                            }
-                            if (comicsList.size() >= COMICS_INCREMENT + offset) {
-                                break;
-                            }
-                        }
-                        if (snapshot.getChildrenCount() < COMICS_INCREMENT) {
-                            hasMoreComics = false;
-                        }
-                        comicsAdapter.notifyDataSetChanged();
-                        updateRecyclerViewVisibility();
-                        progress.setVisibility(View.INVISIBLE);
+        ref.orderByChild("titolo").startAt(query).endAt(query + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Log.d(TAG, "Manual Comics found: " + snapshot.getChildrenCount());
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                        model.setFromApi(false);
+                        comicsList.add(model);
                     }
+                    comicsAdapter.notifyDataSetChanged();
+                    updateRecyclerViewVisibility();
+                } else {
+                    Log.d(TAG, "No Manual Comics found for query: " + query);
+                }
+                progress.setVisibility(View.INVISIBLE);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        showAlert(getString(R.string.service_error) + " " + error.getMessage());
-                        progress.setVisibility(View.INVISIBLE);
-                    }
-                });
-    }
-
-    private void loadMoreComics() {
-        if (hasMoreComics) {
-            currentOffset += COMICS_INCREMENT;
-            searchComics(txtSearch.getText().toString(), currentOffset);
-        } else {
-            Toast.makeText(getActivity(), R.string.no_more_comics, Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                showAlert(getString(R.string.service_error) + " " + error.getMessage());
+                progress.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void updateRecyclerViewVisibility() {
@@ -214,14 +195,15 @@ public class ComicsInfoFragment extends Fragment {
         alert.show();
     }
 
-    private void openComicsMarvelDetailFragment(ModelPdfComics comic) {
-        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+    private void openComicsMarvelDetailFragment(ModelPdfComics modelPdfComics) {
+        Comic comic = convertToComic(modelPdfComics);
+        ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putSerializable("modelPdfComics", comic);
-        comicsMarvelDetailFragment.setArguments(args);
+        args.putSerializable("comic", comic);
+        fragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -238,10 +220,13 @@ public class ComicsInfoFragment extends Fragment {
         transaction.commit();
     }
 
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
+    private void openComicsAvanzatoInfoFragment() {
+        ComicsAvanzatoInfoFragment comicsAvanzatoInfoFragment = new ComicsAvanzatoInfoFragment();
+        Bundle args = new Bundle();
+        comicsAvanzatoInfoFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsAvanzatoInfoFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

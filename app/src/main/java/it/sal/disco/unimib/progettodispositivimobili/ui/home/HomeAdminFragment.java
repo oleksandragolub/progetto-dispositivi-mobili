@@ -205,39 +205,6 @@ public class HomeAdminFragment extends Fragment {
         }
     }
 
-    private void openComicDetailFragment(Comic comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        ModelPdfComics modelPdfComics = new ModelPdfComics();
-        modelPdfComics.setId(comic.getId());
-        modelPdfComics.setTitolo(comic.getTitle());
-        modelPdfComics.setDescrizione(comic.getDescription());
-        modelPdfComics.setUrl(comic.getThumbnail());
-        modelPdfComics.setYear(comic.getYear());
-        modelPdfComics.setLanguage(comic.getLanguage());
-        modelPdfComics.setCollection(comic.getCollection());
-        modelPdfComics.setSubject(comic.getSubject());
-        args.putSerializable("modelPdfComics", modelPdfComics);
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);  // Assicurati di utilizzare l'ID corretto
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        comicsPdfDetailUserFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
