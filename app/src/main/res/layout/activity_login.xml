@@ -5,11 +5,6 @@
    android:layout_width="match_parent"
    android:layout_height="match_parent">
 
-    <!--
-        ricordarsi di eliminare questo commento, è solo per test
-    -->
-
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -41,7 +36,7 @@
             <ImageView
                 android:id="@+id/imageView_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="56dp"
+                android:layout_height="48dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/logo_app_svg"
                 app:tint="?attr/android:colorBackground"

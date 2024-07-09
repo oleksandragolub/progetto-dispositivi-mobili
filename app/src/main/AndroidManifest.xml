@@ -49,6 +49,8 @@
         <activity
             android:name=".ui.start_app.ForgotPasswordActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.ProgettoDispositiviMobili" >
         </activity>
 

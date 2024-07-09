@@ -5,16 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
@@ -25,8 +31,8 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 public class ForgotPasswordActivity extends AppCompatActivity {
     private static final String TAG = "ForgotPasswordActivity";
     Button btnReset;
-    TextView btnBack;
-    EditText editEmail;
+    MaterialToolbar topAppBar;
+    TextInputEditText editEmail;
     FirebaseAuth mAuth;
     String strEmail;
 
@@ -36,7 +42,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        btnBack = findViewById(R.id.txt_back);
+        topAppBar = findViewById(R.id.top_appbar);
         btnReset = findViewById(R.id.btn_ripristina_password);
         editEmail = findViewById(R.id.email);
         mAuth = FirebaseAuth.getInstance();
@@ -44,27 +50,51 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnReset.setOnClickListener(v -> {
             strEmail = editEmail.getText().toString().trim();
 
-            if (TextUtils.isEmpty(strEmail)){
-                Toast.makeText(ForgotPasswordActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
-                editEmail.setError("Email richiesta");
-                editEmail.requestFocus();
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()){
+            /*
+              Pezzo di codice inutile con il nuovo textwatcher
+                if (TextUtils.isEmpty(strEmail)){
+                    Toast.makeText(ForgotPasswordActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
+                    editEmail.setError("Email richiesta");
+                    editEmail.requestFocus();
+                } else
+            */
+            if (!Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()){
                 Toast.makeText(ForgotPasswordActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
                 editEmail.setError("Email valida richiesta");
                 editEmail.requestFocus();
             } else {
                 resetPassword();
             }
-
         });
 
-        btnBack.setOnClickListener(v -> {
+        topAppBar.setNavigationOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         });
 
+        editEmail.addTextChangedListener(textWatcher);
     }
+
+    //Abilita/disabilita il bottone reimposta password se email è inserita/vuota
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String textEmailWatcher = String.valueOf(editEmail.getText());
+
+            btnReset.setEnabled(!textEmailWatcher.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void resetPassword(){
         mAuth.sendPasswordResetEmail(strEmail)

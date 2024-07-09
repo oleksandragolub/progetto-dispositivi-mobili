@@ -34,7 +34,7 @@
     <string name="txt_forgot_pw">Password Dimenticata</string>
     <string name="txt_domanda_forgot_pw">Con quale indirizzo e-mail ti sei registrato?</string>
     <string name="btn_ripristina_password">Ripristina Password</string>
-    <string name="txt_ripristina_password">Ti invieremo a questo indirizzo le istruzioni per ripristinare la password!</string>
+    <string name="txt_ripristina_password">Ti invieremo a questo indirizzo le istruzioni per ripristinare la password.</string>
     <string name="txt_domanda_back">Non sei interessato a questo?</string>
     <string name="txt_back">Torna indietro!</string>
 
