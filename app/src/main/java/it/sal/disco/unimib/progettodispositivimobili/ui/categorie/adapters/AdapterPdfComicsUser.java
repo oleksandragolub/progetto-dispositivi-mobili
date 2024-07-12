@@ -1,7 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -21,9 +17,8 @@ import com.github.barteksc.pdfviewer.PDFView;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.sal.disco.unimib.progettodispositivimobili.R;
+
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfUserBinding;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;

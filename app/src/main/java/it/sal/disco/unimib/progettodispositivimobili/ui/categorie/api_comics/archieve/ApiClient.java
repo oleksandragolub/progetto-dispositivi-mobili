@@ -18,11 +18,9 @@ public class ApiClient {
 
     public static Retrofit getClient() {
         if (retrofit == null) {
-            // Configura l'istanza di HttpLoggingInterceptor
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            // Configura l'istanza di OkHttpClient con l'interceptor di logging e retry
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(logging)
                     .addInterceptor(new RetryInterceptor(5))  // 5 tentativi di retry
@@ -44,3 +42,4 @@ public class ApiClient {
         return retrofit;
     }
 }
+

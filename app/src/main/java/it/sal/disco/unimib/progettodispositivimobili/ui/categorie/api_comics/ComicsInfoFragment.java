@@ -117,28 +117,34 @@ public class ComicsInfoFragment extends Fragment {
         call.enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "API Comics found: " + response.body().size());
-                    for (Comic comic : response.body()) {
-                        Log.d(TAG, "Comic Metadata - Year: " + comic.getYear() + ", Language: " + comic.getLanguage() + ", Collection: " + comic.getCollection() + ", Subject: " + comic.getSubject());
-                        ModelPdfComics model = new ModelPdfComics();
-                        model.setId(comic.getId());
-                        model.setTitolo(comic.getTitle());
-                        model.setDescrizione(comic.getDescription());
-                        model.setUrl(comic.getThumbnail());
-                        model.setYear(comic.getYear());
-                        model.setLanguage(comic.getLanguage());
-                        model.setCollection(comic.getCollection());
-                        model.setSubject(comic.getSubject());
-                        model.setFromApi(true);
-                        comicsList.add(model);
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.d(TAG, "API Comics found: " + response.body().size());
+                        for (Comic comic : response.body()) {
+                            Log.d(TAG, "Comic Metadata - Year: " + comic.getYear() + ", Language: " + comic.getLanguage() + ", Collection: " + comic.getCollection() + ", Subject: " + comic.getSubject());
+                            ModelPdfComics model = new ModelPdfComics();
+                            model.setId(comic.getId());
+                            model.setTitolo(comic.getTitle());
+                            model.setDescrizione(comic.getDescription());
+                            model.setUrl(comic.getThumbnail());
+                            model.setYear(comic.getYear());
+                            model.setLanguage(comic.getLanguage());
+                            model.setCollection(comic.getCollection());
+                            model.setSubject(comic.getSubject());
+                            model.setFromApi(true);
+                            comicsList.add(model);
+                        }
+                        comicsAdapter.notifyDataSetChanged();
+                        updateRecyclerViewVisibility();
+                    } else {
+                        showAlert(getString(R.string.service_error) + " Code: " + response.code());
                     }
-                    comicsAdapter.notifyDataSetChanged();
-                    updateRecyclerViewVisibility();
-                } else {
-                    showAlert(getString(R.string.service_error) + " Code: " + response.code());
+                    progress.setVisibility(View.INVISIBLE);
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
-                progress.setVisibility(View.INVISIBLE);
             }
 
             @Override

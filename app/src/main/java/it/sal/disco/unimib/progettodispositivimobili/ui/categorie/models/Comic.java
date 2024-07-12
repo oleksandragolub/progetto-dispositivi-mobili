@@ -10,6 +10,7 @@ public class Comic implements Serializable {
     private String thumbnail;
     private String year;
     private String language;
+    private String url;
 
     @SerializedName("description")
     private Object description;
@@ -26,7 +27,6 @@ public class Comic implements Serializable {
     @SerializedName("subjects")
     private List<String> subjectList;
 
-    // Additional field to distinguish between API and manual data
     private boolean fromApi;
 
     // Getters and setters

@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,16 +44,16 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelComment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ComicsMarvelDetailFragment extends Fragment {
-    private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
+    private static final String TAG = "ComicsMarvelDetail";
     private FragmentComicsMarvelDetailBinding binding;
     private ArrayList<ModelComment> commentArrayList;
     private AdapterComment adapterComment;
@@ -67,7 +68,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
     private String thumbnailUrl;
     private String title, description, year, language, collection, subject;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,92 +77,118 @@ public class ComicsMarvelDetailFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(getActivity());
 
-        Comic comic = null;
-        if (getArguments() != null) {
-            comic = (Comic) getArguments().getSerializable("comic");
-        }
+        Bundle args = getArguments();
+        if (args != null) {
+            Serializable comicData = args.getSerializable("comic");
 
-        if (comic != null) {
-            comicsId = comic.getId();
-            title = comic.getTitle();
-            description = comic.getDescription();
-            year = comic.getYear();
-            language = comic.getLanguage();
-            collection = comic.getCollection();
-            subject = comic.getSubject();
-            thumbnailUrl = comic.getThumbnail();
-            //comicsUrl = comic.getUrl();
-
-            binding.comicTitle.setText(title);
-            binding.comicDescription.setText(description);
-            Glide.with(getActivity()).load(thumbnailUrl).into(binding.comicThumbnail);
-            initializeAndFetchComicDetails(comicsId);
-
-            binding.readComicsBtn.setOnClickListener(v -> {
-                if (comicsUrl != null && !comicsUrl.isEmpty()) {
-                    openPdfViewer(comicsUrl);
-                    MyApplication.incrementMarvelComicsViewCount(comicsId);
-                } else {
-                    Toast.makeText(getActivity(), "Comic URL not available. Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            binding.downloadComicsBtn.setOnClickListener(v -> {
-                if (comicsUrl == null || comicsUrl.isEmpty()) {
-                    Toast.makeText(getActivity(), "Invalid comics URL, please try again later.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                MyApplication.downloadMarvelComics(getActivity(), comicsId, title, comicsUrl);
-            });
-
-            binding.addCommentBtn.setOnClickListener(v -> {
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
-                } else {
-                    addCommentDialog();
-                }
-            });
-
-            binding.favoriteComicsBtn.setOnClickListener(v -> {
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (isInMyFavorites) {
-                        removeFromFavorites();
-                    } else {
-                        addToFavorites();
-                    }
-                }
-            });
-
-            loadComments();
-            checkIsFavorite();
-        } else {
-            Log.e(TAG_DOWNLOAD, "Comic is null");
-            Toast.makeText(getActivity(), "Comics ID is null", Toast.LENGTH_SHORT).show();
-        }
-
-        binding.buttonBackUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
+            if (comicData instanceof Comic) {
+                Comic comic = (Comic) comicData;
+                populateComicDetails(comic);
+            } else if (comicData instanceof ModelPdfComics) {
+                ModelPdfComics model = (ModelPdfComics) comicData;
+                populateModelPdfComicsDetails(model);
+            } else {
+                Log.e(TAG, "Unknown data type");
+                Toast.makeText(getActivity(), "Unknown data type", Toast.LENGTH_SHORT).show();
             }
-        });
+        } else {
+            Log.e(TAG, "Arguments are null");
+            Toast.makeText(getActivity(), "Arguments are null", Toast.LENGTH_SHORT).show();
+        }
+
+        binding.buttonBackUser.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         return view;
     }
 
-    private String sanitizeFirebaseKey(String key) {
-        return key.replace(".", "")
-                .replace("#", "")
-                .replace("$", "")
-                .replace("[", "")
-                .replace("]", "");
+    private void populateComicDetails(Comic comic) {
+        comicsId = comic.getId();
+        title = comic.getTitle();
+        description = comic.getDescription();
+        year = comic.getYear();
+        language = comic.getLanguage();
+        collection = comic.getCollection();
+        subject = comic.getSubject();
+        thumbnailUrl = comic.getThumbnail();
+        //comicsUrl = comic.getUrl();
+
+        binding.comicTitle.setText(title);
+        binding.comicDescription.setText(description);
+        Glide.with(getActivity()).load(thumbnailUrl).into(binding.comicThumbnail);
+
+        Log.d(TAG, "Comic details received: " + comic.toString());
+
+        initializeAndFetchComicDetails(comicsId);
+        setupButtons();
+        loadComments();
+        checkIsFavorite();
+    }
+
+    private void populateModelPdfComicsDetails(ModelPdfComics model) {
+        comicsId = model.getId();
+        title = model.getTitolo();
+        description = model.getDescrizione();
+        year = model.getYear();
+        language = model.getLanguage();
+        collection = model.getCollection();
+        subject = model.getSubject();
+        thumbnailUrl = model.getUrl();
+        comicsUrl = model.getUrl();
+
+        binding.comicTitle.setText(title);
+        binding.comicDescription.setText(description);
+        Glide.with(getActivity()).load(thumbnailUrl).into(binding.comicThumbnail);
+
+        Log.d(TAG, "ModelPdfComics details received: " + model.toString());
+
+        initializeAndFetchComicDetails(comicsId);
+        setupButtons();
+        loadComments();
+        checkIsFavorite();
+    }
+
+    private void setupButtons() {
+        binding.readComicsBtn.setOnClickListener(v -> {
+            if (comicsUrl != null && !comicsUrl.isEmpty()) {
+                openPdfViewer(comicsUrl);
+                MyApplication.incrementMarvelComicsViewCount(comicsId);
+            } else {
+                Toast.makeText(getActivity(), "Comic URL not available. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.downloadComicsBtn.setOnClickListener(v -> {
+            if (comicsUrl == null || comicsUrl.isEmpty()) {
+                Toast.makeText(getActivity(), "Invalid comics URL, please try again later.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            MyApplication.downloadMarvelComics(getActivity(), comicsId, title, comicsUrl);
+        });
+
+        binding.addCommentBtn.setOnClickListener(v -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+            } else {
+                addCommentDialog();
+            }
+        });
+
+        binding.favoriteComicsBtn.setOnClickListener(v -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (isInMyFavorites) {
+                    removeFromFavorites();
+                } else {
+                    addToFavorites();
+                }
+            }
+        });
     }
 
     private void initializeAndFetchComicDetails(String comicId) {
         if (comicId == null || comicId.isEmpty()) {
-            Log.e(TAG_DOWNLOAD, "initializeAndFetchComicDetails: comicId is null or empty");
+            Log.e(TAG, "initializeAndFetchComicDetails: comicId is null or empty");
             return;
         }
 
@@ -207,7 +233,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
                 if (!snapshot.hasChild("pages")) {
                     ref.child("pages").setValue(0);
                 }
-                // Now fetch the comic details
                 fetchComicDetails(comicId);
             }
 
@@ -273,7 +298,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
                     binding.sizeTv.setText(size);
                     binding.pagesTv.setText(pages);
 
-                    // Fetch additional details from Firebase if necessary
                     fetchAdditionalComicDetailsFromFirebase(comicId);
                 } else {
                     String errorMessage = response.code() == 500 ? "Server error occurred" : "Service error occurred, code: " + response.code();
@@ -424,7 +448,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
         });
     }
 
-    // Inner class to download PDF file and get the page count and file size
     private class DownloadFileTask extends AsyncTask<String, Void, File> {
         @Override
         protected File doInBackground(String... strings) {
@@ -503,13 +526,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 isInMyFavorites = snapshot.exists();
-                if (isInMyFavorites) {
-                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_24_white, 0, 0);
-                    binding.favoriteComicsBtn.setText("Rimuovi");
-                } else {
-                    binding.favoriteComicsBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.baseline_favorite_border_24_white, 0, 0);
-                    binding.favoriteComicsBtn.setText("Aggiungi");
-                }
+                updateFavoriteButton();
             }
 
             @Override
@@ -527,7 +544,6 @@ public class ComicsMarvelDetailFragment extends Fragment {
         hashMap.put("titolo", comicsTitle);
         hashMap.put("descrizione", binding.comicDescription.getText().toString());
         hashMap.put("url", comicsUrl);
-        //hashMap.put("timestamp", System.currentTimeMillis());
 
         ref.setValue(hashMap).addOnSuccessListener(aVoid -> {
             Toast.makeText(getActivity(), "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show();
@@ -557,3 +573,5 @@ public class ComicsMarvelDetailFragment extends Fragment {
         }
     }
 }
+
+

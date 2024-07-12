@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,47 +12,58 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsUserBinding;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentApiComicsUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class ComicsApiUserFragment extends Fragment {
+public class ComicsApiUserFragment extends Fragment implements AdapterApiComics.OnItemClickListener {
 
     private static final String TAG = "COMICS_API_USER_TAG";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
     private AdapterApiComics adapterComicsApi;
-    private FragmentComicsUserBinding binding;
+    private FragmentApiComicsUserBinding binding;
     private FirebaseAuth firebaseAuth;
     private ComicsApi comicsApi;
     private int currentComicCount = 0;
     private static final int COMICS_LOAD_LIMIT = 20;
+    private OnComicClickListener onComicClickListener;
 
+    public interface OnComicClickListener {
+        void onComicClick(Comic comic);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnComicClickListener) {
+            onComicClickListener = (OnComicClickListener) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement OnComicClickListener");
+        }
+    }
+
+    @Override
+    public void onItemClick(Comic comic) {
+        if (onComicClickListener != null) {
+            onComicClickListener.onComicClick(comic);
+        }
+    }
     public static ComicsApiUserFragment newInstance(String categoryId, String category, String uid) {
         ComicsApiUserFragment fragment = new ComicsApiUserFragment();
         Bundle args = new Bundle();
@@ -75,17 +87,17 @@ public class ComicsApiUserFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentComicsUserBinding.inflate(inflater, container, false);
+        binding = FragmentApiComicsUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         comicsList = new ArrayList<>();
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
-        adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
+        adapterComicsApi.setOnItemClickListener(this);
+
         binding.comicsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.comicsRv.setAdapter(adapterComicsApi);
-
         loadMoreComics(); // Carica i primi fumetti
 
         binding.searchEt.addTextChangedListener(new TextWatcher() {
@@ -132,14 +144,20 @@ public class ComicsApiUserFragment extends Fragment {
         comicsApi.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, category).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> moreComics = response.body();
-                    Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
-                    comicsList.addAll(moreComics);
-                    adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
-                    currentComicCount += moreComics.size();
-                } else {
-                    Log.e(TAG, "API response unsuccessful. Code: " + response.code());
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Comic> moreComics = response.body();
+                        Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
+                        comicsList.addAll(moreComics);
+                        adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
+                        currentComicCount += moreComics.size();
+                    } else {
+                        Log.e(TAG, "API response unsuccessful. Code: " + response.code());
+                    }
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
             }
 
@@ -160,28 +178,5 @@ public class ComicsApiUserFragment extends Fragment {
         transaction.replace(R.id.nav_host_fragment, detailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    private Comic convertToComic(ModelPdfComics modelPdfComics) {
-        Comic comic = new Comic();
-        comic.setId(modelPdfComics.getId());
-        comic.setTitle(modelPdfComics.getTitolo());
-        comic.setDescription(modelPdfComics.getDescrizione());
-        comic.setThumbnail(modelPdfComics.getUrl());
-        return comic;
-    }
-
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

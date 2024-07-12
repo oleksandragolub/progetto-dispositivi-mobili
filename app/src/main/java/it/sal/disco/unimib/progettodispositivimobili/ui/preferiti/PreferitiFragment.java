@@ -200,43 +200,16 @@ public class PreferitiFragment extends Fragment {
     }
 
     private void openComicsMarvelDetailFragment(ModelPdfComics model) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel").child(model.getId());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String thumbnailUrl = snapshot.hasChild("thumbnailUrl") ? snapshot.child("thumbnailUrl").getValue(String.class) : "";
-                    String title = snapshot.hasChild("title") ? snapshot.child("title").getValue(String.class) : "";
-                    String description = snapshot.hasChild("description") ? snapshot.child("description").getValue(String.class) : "";
+        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("comic", model);  // Cambia "modelPdfComics" in "comic"
+        comicsMarvelDetailFragment.setArguments(args);
 
-                    Log.d(TAG, "Fetched data - title: " + title + ", description: " + description + ", thumbnailUrl: " + thumbnailUrl);
-
-                    model.setTitolo(title);
-                    model.setDescrizione(description);
-                    model.setUrl(thumbnailUrl);
-
-                    ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
-                    Bundle args = new Bundle();
-                    args.putSerializable("modelPdfComics", model);
-                    comicsMarvelDetailFragment.setArguments(args);
-
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                } else {
-                    Log.e(TAG, "Comics not found for comicsId: " + model.getId());
-                    Toast.makeText(getActivity(), "Comics not found", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "openComicsMarvelDetailFragment: Failed to fetch comic details", error.toException());
-                Toast.makeText(getActivity(), "Failed to fetch comic details", Toast.LENGTH_SHORT).show();
-            }
-        });
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override

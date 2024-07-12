@@ -29,7 +29,6 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
@@ -55,16 +54,23 @@ public class ComicsUserFragment extends Fragment {
     private ComicsApi comicsApi;
     private int currentComicCount = 0;
     private static final int COMICS_LOAD_LIMIT = 20;
+    private AdapterPdfComicsUser.OnItemClickListenerUser onItemClickListener;
 
-    public static ComicsUserFragment newInstance(String categoryId, String category, String uid) {
+    public static ComicsUserFragment newInstance(String categoryId, String category, String uid, AdapterPdfComicsUser.OnItemClickListenerUser onItemClickListener) {
         ComicsUserFragment fragment = new ComicsUserFragment();
         Bundle args = new Bundle();
         args.putString("categoryId", categoryId);
         args.putString("category", category);
         args.putString("uid", uid);
         fragment.setArguments(args);
+        fragment.setOnItemClickListener(onItemClickListener);
         return fragment;
     }
+
+    public void setOnItemClickListener(AdapterPdfComicsUser.OnItemClickListenerUser onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +82,10 @@ public class ComicsUserFragment extends Fragment {
         }
         comicsApi = ApiClient.getClient().create(ComicsApi.class);
 
+    }
+
+    public interface OnItemClickListenerUser {
+        void onItemClick(String comicsId);
     }
 
     @Override
@@ -93,13 +103,12 @@ public class ComicsUserFragment extends Fragment {
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
         adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
 
-        adapterPdfUser = new AdapterPdfComicsUser(getContext(), (ArrayList<ModelPdfComics>) pdfArrayList);
+        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
 
-
-        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-            @Override
-            public void onItemClick(ModelPdfComics model) {
-                openComicsPdfDetailUserFragment(model.getId());
+        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
+        adapterPdfUser.setOnItemClickListener(model -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(model);
             }
         });
 
@@ -164,18 +173,20 @@ public class ComicsUserFragment extends Fragment {
         comicsApi.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, category).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> moreComics = response.body();
-                    Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
-                    for (Comic comic : moreComics) {
-                        comic.setFromApi(true); // Imposta il campo fromApi
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Comic> moreComics = response.body();
+                        Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
+                        comicsList.addAll(moreComics);
+                        adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
+                        currentComicCount += moreComics.size();
+                    } else {
+                        Log.e(TAG, "API response unsuccessful. Code: " + response.code());
                     }
-                    comicsList.addAll(moreComics);
-                    adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
-                    currentComicCount += moreComics.size();
-                    Log.d(TAG, "Total comics count: " + comicsList.size());
-                } else {
-                    Log.e(TAG, "API response unsuccessful. Code: " + response.code());
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
             }
 
@@ -193,18 +204,15 @@ public class ComicsUserFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (binding == null) return;
-                        pdfArrayList.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             ModelPdfComics model = ds.getValue(ModelPdfComics.class);
                             pdfArrayList.add(model);
                         }
                         adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                         binding.comicsRv.setAdapter(adapterPdfUser);
-                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                            @Override
-                            public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailUserFragment(model.getId());
+                        adapterPdfUser.setOnItemClickListener(model -> {
+                            if (onItemClickListener != null) {
+                                onItemClickListener.onItemClick(model);
                             }
                         });
 
@@ -231,10 +239,9 @@ public class ComicsUserFragment extends Fragment {
                         }
                         adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                         binding.comicsRv.setAdapter(adapterPdfUser);
-                        adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                            @Override
-                            public void onItemClick(ModelPdfComics model) {
-                                openComicsPdfDetailUserFragment(model.getId());
+                        adapterPdfUser.setOnItemClickListener(model -> {
+                            if (onItemClickListener != null) {
+                                onItemClickListener.onItemClick(model);
                             }
                         });
                     }
@@ -260,10 +267,9 @@ public class ComicsUserFragment extends Fragment {
                 adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                 binding.comicsRv.setAdapter(adapterPdfUser);
 
-                adapterPdfUser.setOnItemClickListener(new AdapterPdfComicsUser.OnItemClickListenerUser() {
-                    @Override
-                    public void onItemClick(ModelPdfComics model) {
-                        openComicsPdfDetailUserFragment(model.getId());
+                adapterPdfUser.setOnItemClickListener(model -> {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(model);
                     }
                 });
             }
@@ -275,15 +281,15 @@ public class ComicsUserFragment extends Fragment {
     }
 
     private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
+        ComicsPdfDetailUserFragment fragment = new ComicsPdfDetailUserFragment();
         Bundle args = new Bundle();
         args.putString("comicsId", comicsId);
-        comicsPdfDetailUserFragment.setArguments(args);
+        fragment.setArguments(args);
 
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
-        transaction.addToBackStack(null); // Aggiungi il frammento al back stack
+        transaction.replace(R.id.nav_host_fragment, fragment); // Assicurati che l'ID corrisponda al tuo layout
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

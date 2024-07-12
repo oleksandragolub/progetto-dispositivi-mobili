@@ -1,7 +1,5 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters;
 
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,16 +55,11 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
     @Override
     public void onBindViewHolder(@NonNull ComicViewHolder holder, int position) {
         Comic comic = comicsFiltered.get(position);
-        String title = comic.getTitle();
-        String description = comic.getDescription();
-
-        holder.title.setText(title != null ? title : "No Title Available");
-        holder.description.setText(description != null ? description : "No Description Available");
-
-        String imageUrl = comic.getThumbnail();
+        holder.title.setText(comic.getTitle());
+        holder.description.setText(comic.getDescription());
         Glide.with(holder.itemView.getContext())
-                .load(imageUrl)
-                .apply(new RequestOptions().override(100, 150).timeout(500)) // Set timeout to avoid connection issues
+                .load(comic.getThumbnail())
+                .apply(new RequestOptions().override(100, 150).timeout(500))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail);
 

@@ -1,5 +1,7 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
+import static androidx.databinding.DataBindingUtil.setContentView;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -65,6 +67,7 @@ public class ComicsAdminFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             categoryId = getArguments().getString("categoryId");
             category = getArguments().getString("category");

@@ -84,8 +84,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        fragmentManager = getSupportFragmentManager();
-
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
 
@@ -174,7 +172,7 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
 
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.replace(R.id.nav_host_fragment, fragment);  // Use the correct ID
         transaction.addToBackStack(null);
         transaction.commit();
     }

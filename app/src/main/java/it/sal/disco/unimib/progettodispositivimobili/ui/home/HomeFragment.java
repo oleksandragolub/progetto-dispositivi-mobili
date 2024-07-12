@@ -96,15 +96,15 @@ public class HomeFragment extends Fragment {
                 categoryArrayList.add(modelMostViewed);
                 categoryArrayList.add(modelMostDownloaded);
 
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid()), modelAll.getCategory());
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostViewed.getId(), modelMostViewed.getCategory(), modelMostViewed.getUid()), modelMostViewed.getCategory());
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostDownloaded.getId(), modelMostDownloaded.getCategory(), modelMostDownloaded.getUid()), modelMostDownloaded.getCategory());
+                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelAll.getCategory());
+                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostViewed.getId(), modelMostViewed.getCategory(), modelMostViewed.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelMostViewed.getCategory());
+                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostDownloaded.getId(), modelMostDownloaded.getCategory(), modelMostDownloaded.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelMostDownloaded.getCategory());
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelCategory model = ds.getValue(ModelCategory.class);
                     if (model != null) {
                         categoryArrayList.add(model);
-                        viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(model.getId(), model.getCategory(), model.getUid()), model.getCategory());
+                        viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(model.getId(), model.getCategory(), model.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), model.getCategory());
                     }
                 }
 
@@ -124,17 +124,23 @@ public class HomeFragment extends Fragment {
         comicsApi.getComicsByCollection(0, 10).enqueue(new Callback<JsonObject>() { // Carica solo 10 collezioni inizialmente
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                progressBar.setVisibility(View.GONE); // Nascondi il ProgressBar
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "loadCollections: API response successful");
-                    JsonObject collections = response.body();
-                    for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
-                        String collectionName = entry.getKey();
-                        Log.d(TAG, "Loading collection: " + collectionName);
-                        loadComicsForCollection(collectionName, viewPager);
+                try {
+                    progressBar.setVisibility(View.GONE); // Nascondi il ProgressBar
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.d(TAG, "loadCollections: API response successful");
+                        JsonObject collections = response.body();
+                        for (Map.Entry<String, JsonElement> entry : collections.entrySet()) {
+                            String collectionName = entry.getKey();
+                            Log.d(TAG, "Loading collection: " + collectionName);
+                            loadComicsForCollection(collectionName, viewPager);
+                        }
+                    } else {
+                        Log.e(TAG, "API response unsuccessful for collections. Code: " + response.code());
                     }
-                } else {
-                    Log.e(TAG, "API response unsuccessful for collections. Code: " + response.code());
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
             }
 
@@ -153,23 +159,29 @@ public class HomeFragment extends Fragment {
         comicsApi.getComicsByCollection(0, 5, collection).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> comics = response.body();
-                    Log.d(TAG, "Loaded " + comics.size() + " comics for collection: " + collection);
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Comic> comics = response.body();
+                        Log.d(TAG, "Loaded " + comics.size() + " comics for collection: " + collection);
 
-                    ModelCategory modelCategory = new ModelCategory(collection, collection, "", 1);
-                    if (!loadedCategoriesSet.contains(modelCategory.getId())) {
-                        loadedCategoriesSet.add(modelCategory.getId());
-                        categoryArrayList.add(modelCategory);
+                        ModelCategory modelCategory = new ModelCategory(collection, collection, "", 1);
+                        if (!loadedCategoriesSet.contains(modelCategory.getId())) {
+                            loadedCategoriesSet.add(modelCategory.getId());
+                            categoryArrayList.add(modelCategory);
 
-                        ComicsApiUserFragment fragment = ComicsApiUserFragment.newInstance(modelCategory.getId(), modelCategory.getCategory(), modelCategory.getUid());
-                        fragment.setComicsList(comics); // Imposta la lista dei fumetti
+                            ComicsApiUserFragment fragment = ComicsApiUserFragment.newInstance(modelCategory.getId(), modelCategory.getCategory(), modelCategory.getUid());
+                            fragment.setComicsList(comics); // Imposta la lista dei fumetti
 
-                        viewPagerAdapter.addFragment(fragment, modelCategory.getCategory());
-                        viewPagerAdapter.notifyDataSetChanged();
+                            viewPagerAdapter.addFragment(fragment, modelCategory.getCategory());
+                            viewPagerAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.e(TAG, "API response unsuccessful for collection: " + collection + ", Code: " + response.code());
                     }
-                } else {
-                    Log.e(TAG, "API response unsuccessful for collection: " + collection + ", Code: " + response.code());
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
             }
 
@@ -203,6 +215,7 @@ public class HomeFragment extends Fragment {
         }
 
         public void addFragment(Fragment fragment, String title) {
+            Log.d(TAG, "Opening fragment: " + fragment.getClass().getSimpleName());
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
         }
@@ -212,6 +225,20 @@ public class HomeFragment extends Fragment {
             return fragmentTitleList.get(position);
         }
     }
+
+    private void openComicsPdfDetailUserFragment(ModelPdfComics model) {
+        ComicsPdfDetailUserFragment fragment = new ComicsPdfDetailUserFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("modelPdfComics", model);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 
     @Override
     public void onDestroyView() {

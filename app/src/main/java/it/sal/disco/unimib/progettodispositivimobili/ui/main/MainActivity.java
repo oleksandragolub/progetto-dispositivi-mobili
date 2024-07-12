@@ -30,6 +30,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.Com
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
@@ -46,7 +47,8 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragm
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
 
-public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
+public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener, ComicsApiUserFragment.OnComicClickListener {
+
     private static final String TAG = "MainActivity";
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
@@ -57,6 +59,23 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     private DatabaseReference userRef;
     //variabile per tracciare se il form del profilo è stato completato
     private boolean isProfileFormComplete = false;
+
+    @Override
+    public void onComicClick(Comic comic) {
+        openComicDetailFragment(comic);
+    }
+
+    private void openComicDetailFragment(Comic comic) {
+        ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("comic", comic);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     private void configureGoogleSignIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -80,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-        fragmentManager = getSupportFragmentManager();
 
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
@@ -142,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     openFragment(new ComicsUserFragment());
                     return true;
                 }
+
                 return false;
             }
         });
@@ -174,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+
 
 
     @Override

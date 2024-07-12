@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
-import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsAdminBinding;
+import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentApiComicsAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
@@ -38,7 +38,7 @@ public class ComicsApiAdminFragment extends Fragment {
     private String categoryId, category, uid;
     private List<Comic> comicsList;
     private AdapterApiComics adapterComicsApi;
-    private FragmentComicsAdminBinding binding;
+    private FragmentApiComicsAdminBinding binding;
     private FirebaseAuth firebaseAuth;
     private ComicsApi comicsApi;
     private int currentComicCount = 0;
@@ -67,7 +67,7 @@ public class ComicsApiAdminFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentComicsAdminBinding.inflate(inflater, container, false);
+        binding = FragmentApiComicsAdminBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();

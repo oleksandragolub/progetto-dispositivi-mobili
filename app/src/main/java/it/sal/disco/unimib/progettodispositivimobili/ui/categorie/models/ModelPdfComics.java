@@ -46,8 +46,6 @@ public class ModelPdfComics implements Serializable {
         return Objects.hash(id);
     }
 
-
-
     public String getUid() {
         return uid;
     }

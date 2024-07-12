@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +23,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -36,7 +40,6 @@ import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.CategoryAddAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsPdfDetailUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
@@ -98,8 +101,6 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             }
         });
 
-
-
         loadSpinnerData();
     }
 
@@ -134,20 +135,25 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             apiService.getComicsByCollection(0, 20).enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        JsonObject json = response.body();
-                        List<String> collections = new ArrayList<>();
-                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                            collections.add(entry.getKey());
-                            Log.d(TAG, "Collection loaded: " + entry.getKey());
+                    try {
+                        if (response.isSuccessful() && response.body() != null) {
+                            JsonObject json = response.body();
+                            List<String> collections = new ArrayList<>();
+                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                                collections.add(entry.getKey());
+                                Log.d(TAG, "Collection loaded: " + entry.getKey());
+                            }
+                            loadManualCollections(collections);
+                        } else {
+                            Log.e(TAG, "Failed to load collections: response unsuccessful");
+                            if (showRetryDialog) showRetryDialogForSpinner("collections");
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, collections);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerCollection.setAdapter(adapter);
-                    } else {
-                        Log.e(TAG, "Failed to load collections: response unsuccessful");
-                        if (showRetryDialog) showRetryDialogForSpinner("collections");
+                    } finally {
+                        if (response.body() == null && response.errorBody() != null) {
+                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                        }
                     }
+
                 }
 
                 @Override
@@ -167,6 +173,31 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         });
     }
 
+    private void loadManualCollections(List<String> collections) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String categoryName = ds.child("category").getValue(String.class);
+                        if (categoryName != null && !collections.contains(categoryName)) {
+                            collections.add(categoryName);
+                        }
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, collections);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCollection.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Failed to load manual collections: " + error.getMessage());
+            }
+        });
+    }
+
     private void retryLoadCollections() {
         loadCollections(false);
     }
@@ -178,19 +209,25 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             apiService.getComicsByLanguage().enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        JsonObject json = response.body();
-                        List<String> languages = new ArrayList<>();
-                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                            languages.add(entry.getKey());
-                            Log.d(TAG, "Language loaded: " + entry.getKey());
+                    try {
+                        if (response.isSuccessful() && response.body() != null) {
+                            JsonObject json = response.body();
+                            List<String> languages = new ArrayList<>();
+                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                                languages.add(entry.getKey());
+                                Log.d(TAG, "Language loaded: " + entry.getKey());
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, languages);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerLanguage.setAdapter(adapter);
+                        } else {
+                            Log.e(TAG, "Failed to load languages: response unsuccessful");
+                            if (showRetryDialog) showRetryDialogForSpinner("languages");
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, languages);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerLanguage.setAdapter(adapter);
-                    } else {
-                        Log.e(TAG, "Failed to load languages: response unsuccessful");
-                        if (showRetryDialog) showRetryDialogForSpinner("languages");
+                    } finally {
+                        if (response.body() == null && response.errorBody() != null) {
+                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                        }
                     }
                 }
 
@@ -224,16 +261,22 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             apiService.getComicsByYear().enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        JsonObject json = response.body();
-                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                            yearsAndDates.add(entry.getKey());
-                            Log.d(TAG, "Year loaded: " + entry.getKey());
+                    try {
+                        if (response.isSuccessful() && response.body() != null) {
+                            JsonObject json = response.body();
+                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                                yearsAndDates.add(entry.getKey());
+                                Log.d(TAG, "Year loaded: " + entry.getKey());
+                            }
+                            updateSpinnerYear(yearsAndDates);
+                        } else {
+                            Log.e(TAG, "Failed to load years: response unsuccessful");
+                            if (showRetryDialog) showRetryDialogForSpinner("years");
                         }
-                        updateSpinnerYear(yearsAndDates);
-                    } else {
-                        Log.e(TAG, "Failed to load years: response unsuccessful");
-                        if (showRetryDialog) showRetryDialogForSpinner("years");
+                    } finally {
+                        if (response.body() == null && response.errorBody() != null) {
+                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                        }
                     }
                 }
 
@@ -251,37 +294,6 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                     }
                 }
             });
-
-            /*apiService.getComicsByDate().enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        JsonObject json = response.body();
-                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                            yearsAndDates.add(entry.getKey());
-                            Log.d(TAG, "Date loaded: " + entry.getKey());
-                        }
-                        updateSpinnerYear(yearsAndDates);
-                    } else {
-                        Log.e(TAG, "Failed to load dates: response unsuccessful");
-                        if (showRetryDialog) showRetryDialogForSpinner("dates");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e(TAG, "Failed to load dates: " + t.getMessage());
-                    if (t instanceof IOException) {
-                        if (showRetryDialog) {
-                            showRetryDialogForSpinner("dates");
-                        } else {
-                            retryLoadYears();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Failed to load dates", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });*/
         });
     }
 
@@ -302,19 +314,25 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             apiService.getComicsBySubject().enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        JsonObject json = response.body();
-                        List<String> genres = new ArrayList<>();
-                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                            genres.add(entry.getKey());
-                            Log.d(TAG, "Genre loaded: " + entry.getKey());
+                    try {
+                        if (response.isSuccessful() && response.body() != null) {
+                            JsonObject json = response.body();
+                            List<String> genres = new ArrayList<>();
+                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                                genres.add(entry.getKey());
+                                Log.d(TAG, "Genre loaded: " + entry.getKey());
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, genres);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerGenre.setAdapter(adapter);
+                        } else {
+                            Log.e(TAG, "Failed to load genres: response unsuccessful");
+                            if (showRetryDialog) showRetryDialogForSpinner("genres");
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, genres);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerGenre.setAdapter(adapter);
-                    } else {
-                        Log.e(TAG, "Failed to load genres: response unsuccessful");
-                        if (showRetryDialog) showRetryDialogForSpinner("genres");
+                    } finally {
+                        if (response.body() == null && response.errorBody() != null) {
+                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                        }
                     }
                 }
 
@@ -376,6 +394,11 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
 
         Log.d(TAG, "Inizio ricerca avanzata: collection=" + collection + ", language=" + language + ", year=" + year + ", genre=" + genre);
         searchApiComics(collection, language, year, genre, false);
+        searchManualComics(collection, language, year, genre);
+    }
+
+    private void retrySearchApiComics(String collection, String language, String year, String genre) {
+        searchApiComics(collection, language, year, genre, false);
     }
 
     private void searchApiComics(String collection, String language, String year, String genre, boolean showRetryDialog) {
@@ -393,27 +416,33 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
                 timeoutHandler.removeCallbacks(timeoutRunnable);
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    for (Comic comic : response.body()) {
-                        ModelPdfComics model = new ModelPdfComics();
-                        model.setId(comic.getId());
-                        model.setTitolo(comic.getTitle());
-                        model.setDescrizione(comic.getDescription());
-                        model.setUrl(comic.getThumbnail());
-                        model.setYear(comic.getYear());
-                        model.setLanguage(comic.getLanguage());
-                        model.setCollection(comic.getCollection());
-                        model.setSubject(comic.getSubject());
-                        model.setFromApi(true);
-                        comicsList.add(model);
+                try {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        for (Comic comic : response.body()) {
+                            ModelPdfComics model = new ModelPdfComics();
+                            model.setId(comic.getId());
+                            model.setTitolo(comic.getTitle());
+                            model.setDescrizione(comic.getDescription());
+                            model.setUrl(comic.getThumbnail());
+                            model.setYear(comic.getYear());
+                            model.setLanguage(comic.getLanguage());
+                            model.setCollection(comic.getCollection());
+                            model.setSubject(comic.getSubject());
+                            model.setFromApi(true);
+                            comicsList.add(model);
+                        }
+                        comicsAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Comics caricati dall'API: " + comicsList.size());
+                    } else {
+                        Toast.makeText(getContext(), "Nessun fumetto trovato con i parametri selezionati", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Nessun fumetto trovato con i parametri selezionati");
                     }
-                    comicsAdapter.notifyDataSetChanged();
-                    Log.d(TAG, "Comics caricati dall'API: " + comicsList.size());
-                } else {
-                    Toast.makeText(getContext(), "Nessun fumetto trovato con i parametri selezionati", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Nessun fumetto trovato con i parametri selezionati");
+                    progress.setVisibility(View.INVISIBLE);
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
-                progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -434,8 +463,57 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         });
     }
 
-    private void retrySearchApiComics(String collection, String language, String year, String genre) {
-        searchApiComics(collection, language, year, genre, false);
+    private void searchManualComics(String collection, String language, String year, String genre) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.orderByChild("collection").equalTo(collection).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                        if (model != null && matchesFilters(model, language, year, genre)) {
+                            model.setFromApi(false);
+                            comicsList.add(model);
+                        }
+                    }
+                    comicsAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Comics caricati manualmente: " + comicsList.size());
+                } else {
+                    Log.d(TAG, "Nessun fumetto trovato nei manuali con i parametri selezionati");
+                }
+                progress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                showAlert(getString(R.string.service_error) + " " + error.getMessage());
+                progress.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private boolean matchesFilters(ModelPdfComics model, String language, String year, String genre) {
+        boolean matches = true;
+        if (!language.isEmpty() && !language.equals(model.getLanguage())) {
+            matches = false;
+        }
+        if (!year.isEmpty() && !year.equals(model.getYear())) {
+            matches = false;
+        }
+        if (!genre.isEmpty() && !genre.equals(model.getSubject())) {
+            matches = false;
+        }
+        return matches;
+    }
+
+    private void showAlert(String message) {
+        if (getActivity() == null) {
+            return;
+        }
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setMessage(message);
+        alert.setPositiveButton(R.string.close, null);
+        alert.show();
     }
 
     private void showRetryDialogForSpinner(String field) {
@@ -450,7 +528,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                             loadLanguages(true);
                             break;
                         case "years":
-                        //case "dates":
+                            //case "dates":
                             loadYears(true);
                             break;
                         case "genres":
@@ -478,7 +556,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
     private void openComicsMarvelDetailFragment(ModelPdfComics comic) {
         ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putSerializable("modelPdfComics", comic);
+        args.putSerializable("comic", comic); // Usa "comic" invece di "modelPdfComics"
         comicsMarvelDetailFragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -507,3 +585,4 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         transaction.commit();
     }
 }
+
