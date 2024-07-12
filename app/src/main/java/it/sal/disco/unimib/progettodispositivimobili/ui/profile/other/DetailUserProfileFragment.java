@@ -66,7 +66,6 @@ public class DetailUserProfileFragment extends Fragment {
         reference = database.getReference("Utenti registrati");
 
         profileImageView = binding.profileImageView;
-        profileImageViewCamera = binding.profileImageViewCamera;
         usernameEditText = binding.textViewUsername;
         emailEditText = binding.textViewEmail;
         dobEditText = binding.textViewDoB;

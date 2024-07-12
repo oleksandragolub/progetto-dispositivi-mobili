@@ -37,7 +37,7 @@ public class PreferitiFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ArrayList<ModelPdfComics> pdfArrayList;
     private AdapterPdfComicsFavorite adapterPdfFavorite;
-    private static final String TAG = "PDF_LIST_TAG";
+    private static final String TAG = "PreferitiFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -103,6 +103,7 @@ public class PreferitiFragment extends Fragment {
                     if (comicsId != null) {
                         ModelPdfComics modelPdf = new ModelPdfComics();
                         modelPdf.setId(comicsId);
+
                         if (ds.hasChild("titolo") || ds.hasChild("descrizione") || ds.hasChild("url")) {
                             modelPdf.setFromApi(true);
                             modelPdf.setTitolo(ds.child("titolo").getValue(String.class));

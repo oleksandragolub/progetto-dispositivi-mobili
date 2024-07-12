@@ -189,6 +189,8 @@ public class ComicsAdminFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (binding == null) return;
+                        pdfArrayList.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             ModelPdfComics model = ds.getValue(ModelPdfComics.class);
                             pdfArrayList.add(model);

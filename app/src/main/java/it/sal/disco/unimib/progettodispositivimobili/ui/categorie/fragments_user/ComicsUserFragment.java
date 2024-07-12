@@ -190,17 +190,20 @@ public class ComicsUserFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                            pdfArrayList.add(model);
-                        }
-                        adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
-                        binding.comicsRv.setAdapter(adapterPdfUser);
-                        adapterPdfUser.setOnItemClickListener(model -> {
-                            if (onItemClickListener != null) {
-                                onItemClickListener.onItemClick(model);
+                        if (binding == null) return;
+                            pdfArrayList.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                                pdfArrayList.add(model);
                             }
-                        });
+                            adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
+                            binding.comicsRv.setAdapter(adapterPdfUser);
+                            adapterPdfUser.setOnItemClickListener(model -> {
+                                if (onItemClickListener != null) {
+                                    onItemClickListener.onItemClick(model);
+                                }
+                            });
+
                     }
 
                     @Override
@@ -225,6 +228,7 @@ public class ComicsUserFragment extends Fragment {
                         }
                         adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                         binding.comicsRv.setAdapter(adapterPdfUser);
+
                         adapterPdfUser.setOnItemClickListener(model -> {
                             if (onItemClickListener != null) {
                                 onItemClickListener.onItemClick(model);

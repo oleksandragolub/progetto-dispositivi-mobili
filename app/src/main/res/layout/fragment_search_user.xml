@@ -71,7 +71,7 @@ tools:context=".ui.profile.other.SearchUserFragment">
                 android:layout_marginEnd="46dp"
                 android:background="@drawable/round_btn"
                 android:contentDescription="@string/cerca_la_lista_degli_utenti_con_un_cerco_username"
-                android:src="@drawable/baseline_person_search_24_white" />
+                android:src="@drawable/baseline_person_search_24" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
