@@ -34,7 +34,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.DetailUserPref
 public class DetailUserProfileFragment extends Fragment {
 
     FragmentDetailUserProfileBinding binding;
-
     ImageView profileImageView, profileImageViewCamera;
     TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText, descrizioneEditText;
     Button profileChatButton;

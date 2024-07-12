@@ -46,7 +46,7 @@ public class ComicsPdfListAdminFragment extends Fragment {
     private AdapterPdfComicsAdmin adapterPdfComicsAdmin;
     private AdapterApiComics adapterApiComics;
     private String categoryId, categoryTitle;
-    private static final String TAG = "PDF_LIST_TAG";
+    private static final String TAG = "ComicsPdfListAdminFragment";
 
     private int currentComicCount = 0; // Variabile per tenere traccia dei fumetti caricati
     private static final int COMICS_LOAD_LIMIT = 20; // Limite per il caricamento dei fumetti

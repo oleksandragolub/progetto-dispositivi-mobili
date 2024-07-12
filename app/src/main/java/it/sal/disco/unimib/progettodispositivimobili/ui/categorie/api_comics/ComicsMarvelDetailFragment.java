@@ -53,7 +53,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ComicsMarvelDetailFragment extends Fragment {
-    private static final String TAG = "ComicsMarvelDetail";
+    private static final String TAG = "ComicsMarvelDetailFragment";
     private FragmentComicsMarvelDetailBinding binding;
     private ArrayList<ModelComment> commentArrayList;
     private AdapterComment adapterComment;

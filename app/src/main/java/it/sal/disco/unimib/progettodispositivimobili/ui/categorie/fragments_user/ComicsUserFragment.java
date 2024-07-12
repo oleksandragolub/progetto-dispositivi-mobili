@@ -203,7 +203,6 @@ public class ComicsUserFragment extends Fragment {
                                     onItemClickListener.onItemClick(model);
                                 }
                             });
-
                     }
 
                     @Override

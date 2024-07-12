@@ -46,7 +46,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUser
 
 public class MainActivity extends AppCompatActivity implements View.OnCreateContextMenuListener, ComicsApiUserFragment.OnComicClickListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainUserActivity";
     private FragmentManager fragmentManager;
     private GoogleSignInClient mGoogleSignInClient;
     private BottomNavigationView bottomNavigationView;

@@ -30,7 +30,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsM
 public class ComicsMarvelViewFragment extends Fragment {
     private FragmentComicsMarvelViewBinding binding;
 
-    private static final String TAG = "PDF_VIEW_TAG";
+    private static final String TAG = "ComicsMarvelViewFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

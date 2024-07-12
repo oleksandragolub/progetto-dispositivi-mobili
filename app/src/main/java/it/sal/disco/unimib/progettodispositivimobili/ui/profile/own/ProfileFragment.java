@@ -34,7 +34,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragm
 
 public class ProfileFragment extends Fragment {
 
-    private static final String TAG = "PROFILE_TAG";
+    private static final String TAG = "ProfileFragment";
     private FragmentProfileBinding binding;
     private ImageView profileImageView, profileImageViewCamera;
     private TextInputEditText usernameEditText, emailEditText, dobEditText, genderEditText;

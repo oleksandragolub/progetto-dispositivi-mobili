@@ -56,7 +56,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
 
     private AppCompatImageView buttonBack;
 
-    private static final String TAG = "ComicsAvanzatoInfoFrag";
+    private static final String TAG = "ComicsAvanzatoInfoFragment";
     private static final int SEARCH_TIMEOUT = 10000; // Timeout di 10 secondi
 
     private Handler timeoutHandler;

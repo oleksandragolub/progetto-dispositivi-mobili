@@ -37,7 +37,7 @@ public class ComicsPdfViewUserFragment extends Fragment {
 
     private String comicsId;
 
-    private static final String TAG = "PDF_VIEW_TAG";
+    private static final String TAG = "ComicsPdfViewUserFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

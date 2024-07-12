@@ -54,9 +54,8 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentUploadP
 
 public class UploadProfilePicFragment extends Fragment {
 
-    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 101;
-    private static final String TAG = "PROFILE_EDIT_TAG";
+    private static final String TAG = "UploadProfilePicFragment";
     private Uri imageUri = null;
     private ProgressDialog progressDialog;
 
