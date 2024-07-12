@@ -41,11 +41,13 @@
 
     <string name="web_client_id">116867753475-rmcirl3u8ncj8sc99d76hbfrrcm0b5kl.apps.googleusercontent.com</string>
     <string name="loading">Loading</string>
+    <string name="txt_inserisci_dati">Inserisci i tuoi dati:</string>
     <string name="username">Username</string>
     <string name="DoB">Data di Nascita</string>
     <string name="gender">Genere</string>
     <string name="gender_male">Maschio</string>
     <string name="gender_fem">Femmina</string>
+    <string name="gender_other">Altro</string>
     <string name="conferma_password">Conferma password</string>
 
     <string name="txt_change_pw">Cambia la tua password</string>

@@ -57,6 +57,8 @@
         <activity
             android:name=".ui.start_app.RegisterActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.ProgettoDispositiviMobili">
             <meta-data
                 android:name="android.app.lib_name"

@@ -16,7 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_anchorGravity="top"
-            app:title="Horizon Tales" />
+            app:title="@string/txt_registrazione"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:navigationIconTint="?attr/colorControlNormal" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -27,76 +30,31 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.start_app.RegisterActivity">
-
-            <ImageView
-                android:id="@+id/imageView_icon"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:padding="25dp"
-                android:src="@drawable/logo_app_piccola"
-                app:layout_constraintBottom_toTopOf="@id/guideline_center"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/guideline_begin" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.35" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_begin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="16dp" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_right"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_end="16dp" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_left"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="16dp" />
+            tools:context=".ui.start_app.RegisterActivity"
+            android:layout_gravity="center">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/txt_inserisci_dati"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/txt_inserisci_dati"
+                android:textSize="16sp"
+                android:textAlignment="center"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:paddingLeft="10dp"
-                android:text="@string/txt_registrazione"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/guideline_center" />
+                app:layout_constraintBottom_toTopOf="@id/text_input_layout_username" />
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_username"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
                 app:endIconMode="clear_text"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/txt_inserisci_dati"
                 app:startIconDrawable="@drawable/profile_icone">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -110,16 +68,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
                 app:endIconMode="clear_text"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_layout_username"
                 app:startIconDrawable="@drawable/baseline_alternate_email_24">
 
@@ -134,16 +89,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_DoB"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
                 app:endIconMode="clear_text"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_layout_email"
                 app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
@@ -152,7 +104,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="16dp"
                     android:hint="@string/DoB"
                     android:inputType="date"
                     android:focusable="false"/>
@@ -163,11 +114,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_layout_DoB">
 
                 <RadioButton
@@ -185,18 +135,24 @@
                     android:text="@string/gender_male"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/gender_other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gender_other"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/radio_group_register_gender"
                 app:passwordToggleEnabled="true"
                 app:startIconDrawable="@drawable/baseline_password_24">
@@ -205,21 +161,17 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/password"
-                    android:textColorHint="@color/design_default_color_background" />
+                    android:hint="@string/password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_conferma_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
-                app:layout_constraintEnd_toEndOf="@id/guideline_right"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/text_input_layout_password"
                 app:passwordToggleEnabled="true"
                 app:startIconDrawable="@drawable/baseline_password_24">
@@ -228,63 +180,23 @@
                     android:id="@+id/conferma_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/conferma_password"
-                    android:textColorHint="@color/design_default_color_background" />
+                    android:hint="@string/conferma_password" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/btn_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/round_btn"
+                android:enabled="false"
                 android:text="@string/btn_register"
                 android:textAllCaps="false"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@id/guideline_right"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/text_input_layout_conferma_password" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toStartOf="@id/guideline_right"
-                app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/btn_register"
-                app:layout_constraintBottom_toTopOf="@id/guideline_end">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_domanda_registrazione"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/loginNow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="@string/button_allora_entra"
-                    android:textAllCaps="false"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_end"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_end="16dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
