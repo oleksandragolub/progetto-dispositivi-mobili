@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
     public ViewPagerUserAdapter viewPagerAdapter;
     public ArrayList<ModelCategory> categoryArrayList;
     private Set<String> loadedCategoriesSet = new HashSet<>();
-    private ProgressBar progressBar; // Aggiungi questa linea
+    private ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
 
         comicsApi = ApiClient.getClient().create(ComicsApi.class);
 
-        progressBar = root.findViewById(R.id.progressBar); // Aggiungi questa linea
+        progressBar = root.findViewById(R.id.progressBar);
 
         setupViewPagerAdapter(binding.viewPager);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
@@ -107,7 +107,6 @@ public class HomeFragment extends Fragment {
                         viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(model.getId(), model.getCategory(), model.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), model.getCategory());
                     }
                 }
-
                 viewPager.setAdapter(viewPagerAdapter);
             }
 
@@ -238,7 +237,6 @@ public class HomeFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
 
     @Override
     public void onDestroyView() {

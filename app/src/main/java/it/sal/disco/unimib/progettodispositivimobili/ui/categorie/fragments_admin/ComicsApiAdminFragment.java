@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +24,7 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentApiComicsAdminBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
@@ -32,9 +34,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ComicsApiAdminFragment extends Fragment {
+public class ComicsApiAdminFragment extends Fragment implements AdapterApiComics.OnItemClickListener {
 
-    private static final String TAG = "COMICS_API_ADMIN_TAG";
+    private static final String TAG = "ComicsApiAdminFragment";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
     private AdapterApiComics adapterComicsApi;
@@ -43,6 +45,28 @@ public class ComicsApiAdminFragment extends Fragment {
     private ComicsApi comicsApi;
     private int currentComicCount = 0;
     private static final int COMICS_LOAD_LIMIT = 20;
+    private OnComicClickListener onComicClickListener;
+
+    public interface OnComicClickListener {
+        void onComicClick(Comic comic);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnComicClickListener) {
+            onComicClickListener = (OnComicClickListener) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement OnComicClickListener");
+        }
+    }
+
+    @Override
+    public void onItemClick(Comic comic) {
+        if (onComicClickListener != null) {
+            onComicClickListener.onComicClick(comic);
+        }
+    }
 
     public static ComicsApiAdminFragment newInstance(String categoryId, String category, String uid) {
         ComicsApiAdminFragment fragment = new ComicsApiAdminFragment();
@@ -76,7 +100,8 @@ public class ComicsApiAdminFragment extends Fragment {
 
         comicsList = new ArrayList<>();
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
-        adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
+        adapterComicsApi.setOnItemClickListener(this);
+
         binding.comicsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.comicsRv.setAdapter(adapterComicsApi);
 
@@ -128,14 +153,20 @@ public class ComicsApiAdminFragment extends Fragment {
         comicsApi.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, category).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> moreComics = response.body();
-                    Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
-                    comicsList.addAll(moreComics);
-                    adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
-                    currentComicCount += moreComics.size();
-                } else {
-                    Log.e(TAG, "API response unsuccessful. Code: " + response.code());
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Comic> moreComics = response.body();
+                        Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
+                        comicsList.addAll(moreComics);
+                        adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
+                        currentComicCount += moreComics.size();
+                    } else {
+                        Log.e(TAG, "API response unsuccessful. Code: " + response.code());
+                    }
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
+                    }
                 }
             }
 
@@ -154,23 +185,6 @@ public class ComicsApiAdminFragment extends Fragment {
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private Comic convertToComic(ModelPdfComics modelPdfComics) {
-        Comic comic = new Comic();
-        comic.setId(modelPdfComics.getId());
-        comic.setTitle(modelPdfComics.getTitolo());
-        comic.setDescription(modelPdfComics.getDescrizione());
-        comic.setThumbnail(modelPdfComics.getUrl());
-        return comic;
-    }
-
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

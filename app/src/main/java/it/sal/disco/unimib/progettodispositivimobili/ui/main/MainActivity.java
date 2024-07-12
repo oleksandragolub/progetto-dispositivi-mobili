@@ -1,6 +1,5 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.main;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import it.sal.disco.unimib.progettodispositivimobili.databinding.ActivityMainBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
@@ -33,7 +31,6 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.home.HomeAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
 import it.sal.disco.unimib.progettodispositivimobili.R;
@@ -57,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private DatabaseReference userRef;
-    //variabile per tracciare se il form del profilo è stato completato
-    private boolean isProfileFormComplete = false;
+    private boolean isProfileFormComplete = false; //variabile per tracciare se il form del profilo è stato completato
 
     @Override
     public void onComicClick(Comic comic) {
@@ -159,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                     openFragment(new ComicsUserFragment());
                     return true;
                 }
-
                 return false;
             }
         });
@@ -192,9 +187,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -245,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
             signOutFromGoogle();
             // Passa alla LoginActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
             return true;
@@ -252,23 +245,6 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         return super.onOptionsItemSelected(item);
     }
 
-    /* private void logOut() {
-        FirebaseAuth.getInstance().signOut();
-        signOutFromGoogle();
-        navigateToLogin();
-    }*/
-
-    private void logOut() {
-        // Rimuovi i listener del database prima del logout
-       /* ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        if (profileFragment != null) {
-            profileFragment.removeFirebaseListeners();
-        }*/
-
-        FirebaseAuth.getInstance().signOut();
-        signOutFromGoogle();
-        navigateToLogin();
-    }
 
     private void navigateToLogin() {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

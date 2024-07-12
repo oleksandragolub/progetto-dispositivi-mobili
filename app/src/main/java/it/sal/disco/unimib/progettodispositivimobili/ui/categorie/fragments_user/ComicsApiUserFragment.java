@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class ComicsApiUserFragment extends Fragment implements AdapterApiComics.OnItemClickListener {
 
-    private static final String TAG = "COMICS_API_USER_TAG";
+    private static final String TAG = "ComicsApiUserFragment";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
     private AdapterApiComics adapterComicsApi;
@@ -92,12 +92,15 @@ public class ComicsApiUserFragment extends Fragment implements AdapterApiComics.
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        Log.d(TAG, "onCreateView: Category: " + category);
+
         comicsList = new ArrayList<>();
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
         adapterComicsApi.setOnItemClickListener(this);
 
         binding.comicsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.comicsRv.setAdapter(adapterComicsApi);
+
         loadMoreComics(); // Carica i primi fumetti
 
         binding.searchEt.addTextChangedListener(new TextWatcher() {
@@ -178,5 +181,11 @@ public class ComicsApiUserFragment extends Fragment implements AdapterApiComics.
         transaction.replace(R.id.nav_host_fragment, detailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

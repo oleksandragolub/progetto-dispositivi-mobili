@@ -85,7 +85,6 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
     }
 
     class HolderPdfUser extends RecyclerView.ViewHolder {
-
         TextView titleTv, descriptionTv;
         PDFView pdfView;
         ProgressBar progressBar;

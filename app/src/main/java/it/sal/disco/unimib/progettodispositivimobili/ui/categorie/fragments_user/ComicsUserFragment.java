@@ -42,7 +42,7 @@ import retrofit2.Response;
 
 public class ComicsUserFragment extends Fragment {
 
-    private static final String TAG = "COMICS_USER_TAG";
+    private static final String TAG = "ComicsUserFragment";
     private String categoryId, category, uid;
     private List<Comic> comicsList;
     private ArrayList<ModelPdfComics> pdfArrayList;
@@ -75,17 +75,13 @@ public class ComicsUserFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             categoryId = getArguments().getString("categoryId");
             category = getArguments().getString("category");
             uid = getArguments().getString("uid");
         }
         comicsApi = ApiClient.getClient().create(ComicsApi.class);
-
-    }
-
-    public interface OnItemClickListenerUser {
-        void onItemClick(String comicsId);
     }
 
     @Override
@@ -126,6 +122,7 @@ public class ComicsUserFragment extends Fragment {
             loadCategorizedComics();
         }
 
+        // Carica i fumetti dall'API in ogni caso
         loadMoreComics();
 
         binding.searchEt.addTextChangedListener(new TextWatcher() {
@@ -156,18 +153,6 @@ public class ComicsUserFragment extends Fragment {
         return root;
     }
 
-    public void setComicsList(List<Comic> comicsList) {
-        this.comicsList = comicsList; // Salva la lista dei fumetti
-        Log.d(TAG, "setComicsList: Received " + comicsList.size() + " comics for category: " + category);
-        if (binding != null) {
-            updateComicsList(comicsList); // Aggiorna la lista dei fumetti solo se il binding è inizializzato
-        }
-    }
-    private void updateComicsList(List<Comic> comicsList) {
-        Log.d(TAG, "updateComicsList: Updating comics list for category: " + category);
-        adapterComicsApi.notifyDataSetChanged();
-    }
-
     private void loadMoreComics() {
         Log.d(TAG, "loadMoreComics: Loading more comics...");
         comicsApi.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, category).enqueue(new Callback<List<Comic>>() {
@@ -180,6 +165,7 @@ public class ComicsUserFragment extends Fragment {
                         comicsList.addAll(moreComics);
                         adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
                         currentComicCount += moreComics.size();
+                        Log.d(TAG, "Total comics count: " + comicsList.size());
                     } else {
                         Log.e(TAG, "API response unsuccessful. Code: " + response.code());
                     }
@@ -215,11 +201,11 @@ public class ComicsUserFragment extends Fragment {
                                 onItemClickListener.onItemClick(model);
                             }
                         });
-
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, "loadCategorizedComics: Database error: " + error.getMessage());
                     }
                 });
     }
@@ -248,6 +234,7 @@ public class ComicsUserFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, "loadMostViewedDownloadedComics: Database error: " + error.getMessage());
                     }
                 });
     }
@@ -276,6 +263,7 @@ public class ComicsUserFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "loadAllComics: Database error: " + error.getMessage());
             }
         });
     }
@@ -301,35 +289,6 @@ public class ComicsUserFragment extends Fragment {
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    /* private void openComicDetailFragment(ModelPdfComics comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        ModelPdfComics modelPdfComics = new ModelPdfComics();
-        modelPdfComics.setId(comic.getId());
-        modelPdfComics.setTitolo(comic.getTitle());
-        modelPdfComics.setDescrizione(comic.getDescription());
-        modelPdfComics.setUrl(comic.getThumbnail());
-        modelPdfComics.setYear(comic.getYear());
-        modelPdfComics.setLanguage(comic.getLanguage());
-        modelPdfComics.setCollection(comic.getCollection());
-        modelPdfComics.setSubject(comic.getSubject());
-        args.putSerializable("modelPdfComics", modelPdfComics);
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
-
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

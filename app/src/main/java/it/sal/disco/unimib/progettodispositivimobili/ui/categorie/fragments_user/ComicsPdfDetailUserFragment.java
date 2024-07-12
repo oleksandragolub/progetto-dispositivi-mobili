@@ -49,7 +49,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPd
 
 public class ComicsPdfDetailUserFragment extends Fragment {
 
-    private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
+    private static final String TAG_DOWNLOAD = "ComicsPdfDetailUserFragment";
     private FragmentComicsPdfDetailUserBinding binding;
     private ArrayList<ModelComment> commentArrayList;
     private AdapterComment adapterComment;
@@ -166,25 +166,6 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
         return root;
     }
-
-   /* private void loadComicsDetailsFromModel(ModelPdfComics model) {
-        comicsTitle = model.getTitolo();
-        comicsUrl = model.getUrl();
-
-        binding.downloadComicsBtn.setVisibility(View.VISIBLE);
-
-        String date = MyApplication.formatTimestamp(model.getTimestamp());
-        MyApplication.loadCategory(model.getCategoryId(), binding.collezioniTv);
-        MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
-        MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
-        MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
-
-        binding.titleTv.setText(comicsTitle);
-        binding.descriptionTv.setText(model.getDescrizione());
-        binding.viewsTv.setText(String.valueOf(model.getViewsCount()));
-        binding.downloadsTv.setText(String.valueOf(model.getDownloadsCount()));
-        binding.yearTv.setText(date);
-    }*/
 
     private void loadComicsDetailsFromModel(ModelPdfComics model) {
         comicsTitle = model.getTitolo();
@@ -404,14 +385,6 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
             }
         });
-    }
-
-    private void openFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     @Override

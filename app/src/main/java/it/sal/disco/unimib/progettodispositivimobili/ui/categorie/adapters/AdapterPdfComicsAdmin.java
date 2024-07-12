@@ -114,18 +114,6 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         transaction.commit();
     }
 
-    public void setComicsList(List<ModelPdfComics> newComics) {
-        this.pdfArrayList.clear();
-        this.pdfArrayList.addAll(newComics);
-        notifyDataSetChanged();
-    }
-
-    public void addMoreComics(List<ModelPdfComics> newComics) {
-        int startPosition = pdfArrayList.size();
-        pdfArrayList.addAll(newComics);
-        notifyItemRangeInserted(startPosition, newComics.size());
-    }
-
     @Override
     public int getItemCount() {
         return pdfArrayList.size();

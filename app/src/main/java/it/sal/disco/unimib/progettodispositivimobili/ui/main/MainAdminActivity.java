@@ -13,9 +13,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,11 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsAvanzatoInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelViewFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsAdminFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin.ComicsApiAdminFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
-import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
 import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
@@ -49,7 +44,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragm
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.own.ProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.SearchUserFragment;
 
-public class MainAdminActivity extends AppCompatActivity implements View.OnCreateContextMenuListener {
+public class MainAdminActivity extends AppCompatActivity implements View.OnCreateContextMenuListener, ComicsApiAdminFragment.OnComicClickListener {
 
     private static final String TAG = "MainAdminActivity";
     private FragmentManager fragmentManager;
@@ -59,7 +54,24 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private DatabaseReference userRef;
-    private boolean isProfileFormComplete = false;
+    private boolean isProfileFormComplete = false; //variabile per tracciare se il form del profilo è stato completato
+
+    @Override
+    public void onComicClick(Comic comic) {
+        openComicDetailFragment(comic);
+    }
+
+    private void openComicDetailFragment(Comic comic) {
+        ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("comic", comic);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     private void configureGoogleSignIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -147,12 +159,6 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
             }
         });
 
-        if(currentUser == null){
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
         fragmentManager = getSupportFragmentManager();
         if (currentUser == null) {
             navigateToLogin();
@@ -160,6 +166,12 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
             if (savedInstanceState == null) {
                 openFragment(new HomeAdminFragment());
             }
+        }
+
+        if(currentUser == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         // Verifica se l'intent contiene l'extra per mostrare direttamente il ProfileFragment
@@ -213,35 +225,25 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         } else if (id == R.id.nav_marvel_comics_detail) {
             openFragment(new ComicsMarvelDetailFragment());
             //return true;
-        } else if (id == R.id.navigation_api_comics_user) {
-            openFragment(new ComicsApiUserFragment());
+        } else if (id == R.id.navigation_api_comics_admin) {
+            openFragment(new ComicsApiAdminFragment());
             //return true;
-        } else if (id == R.id.navigation_comics_user) {
-            openFragment(new ComicsUserFragment());
+        } else if (id == R.id.navigation_comics_admin) {
+            openFragment(new ComicsAdminFragment());
             //return true;
         } else if (id == R.id.navigation_logout) {
-            logOut();
+            // Effettua il logout da Firebase Auth
+            FirebaseAuth.getInstance().signOut();
+            // Effettua il logout da Google Sign-In
+            signOutFromGoogle();
+            // Passa alla LoginActivity
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-   /* private void logOut() {
-        FirebaseAuth.getInstance().signOut();
-        signOutFromGoogle();
-        navigateToLogin();
-    }*/
-
-    private void logOut() {
-        // Rimuovi i listener del database prima del logout
-       /* ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        if (profileFragment != null) {
-            profileFragment.removeFirebaseListeners();
-        }*/
-
-        FirebaseAuth.getInstance().signOut();
-        signOutFromGoogle();
-        navigateToLogin();
     }
 
     private void navigateToLogin() {

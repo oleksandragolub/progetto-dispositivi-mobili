@@ -30,5 +30,12 @@
             android:layout_alignParentBottom="true"
             android:layout_weight="1" />
 
+       <ProgressBar
+           android:id="@+id/progressBar"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:visibility="gone" />
+
    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
