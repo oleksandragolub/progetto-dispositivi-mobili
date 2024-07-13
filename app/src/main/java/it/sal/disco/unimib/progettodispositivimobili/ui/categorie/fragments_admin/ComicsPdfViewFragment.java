@@ -100,6 +100,8 @@ public class ComicsPdfViewFragment extends Fragment {
                         int currentPage = (page + 1);
                         binding.toolbarSubtitleTv.setText(currentPage + "/" + pageCount);
                         Log.d(TAG, "onPageChanged: " + currentPage + "/" + pageCount);
+
+                        updateFirebaseWithPageCount(comicsId, pageCount);
                     }
                 }).onError(new OnErrorListener() {
                     @Override
@@ -123,6 +125,11 @@ public class ComicsPdfViewFragment extends Fragment {
                 binding.progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void updateFirebaseWithPageCount(String comicId, int pages) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics").child(comicId);
+        ref.child("pages").setValue(pages);
     }
 
     private void openFragment(Fragment fragment, String comicsId) {

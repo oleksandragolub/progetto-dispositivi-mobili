@@ -541,9 +541,10 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("comicsId", comicsId);
-        hashMap.put("titolo", comicsTitle);
-        hashMap.put("descrizione", binding.comicDescription.getText().toString());
+        hashMap.put("titolo", title); // Ensure you use the right field names and variables
+        hashMap.put("descrizione", description);
         hashMap.put("url", comicsUrl);
+        hashMap.put("thumbnailUrl", thumbnailUrl); // Add the thumbnail URL to the favorites
 
         ref.setValue(hashMap).addOnSuccessListener(aVoid -> {
             Toast.makeText(getActivity(), "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show();

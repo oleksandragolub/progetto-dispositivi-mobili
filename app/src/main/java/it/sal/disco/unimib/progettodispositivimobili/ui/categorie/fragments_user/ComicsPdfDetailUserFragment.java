@@ -1,5 +1,4 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -34,9 +33,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.DialogCommentAddBinding;
@@ -76,13 +78,6 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         binding = FragmentComicsPdfDetailUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-       /* if (getArguments() != null && getArguments().containsKey("modelPdfComics")) {
-            modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
-            if (modelPdfComics != null) {
-                comicsId = modelPdfComics.getId();
-            }
-        }*/
-
         if (getArguments() != null && getArguments().containsKey("modelPdfComics")) {
             modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
             if (modelPdfComics != null) {
@@ -118,7 +113,7 @@ public class ComicsPdfDetailUserFragment extends Fragment {
         binding.readComicsBtn.setOnClickListener(v -> {
             ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
             Bundle args = new Bundle();
-            args.putString("comicsId", comicsId);
+            args.putString("comic", comicsId);
             comicsPdfViewUserFragment.setArguments(args);
 
             FragmentManager fragmentManager = getParentFragmentManager();
@@ -170,27 +165,55 @@ public class ComicsPdfDetailUserFragment extends Fragment {
     private void loadComicsDetailsFromModel(ModelPdfComics model) {
         comicsTitle = model.getTitolo();
         comicsUrl = model.getUrl();
-        String categoryId = model.getCategoryId(); // Retrieve categoryId from model
 
         binding.downloadComicsBtn.setVisibility(View.VISIBLE);
-
-        String date = MyApplication.formatTimestamp(model.getTimestamp());
-
-        if (categoryId != null) {
-            MyApplication.loadCategory(categoryId, binding.collezioniTv);
-        } else {
-            binding.collezioniTv.setText("Unknown Category");
-        }
-
-        MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
-        MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
-        MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
 
         binding.titleTv.setText(comicsTitle);
         binding.descriptionTv.setText(model.getDescrizione());
         binding.viewsTv.setText(String.valueOf(model.getViewsCount()));
         binding.downloadsTv.setText(String.valueOf(model.getDownloadsCount()));
-        binding.yearTv.setText(date);
+        binding.yearTv.setText(model.getYear());
+        binding.linguaTv.setText(model.getLanguage());
+        binding.pagesTv.setText(String.valueOf(model.getPages()));
+        loadGenresAndCollections(model);
+        //MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+        MyApplication.loadPdfCoverFromUrl(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar);
+        MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
+    }
+
+    private void loadGenresAndCollections(ModelPdfComics model) {
+        List<String> collections = model.getCollections();
+        List<String> genres = model.getGenres();
+
+        if (collections == null) {
+            collections = new ArrayList<>();
+        }
+
+        if (genres == null) {
+            genres = new ArrayList<>();
+        }
+
+        displayGenresAndCollections(collections, genres);
+    }
+
+    private void displayGenresAndCollections(List<String> collections, List<String> genres) {
+        StringBuilder collectionsText = new StringBuilder();
+        for (String collection : collections) {
+            collectionsText.append(collection).append(", ");
+        }
+        if (collectionsText.length() > 0) {
+            collectionsText.setLength(collectionsText.length() - 2); // Remove last comma
+        }
+        binding.collezioniTv.setText(collectionsText.toString());
+
+        StringBuilder genresText = new StringBuilder();
+        for (String genre : genres) {
+            genresText.append(genre).append(", ");
+        }
+        if (genresText.length() > 0) {
+            genresText.setLength(genresText.length() - 2); // Remove last comma
+        }
+        binding.generiTv.setText(genresText.toString());
     }
 
     private void loadComments() {
@@ -311,9 +334,8 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
             String date = MyApplication.formatTimestamp(modelPdfComics.getTimestamp());
             //MyApplication.loadCategory(modelPdfComics.getCategoryId(), binding.collezioniTv);
-            MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+           // MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
             MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
-            MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
 
             binding.titleTv.setText(comicsTitle);
             binding.descriptionTv.setText(modelPdfComics.getDescrizione());
@@ -327,30 +349,35 @@ public class ComicsPdfDetailUserFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     comicsTitle = "" + snapshot.child("titolo").getValue();
                     String description = "" + snapshot.child("descrizione").getValue();
-                    String categoryId = "" + snapshot.child("categoryId").getValue();
                     String viewsCount = "" + snapshot.child("viewsCount").getValue();
+                    String pages = "" + snapshot.child("pages").getValue();
                     String downloadsCount = "" + snapshot.child("downloadsCount").getValue();
                     comicsUrl = "" + snapshot.child("url").getValue();
                     String timestamp = "" + snapshot.child("timestamp").getValue();
+                    String year = "" + snapshot.child("year").getValue();
+                    String language = "" + snapshot.child("language").getValue();
+                    List<String> collections = new ArrayList<>();
+                    List<String> genres = new ArrayList<>();
+                    for (DataSnapshot ds : snapshot.child("collections").getChildren()) {
+                        collections.add(ds.getValue(String.class));
+                    }
+                    for (DataSnapshot ds : snapshot.child("genres").getChildren()) {
+                        genres.add(ds.getValue(String.class));
+                    }
 
                     binding.downloadComicsBtn.setVisibility(View.VISIBLE);
 
-                    String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
-                    if (categoryId != null) {
-                        MyApplication.loadCategory(categoryId, binding.collezioniTv);
-                    } else {
-                        binding.collezioniTv.setText("Unknown Category");
-                    }
-
-                    MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
+                    //MyApplication.loadPdfFromUrlSinglePage(comicsUrl, comicsTitle, binding.pdfView, binding.progressBar, binding.pagesTv);
                     MyApplication.loadPdfSize(comicsUrl, comicsTitle, binding.sizeTv);
-                    MyApplication.loadPdfPageCount(getActivity(), comicsUrl, binding.pagesTv);
 
                     binding.titleTv.setText(comicsTitle);
                     binding.descriptionTv.setText(description);
                     binding.viewsTv.setText(viewsCount.replace("null", "N/A"));
                     binding.downloadsTv.setText(downloadsCount.replace("null", "N/A"));
-                    binding.yearTv.setText(date);
+                    binding.yearTv.setText(year);
+                    binding.linguaTv.setText(language);
+                    binding.pagesTv.setText(pages);
+                    displayGenresAndCollections(collections, genres);
                 }
 
                 @Override

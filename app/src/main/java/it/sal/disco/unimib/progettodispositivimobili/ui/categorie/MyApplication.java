@@ -651,6 +651,50 @@ public class MyApplication extends Application {
     }
 
 
+    public static void loadPdfCoverFromUrl(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar) {
+        String TAG = "PDF_LOAD_COVER_TAG";
+
+        StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
+        ref.getBytes(MAX_BYTES_PDF).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d(TAG, "onSuccess: " + pdfTitle + " successfully got the file");
+
+                pdfView.fromBytes(bytes)
+                        .pages(0)
+                        .spacing(0)
+                        .swipeHorizontal(false)
+                        .enableSwipe(false)
+                        .onError(new OnErrorListener() {
+                            @Override
+                            public void onError(Throwable t) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "onError: " + t.getMessage());
+                            }
+                        }).onPageError(new OnPageErrorListener() {
+                            @Override
+                            public void onPageError(int page, Throwable t) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "onPageError: " + t.getMessage());
+                            }
+                        }).onLoad(new OnLoadCompleteListener() {
+                            @Override
+                            public void loadComplete(int nbPages) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Log.d(TAG, "loadComplete: pdf loaded");
+                            }
+                        })
+                        .load();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Log.d(TAG, "onFailure: failed getting file from url due to " + e.getMessage());
+            }
+        });
+    }
+
 
     public static void loadPdfPageCount(Context context, String pdfUrl, TextView pagesTv){
         StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);

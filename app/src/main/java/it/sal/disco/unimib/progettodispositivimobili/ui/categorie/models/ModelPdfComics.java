@@ -1,17 +1,20 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models;
 
+
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class ModelPdfComics implements Serializable {
 
-    String uid, id, titolo, descrizione, categoryId, url, year, language, collection, subject;
-    long timestamp, viewsCount, downloadsCount;
-    boolean favorite = false;
+    private String uid, id, titolo, descrizione, categoryId, url, year, language, collection, subject, thumbnailUrl;
+    private long timestamp, viewsCount, downloadsCount, pages;
+    private boolean favorite = false;
     private boolean fromApi = false;
+    private List<String> collections;
+    private List<String> genres;
 
-    public ModelPdfComics(){
-
+    public ModelPdfComics() {
     }
 
     public ModelPdfComics(String uid, String id, String titolo, String descrizione, String categoryId, String url, long timestamp, long viewsCount, long downloadsCount, boolean favorite) {
@@ -26,6 +29,9 @@ public class ModelPdfComics implements Serializable {
         this.downloadsCount = downloadsCount;
         this.favorite = favorite;
     }
+
+    // Getters and setters...
+
     public boolean isFromApi() {
         return fromApi;
     }
@@ -33,6 +39,7 @@ public class ModelPdfComics implements Serializable {
     public void setFromApi(boolean fromApi) {
         this.fromApi = fromApi;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -142,6 +149,14 @@ public class ModelPdfComics implements Serializable {
         this.language = language;
     }
 
+    public long getPages() {
+        return pages;
+    }
+
+    public void setPages(long pages) {
+        this.pages = pages;
+    }
+
     public String getCollection() {
         return collection;
     }
@@ -156,5 +171,29 @@ public class ModelPdfComics implements Serializable {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public List<String> getCollections() {
+        return collections;
+    }
+
+    public void setCollections(List<String> collections) {
+        this.collections = collections;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

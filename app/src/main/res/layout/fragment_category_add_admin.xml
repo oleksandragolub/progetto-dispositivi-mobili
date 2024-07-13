@@ -85,8 +85,7 @@ tools:context=".ui.categorie.fragments_admin.CategoryAddAdminFragment">
         android:layout_height="50dp"
         android:layout_marginLeft="5dp"
         android:background="@drawable/round_btn"
-        android:src="@drawable/baseline_upload_24_white"
-        />
+        android:src="@drawable/baseline_upload_24" />
 
 </LinearLayout>
 

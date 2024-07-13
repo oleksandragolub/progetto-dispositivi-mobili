@@ -1,5 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
+import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfViewUserBinding;
@@ -50,6 +59,7 @@ public class ComicsPdfViewUserFragment extends Fragment {
 
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
+
         }
         Log.d(TAG, "onCreate: ComicsId: " + comicsId);
 
@@ -100,6 +110,8 @@ public class ComicsPdfViewUserFragment extends Fragment {
                         int currentPage = (page + 1);
                         binding.toolbarSubtitleTv.setText(currentPage + "/" + pageCount);
                         Log.d(TAG, "onPageChanged: " + currentPage + "/" + pageCount);
+
+                        updateFirebaseWithPageCount(comicsId, pageCount);
                     }
                 }).onError(new OnErrorListener() {
                     @Override
@@ -123,6 +135,10 @@ public class ComicsPdfViewUserFragment extends Fragment {
                 binding.progressBar.setVisibility(View.GONE);
             }
         });
+    }
+    private void updateFirebaseWithPageCount(String comicId, int pages) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics").child(comicId);
+        ref.child("pages").setValue(pages);
     }
 
     private void openFragment(Fragment fragment, String comicsId) {

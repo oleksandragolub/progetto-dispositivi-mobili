@@ -19,6 +19,7 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -191,11 +192,17 @@ public class ComicsUserFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (binding == null) return;
-                            pdfArrayList.clear();
-                            for (DataSnapshot ds : snapshot.getChildren()) {
+                        pdfArrayList.clear();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            try {
                                 ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                                pdfArrayList.add(model);
+                                if (model != null) {
+                                    pdfArrayList.add(model);
+                                }
+                            } catch (DatabaseException e) {
+                                Log.e(TAG, "Failed to convert value", e);
                             }
+                        }
                             adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                             binding.comicsRv.setAdapter(adapterPdfUser);
                             adapterPdfUser.setOnItemClickListener(model -> {
@@ -222,8 +229,14 @@ public class ComicsUserFragment extends Fragment {
                         if (binding == null) return;
                         pdfArrayList.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                            pdfArrayList.add(model);
+                            try {
+                                ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                                if (model != null) {
+                                    pdfArrayList.add(model);
+                                }
+                            } catch (DatabaseException e) {
+                                Log.e(TAG, "Failed to convert value", e);
+                            }
                         }
                         adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                         binding.comicsRv.setAdapter(adapterPdfUser);
@@ -251,8 +264,36 @@ public class ComicsUserFragment extends Fragment {
                 if (binding == null) return;
                 pdfArrayList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                    pdfArrayList.add(model);
+                    try {
+                        ModelPdfComics model = new ModelPdfComics();
+                        model.setId(ds.child("id").getValue(String.class));
+                        model.setTitolo(ds.child("titolo").getValue(String.class));
+                        model.setDescrizione(ds.child("descrizione").getValue(String.class));
+                        model.setCategoryId(ds.child("categoryId").getValue(String.class));
+                        model.setUrl(ds.child("url").getValue(String.class));
+                        model.setYear(ds.child("year").getValue(String.class));
+                        model.setLanguage(ds.child("language").getValue(String.class));
+                        model.setTimestamp(ds.child("timestamp").getValue(Long.class));
+                        model.setViewsCount(parseLong(ds.child("viewsCount").getValue()));
+                        model.setDownloadsCount(parseLong(ds.child("downloadsCount").getValue()));
+                        model.setPages(parseLong(ds.child("pages").getValue()));
+
+                        List<String> collections = new ArrayList<>();
+                        for (DataSnapshot collectionSnapshot : ds.child("collections").getChildren()) {
+                            collections.add(collectionSnapshot.getValue(String.class));
+                        }
+                        model.setCollections(collections);
+
+                        List<String> genres = new ArrayList<>();
+                        for (DataSnapshot genreSnapshot : ds.child("genres").getChildren()) {
+                            genres.add(genreSnapshot.getValue(String.class));
+                        }
+                        model.setGenres(genres);
+
+                        pdfArrayList.add(model);
+                    } catch (DatabaseException e) {
+                        Log.e(TAG, "Failed to convert value", e);
+                    }
                 }
                 adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
                 binding.comicsRv.setAdapter(adapterPdfUser);
@@ -269,6 +310,19 @@ public class ComicsUserFragment extends Fragment {
                 Log.e(TAG, "loadAllComics: Database error: " + error.getMessage());
             }
         });
+    }
+
+    private long parseLong(Object value) {
+        if (value instanceof Long) {
+            return (Long) value;
+        } else if (value instanceof String) {
+            try {
+                return Long.parseLong((String) value);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Failed to parse long value: " + value, e);
+            }
+        }
+        return 0; // Default value in case of error
     }
 
     private void openComicsPdfDetailUserFragment(String comicsId) {

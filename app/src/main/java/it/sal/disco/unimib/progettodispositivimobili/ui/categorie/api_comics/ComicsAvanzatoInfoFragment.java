@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -48,7 +48,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ComicsAvanzatoInfoFragment extends Fragment {
-    private AppCompatSpinner spinnerCollection, spinnerLanguage, spinnerYear, spinnerGenre;
+    private MultiSelectSpinner multiSelectCollection, multiSelectGenre;
+    private AppCompatSpinner spinnerLanguage, spinnerYear;
     private ProgressBar progress;
     private RecyclerView recyclerViewComics;
     private AdapterComics comicsAdapter;
@@ -69,7 +70,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         setupTimeoutHandler();
 
         buttonBack.setOnClickListener(v -> {
-            if(getActivity() != null) {
+            if (getActivity() != null) {
                 openFragment(new ComicsInfoFragment());
             }
         });
@@ -77,10 +78,10 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
     }
 
     private void initViews(View root) {
-        spinnerCollection = root.findViewById(R.id.spinnerCollection);
+        multiSelectCollection = root.findViewById(R.id.multiSelectCollection);
+        multiSelectGenre = root.findViewById(R.id.multiSelectGenre);
         spinnerLanguage = root.findViewById(R.id.spinnerLanguage);
         spinnerYear = root.findViewById(R.id.spinnerYear);
-        spinnerGenre = root.findViewById(R.id.spinnerGenre);
         progress = root.findViewById(R.id.progress);
         recyclerViewComics = root.findViewById(R.id.recyclerViewComics);
         Button searchButton = root.findViewById(R.id.searchButton);
@@ -122,261 +123,19 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
     }
 
     private void loadSpinnerData() {
-        loadCollections(false);
-        loadLanguages(false);
-        loadYears(false);
-        loadGenres(false);
-    }
-
-    private void loadCollections(boolean showRetryDialog) {
-        Log.d(TAG, "Inizio caricamento collezioni");
-        loadSpinnerData("collections", showRetryDialog, () -> {
-            ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-            apiService.getComicsByCollection(0, 20).enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    try {
-                        if (response.isSuccessful() && response.body() != null) {
-                            JsonObject json = response.body();
-                            List<String> collections = new ArrayList<>();
-                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                                collections.add(entry.getKey());
-                                Log.d(TAG, "Collection loaded: " + entry.getKey());
-                            }
-                            loadManualCollections(collections);
-                        } else {
-                            Log.e(TAG, "Failed to load collections: response unsuccessful");
-                            if (showRetryDialog) showRetryDialogForSpinner("collections");
-                        }
-                    } finally {
-                        if (response.body() == null && response.errorBody() != null) {
-                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e(TAG, "Failed to load collections: " + t.getMessage());
-                    if (t instanceof IOException) {
-                        if (showRetryDialog) {
-                            showRetryDialogForSpinner("collections");
-                        } else {
-                            retryLoadCollections();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Failed to load collections", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        });
-    }
-
-    private void loadManualCollections(List<String> collections) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String categoryName = ds.child("category").getValue(String.class);
-                        if (categoryName != null && !collections.contains(categoryName)) {
-                            collections.add(categoryName);
-                        }
-                    }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, collections);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerCollection.setAdapter(adapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Failed to load manual collections: " + error.getMessage());
-            }
-        });
-    }
-
-    private void retryLoadCollections() {
-        loadCollections(false);
-    }
-
-    private void loadLanguages(boolean showRetryDialog) {
-        Log.d(TAG, "Inizio caricamento lingue");
-        loadSpinnerData("languages", showRetryDialog, () -> {
-            ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-            apiService.getComicsByLanguage().enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    try {
-                        if (response.isSuccessful() && response.body() != null) {
-                            JsonObject json = response.body();
-                            List<String> languages = new ArrayList<>();
-                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                                languages.add(entry.getKey());
-                                Log.d(TAG, "Language loaded: " + entry.getKey());
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, languages);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinnerLanguage.setAdapter(adapter);
-                        } else {
-                            Log.e(TAG, "Failed to load languages: response unsuccessful");
-                            if (showRetryDialog) showRetryDialogForSpinner("languages");
-                        }
-                    } finally {
-                        if (response.body() == null && response.errorBody() != null) {
-                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e(TAG, "Failed to load languages: " + t.getMessage());
-                    if (t instanceof IOException) {
-                        if (showRetryDialog) {
-                            showRetryDialogForSpinner("languages");
-                        } else {
-                            retryLoadLanguages();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Failed to load languages", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        });
-    }
-
-    private void retryLoadLanguages() {
-        loadLanguages(false);
-    }
-
-    private void loadYears(boolean showRetryDialog) {
-        Log.d(TAG, "Inizio caricamento anni");
-        loadSpinnerData("years", showRetryDialog, () -> {
-            ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-            List<String> yearsAndDates = new ArrayList<>();
-
-            apiService.getComicsByYear().enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    try {
-                        if (response.isSuccessful() && response.body() != null) {
-                            JsonObject json = response.body();
-                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                                yearsAndDates.add(entry.getKey());
-                                Log.d(TAG, "Year loaded: " + entry.getKey());
-                            }
-                            updateSpinnerYear(yearsAndDates);
-                        } else {
-                            Log.e(TAG, "Failed to load years: response unsuccessful");
-                            if (showRetryDialog) showRetryDialogForSpinner("years");
-                        }
-                    } finally {
-                        if (response.body() == null && response.errorBody() != null) {
-                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e(TAG, "Failed to load years: " + t.getMessage());
-                    if (t instanceof IOException) {
-                        if (showRetryDialog) {
-                            showRetryDialogForSpinner("years");
-                        } else {
-                            retryLoadYears();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Failed to load years", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        });
-    }
-
-    private void retryLoadYears() {
-        loadYears(false);
-    }
-
-    private void updateSpinnerYear(List<String> yearsAndDates) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, yearsAndDates);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerYear.setAdapter(adapter);
-    }
-
-    private void loadGenres(boolean showRetryDialog) {
-        Log.d(TAG, "Inizio caricamento generi");
-        loadSpinnerData("genres", showRetryDialog, () -> {
-            ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
-            apiService.getComicsBySubject().enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    try {
-                        if (response.isSuccessful() && response.body() != null) {
-                            JsonObject json = response.body();
-                            List<String> genres = new ArrayList<>();
-                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                                genres.add(entry.getKey());
-                                Log.d(TAG, "Genre loaded: " + entry.getKey());
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, genres);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinnerGenre.setAdapter(adapter);
-                        } else {
-                            Log.e(TAG, "Failed to load genres: response unsuccessful");
-                            if (showRetryDialog) showRetryDialogForSpinner("genres");
-                        }
-                    } finally {
-                        if (response.body() == null && response.errorBody() != null) {
-                            response.errorBody().close(); // Chiudi il corpo dell'errore se presente
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e(TAG, "Failed to load genres: " + t.getMessage());
-                    if (t instanceof IOException) {
-                        if (showRetryDialog) {
-                            showRetryDialogForSpinner("genres");
-                        } else {
-                            retryLoadGenres();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Failed to load genres", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        });
-    }
-
-    private void retryLoadGenres() {
-        loadGenres(false);
-    }
-
-    private void loadSpinnerData(String field, boolean showRetryDialog, Runnable loadFunction) {
-        if (showRetryDialog) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Timeout occurred while loading " + field + ". Would you like to wait a bit longer for the data to load?")
-                    .setPositiveButton("Yes", (dialog, id) -> loadFunction.run())
-                    .setNegativeButton("No", (dialog, id) -> Toast.makeText(getContext(), "Loading " + field + " cancelled", Toast.LENGTH_SHORT).show());
-            AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            loadFunction.run();
-        }
+        SpinnerUtils.loadYears(getContext(), spinnerYear);
+        SpinnerUtils.loadLanguages(getContext(), spinnerLanguage);
+        SpinnerUtils.loadCollections(getContext(), multiSelectCollection);
+        SpinnerUtils.loadSubjects(getContext(), multiSelectGenre);
     }
 
     private void performAdvancedSearch() {
-        String collection = spinnerCollection.getSelectedItem() != null ? spinnerCollection.getSelectedItem().toString() : "";
+        List<String> collections = multiSelectCollection.getSelectedStrings();
+        List<String> genres = multiSelectGenre.getSelectedStrings();
         String language = spinnerLanguage.getSelectedItem() != null ? spinnerLanguage.getSelectedItem().toString() : "";
         String year = spinnerYear.getSelectedItem() != null ? spinnerYear.getSelectedItem().toString() : "";
-        String genre = spinnerGenre.getSelectedItem() != null ? spinnerGenre.getSelectedItem().toString() : "";
 
-        if (collection.isEmpty() && language.isEmpty() && year.isEmpty() && genre.isEmpty()) {
+        if (collections.isEmpty() && language.isEmpty() && year.isEmpty() && genres.isEmpty()) {
             Toast.makeText(getContext(), "Seleziona almeno un parametro di ricerca", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -392,23 +151,22 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         timeoutRunnable = () -> timeoutHandler.sendEmptyMessage(SEARCH_TIMEOUT);
         timeoutHandler.postDelayed(timeoutRunnable, SEARCH_TIMEOUT);
 
-        Log.d(TAG, "Inizio ricerca avanzata: collection=" + collection + ", language=" + language + ", year=" + year + ", genre=" + genre);
-        searchApiComics(collection, language, year, genre, false);
-        searchManualComics(collection, language, year, genre);
+        Log.d(TAG, "Inizio ricerca avanzata: collections=" + collections + ", language=" + language + ", year=" + year + ", genres=" + genres);
+        searchManualComics(collections, language, year, genres);
     }
 
-    private void retrySearchApiComics(String collection, String language, String year, String genre) {
-        searchApiComics(collection, language, year, genre, false);
+    private void retrySearchApiComics(List<String> collections, String language, String year, List<String> genres) {
+        searchApiComics(collections, language, year, genres, false);
     }
 
-    private void searchApiComics(String collection, String language, String year, String genre, boolean showRetryDialog) {
-        Log.d(TAG, "Invio richiesta API: collection=" + collection + ", language=" + language + ", year=" + year + ", genre=" + genre);
+    private void searchApiComics(List<String> collections, String language, String year, List<String> genres, boolean showRetryDialog) {
+        Log.d(TAG, "Invio richiesta API: collections=" + collections + ", language=" + language + ", year=" + year + ", genres=" + genres);
         ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
         Call<List<Comic>> call = apiService.getComicsByAdvancedSearch(
-                collection.isEmpty() ? null : collection,
+                collections.isEmpty() ? null : String.join(",", collections),
                 language.isEmpty() ? null : language,
                 year.isEmpty() ? null : year,
-                genre.isEmpty() ? null : genre,
+                genres.isEmpty() ? null : String.join(",", genres),
                 20
         );
 
@@ -450,9 +208,9 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                 timeoutHandler.removeCallbacks(timeoutRunnable);
                 if (t instanceof IOException) {
                     if (showRetryDialog) {
-                        showRetryDialogForSearch(collection, language, year, genre);
+                        showRetryDialogForSearch(collections, language, year, genres);
                     } else {
-                        retrySearchApiComics(collection, language, year, genre);
+                        retrySearchApiComics(collections, language, year, genres);
                     }
                 } else {
                     Toast.makeText(getContext(), "Errore durante la ricerca", Toast.LENGTH_SHORT).show();
@@ -463,15 +221,16 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         });
     }
 
-    private void searchManualComics(String collection, String language, String year, String genre) {
+    private void searchManualComics(List<String> collections, String language, String year, List<String> genres) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.orderByChild("collection").equalTo(collection).addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = ref.orderByChild("timestamp");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                        if (model != null && matchesFilters(model, language, year, genre)) {
+                        if (model != null && matchesFilters(model, collections, language, year, genres)) {
                             model.setFromApi(false);
                             comicsList.add(model);
                         }
@@ -481,7 +240,8 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                 } else {
                     Log.d(TAG, "Nessun fumetto trovato nei manuali con i parametri selezionati");
                 }
-                progress.setVisibility(View.INVISIBLE);
+                // After manual comics are loaded, proceed to load API comics
+                searchApiComics(collections, language, year, genres, false);
             }
 
             @Override
@@ -492,7 +252,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         });
     }
 
-    private boolean matchesFilters(ModelPdfComics model, String language, String year, String genre) {
+    private boolean matchesFilters(ModelPdfComics model, List<String> collections, String language, String year, List<String> genres) {
         boolean matches = true;
         if (!language.isEmpty() && !language.equals(model.getLanguage())) {
             matches = false;
@@ -500,8 +260,29 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         if (!year.isEmpty() && !year.equals(model.getYear())) {
             matches = false;
         }
-        if (!genre.isEmpty() && !genre.equals(model.getSubject())) {
-            matches = false;
+        if (!collections.isEmpty()) {
+            boolean collectionMatch = false;
+            for (String collection : collections) {
+                if (model.getCollections().contains(collection)) {
+                    collectionMatch = true;
+                    break;
+                }
+            }
+            if (!collectionMatch) {
+                matches = false;
+            }
+        }
+        if (!genres.isEmpty()) {
+            boolean genreMatch = false;
+            for (String genre : genres) {
+                if (model.getGenres().contains(genre)) {
+                    genreMatch = true;
+                    break;
+                }
+            }
+            if (!genreMatch) {
+                matches = false;
+            }
         }
         return matches;
     }
@@ -516,35 +297,10 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         alert.show();
     }
 
-    private void showRetryDialogForSpinner(String field) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Timeout occurred while loading " + field + ". Would you like to wait a bit longer for the data to load?")
-                .setPositiveButton("Yes", (dialog, id) -> {
-                    switch (field) {
-                        case "collections":
-                            loadCollections(true);
-                            break;
-                        case "languages":
-                            loadLanguages(true);
-                            break;
-                        case "years":
-                            //case "dates":
-                            loadYears(true);
-                            break;
-                        case "genres":
-                            loadGenres(true);
-                            break;
-                    }
-                })
-                .setNegativeButton("No", (dialog, id) -> Toast.makeText(getContext(), "Loading " + field + " cancelled", Toast.LENGTH_SHORT).show());
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void showRetryDialogForSearch(String collection, String language, String year, String genre) {
+    private void showRetryDialogForSearch(List<String> collections, String language, String year, List<String> genres) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Timeout occurred. Would you like to wait a bit longer for the data to load?")
-                .setPositiveButton("Yes", (dialog, id) -> searchApiComics(collection, language, year, genre, true))
+                .setPositiveButton("Yes", (dialog, id) -> searchApiComics(collections, language, year, genres, true))
                 .setNegativeButton("No", (dialog, id) -> {
                     Toast.makeText(getContext(), "Search cancelled", Toast.LENGTH_SHORT).show();
                     progress.setVisibility(View.INVISIBLE);
@@ -556,7 +312,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
     private void openComicsMarvelDetailFragment(ModelPdfComics comic) {
         ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putSerializable("comic", comic); // Usa "comic" invece di "modelPdfComics"
+        args.putSerializable("comic", comic);
         comicsMarvelDetailFragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -577,7 +333,7 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         transaction.commit();
     }
 
-    private void openFragment(Fragment fragment){
+    private void openFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment);
@@ -585,4 +341,3 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         transaction.commit();
     }
 }
-

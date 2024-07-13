@@ -19,6 +19,7 @@ import java.util.List;
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.filters.FilterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPdfComics;
 
 public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.ComicViewHolder> implements Filterable {
     private List<Comic> comics;
