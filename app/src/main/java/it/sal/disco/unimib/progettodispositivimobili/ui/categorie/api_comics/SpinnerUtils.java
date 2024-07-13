@@ -7,9 +7,15 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +138,7 @@ public class SpinnerUtils {
         });
     }
 
-    public static void loadCollections(Context context, MultiSelectSpinner spinner) {
+   /* public static void loadCollections(Context context, MultiSelectSpinner spinner) {
         ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
         apiService.getComicsByCollection(0, 20).enqueue(new Callback<JsonObject>() {
             @Override
@@ -153,6 +159,66 @@ public class SpinnerUtils {
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 Log.e(TAG, "Failed to load collections: " + t.getMessage());
+            }
+        });
+    }*/
+
+    public static void loadCollections(Context context, MultiSelectSpinner multiSelectSpinner) {
+        List<String> collections = new ArrayList<>();
+
+        // Load collections from API
+        ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
+        apiService.getComicsByCollection(0, 20).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        JsonObject json = response.body();
+                        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                            collections.add(entry.getKey());
+                        }
+                    }
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Close error body if present
+                    }
+
+                    // Load manual collections from Firebase after loading from API
+                    loadManualCollections(context, collections, multiSelectSpinner);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e(TAG, "Failed to load collections from API: " + t.getMessage());
+
+                if (t instanceof IOException) {
+                    // Load manual collections from Firebase even if API fails
+                    loadManualCollections(context, collections, multiSelectSpinner);
+                }
+            }
+        });
+    }
+
+    private static void loadManualCollections(Context context, List<String> collections, MultiSelectSpinner multiSelectSpinner) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String categoryName = ds.child("category").getValue(String.class);
+                        if (categoryName != null && !collections.contains(categoryName)) {
+                            collections.add(categoryName);
+                        }
+                    }
+                    multiSelectSpinner.setItems(collections);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Failed to load manual collections: " + error.getMessage());
             }
         });
     }

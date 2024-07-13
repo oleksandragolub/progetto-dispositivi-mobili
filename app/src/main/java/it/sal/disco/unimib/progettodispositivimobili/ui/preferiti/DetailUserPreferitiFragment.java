@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentDetailUserPreferitiBinding;
@@ -54,6 +55,10 @@ public class DetailUserPreferitiFragment extends Fragment {
             userId = getArguments().getString("userId");
         }
 
+        pdfArrayList = new ArrayList<>();
+        adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
+        binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
+
         loadUserFavorites(userId);
 
         binding.searchFavoriteEt.addTextChangedListener(new TextWatcher() {
@@ -83,15 +88,23 @@ public class DetailUserPreferitiFragment extends Fragment {
             }
         });
 
+        adapterPdfFavorite.setOnItemClickListener(model -> {
+            if (model.isFromApi()) {
+                openComicsMarvelDetailFragment(model);
+            } else {
+                openComicsPdfDetailUserFragment(model);
+            }
+        });
+
         return root;
     }
 
     private void loadUserFavorites(String userId) {
-        pdfArrayList = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId).child("Favorites");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (binding == null) return;
                 pdfArrayList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()){
                     String comicsId = ""+ds.child("comicsId").getValue();
@@ -104,23 +117,16 @@ public class DetailUserPreferitiFragment extends Fragment {
                             modelPdf.setTitolo(ds.child("titolo").getValue(String.class));
                             modelPdf.setDescrizione(ds.child("descrizione").getValue(String.class));
                             modelPdf.setUrl(ds.child("url").getValue(String.class));
+                        } else {
+                            loadComicDetailsFromDatabase(comicsId, modelPdf);
                         }
                         pdfArrayList.add(modelPdf);
                     }
                 }
-
-                binding.subTitleTv.setText(""+pdfArrayList.size());
-
-                adapterPdfFavorite = new AdapterPdfComicsFavorite(getActivity(), pdfArrayList);
-                binding.comicsFavoriteRv.setAdapter(adapterPdfFavorite);
-
-                adapterPdfFavorite.setOnItemClickListener(model -> {
-                    if (model.isFromApi()) {
-                        openComicsMarvelDetailFragment(model);
-                    } else {
-                        openComicsPdfDetailUserFragment(model);
-                    }
-                });
+                if (binding != null) {
+                    adapterPdfFavorite.notifyDataSetChanged();
+                    binding.subTitleTv.setText("" + pdfArrayList.size());
+                }
             }
 
             @Override
@@ -128,6 +134,58 @@ public class DetailUserPreferitiFragment extends Fragment {
                 // Gestione degli errori
             }
         });
+    }
+
+    private void loadComicDetailsFromDatabase(String comicsId, ModelPdfComics modelPdf) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                modelPdf.setTitolo(snapshot.child("titolo").getValue(String.class));
+                modelPdf.setDescrizione(snapshot.child("descrizione").getValue(String.class));
+                modelPdf.setUrl(snapshot.child("url").getValue(String.class));
+                modelPdf.setViewsCount(parseLong(snapshot.child("viewsCount").getValue()));
+                modelPdf.setDownloadsCount(parseLong(snapshot.child("downloadsCount").getValue()));
+                modelPdf.setYear(snapshot.child("year").getValue(String.class));
+                modelPdf.setLanguage(snapshot.child("language").getValue(String.class));
+                modelPdf.setPages(parseLong(snapshot.child("pages").getValue()));
+                modelPdf.setTimestamp(snapshot.child("timestamp").getValue(Long.class));
+
+                List<String> collections = new ArrayList<>();
+                for (DataSnapshot collectionSnapshot : snapshot.child("collections").getChildren()) {
+                    collections.add(collectionSnapshot.getValue(String.class));
+                }
+                modelPdf.setCollections(collections);
+
+                List<String> genres = new ArrayList<>();
+                for (DataSnapshot genreSnapshot : snapshot.child("genres").getChildren()) {
+                    genres.add(genreSnapshot.getValue(String.class));
+                }
+                modelPdf.setGenres(genres);
+
+                if (binding != null) {
+                    adapterPdfFavorite.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+
+    private long parseLong(Object value) {
+        if (value instanceof Long) {
+            return (Long) value;
+        } else if (value instanceof String) {
+            try {
+                return Long.parseLong((String) value);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Failed to parse long value: " + value, e);
+            }
+        }
+        return 0; // Default value in case of error
     }
 
     private void openFragment(Fragment fragment){
