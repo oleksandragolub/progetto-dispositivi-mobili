@@ -184,39 +184,49 @@ public class ComicsUserFragment extends Fragment {
         });
     }
 
-    private void loadCategorizedComics() {
-        pdfArrayList = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.orderByChild("categoryId").equalTo(categoryId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (binding == null) return;
-                        pdfArrayList.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            try {
-                                ModelPdfComics model = ds.getValue(ModelPdfComics.class);
-                                if (model != null) {
-                                    pdfArrayList.add(model);
-                                }
-                            } catch (DatabaseException e) {
-                                Log.e(TAG, "Failed to convert value", e);
-                            }
-                        }
-                            adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
-                            binding.comicsRv.setAdapter(adapterPdfUser);
-                            adapterPdfUser.setOnItemClickListener(model -> {
-                                if (onItemClickListener != null) {
-                                    onItemClickListener.onItemClick(model);
-                                }
-                            });
+    private List<ModelPdfComics> filterComicsByCategory(List<ModelPdfComics> comics, String category) {
+        List<ModelPdfComics> filteredComics = new ArrayList<>();
+        for (ModelPdfComics model : comics) {
+            if (model.getCollections() != null) {
+                for (String collection : model.getCollections()) {
+                    if (collection.equals(category)) {
+                        filteredComics.add(model);
+                        break;
                     }
+                }
+            }
+        }
+        return filteredComics;
+    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e(TAG, "loadCategorizedComics: Database error: " + error.getMessage());
+    private void loadCategorizedComics() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (binding == null) return;
+                pdfArrayList.clear();
+                List<ModelPdfComics> allComics = new ArrayList<>();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    try {
+                        ModelPdfComics model = ds.getValue(ModelPdfComics.class);
+                        if (model != null) {
+                            allComics.add(model);
+                        }
+                    } catch (DatabaseException e) {
+                        Log.e(TAG, "Failed to convert value", e);
                     }
-                });
+                }
+                pdfArrayList.addAll(filterComicsByCategory(allComics, category));
+                adapterPdfUser.notifyDataSetChanged();
+                binding.comicsRv.setAdapter(adapterPdfUser);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "loadCategorizedComics: Database error: " + error.getMessage());
+            }
+        });
     }
 
     private void loadMostViewedDownloadedComics(String orderBy) {
