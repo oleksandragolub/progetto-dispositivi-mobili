@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
+import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,7 +95,12 @@ public class ComicsPdfViewFragment extends Fragment {
             @Override
             public void onSuccess(byte[] bytes) {
                 binding.progressBar.setVisibility(View.GONE);
-                binding.pdfView.fromBytes(bytes).swipeHorizontal(false).onPageChange(new OnPageChangeListener() {
+                binding.pdfView.fromBytes(bytes).enableSwipe(true)
+                        .swipeHorizontal(true)
+                        .pageSnap(true)
+                        .pageFling(true)
+                        .autoSpacing(true)  // Optional: turn off auto spacing
+                        .pageFitPolicy(FitPolicy.HEIGHT).onPageChange(new OnPageChangeListener() {
                     @Override
                     public void onPageChanged(int page, int pageCount) {
                         int currentPage = (page + 1);

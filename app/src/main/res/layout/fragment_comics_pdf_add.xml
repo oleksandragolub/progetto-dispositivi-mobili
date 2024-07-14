@@ -171,7 +171,7 @@
                 android:textStyle="bold" />
 
             <it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.MultiSelectSpinner
-                android:id="@+id/multiSelectCollection"
+                android:id="@+id/multiSelectGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -190,7 +190,7 @@
                 android:textStyle="bold" />
 
             <it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.MultiSelectSpinner
-                android:id="@+id/multiSelectGenre"
+                android:id="@+id/multiSelectCollection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

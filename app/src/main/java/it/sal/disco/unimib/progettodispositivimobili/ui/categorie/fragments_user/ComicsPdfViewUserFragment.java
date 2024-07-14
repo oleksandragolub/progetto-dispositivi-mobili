@@ -104,7 +104,12 @@ public class ComicsPdfViewUserFragment extends Fragment {
             @Override
             public void onSuccess(byte[] bytes) {
                 binding.progressBar.setVisibility(View.GONE);
-                binding.pdfView.fromBytes(bytes).swipeHorizontal(false).onPageChange(new OnPageChangeListener() {
+                binding.pdfView.fromBytes(bytes).enableSwipe(true)
+                        .swipeHorizontal(true)
+                        .pageSnap(true)
+                        .pageFling(true)
+                        .autoSpacing(true)  // Optional: turn off auto spacing
+                        .pageFitPolicy(FitPolicy.HEIGHT).onPageChange(new OnPageChangeListener() {
                     @Override
                     public void onPageChanged(int page, int pageCount) {
                         int currentPage = (page + 1);

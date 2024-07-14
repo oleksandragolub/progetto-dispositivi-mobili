@@ -30,11 +30,10 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.ModelPd
 public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComicsAdmin.HolderPdfAdmin> implements Filterable {
 
     private Context context;
-    public ArrayList<ModelPdfComics> pdfArrayList, filterList;
+    private ArrayList<ModelPdfComics> pdfArrayList, filterList;
     private FilterPdfComicsAdmin filter;
-    private RowPdfAdminBinding binding;
-    private ProgressDialog progressDialog;
     private OnItemClickListener onItemClickListener;
+    private ProgressDialog progressDialog;
 
     public interface OnItemClickListener {
         void onItemClick(ModelPdfComics model);
@@ -47,7 +46,7 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     public AdapterPdfComicsAdmin(Context context, ArrayList<ModelPdfComics> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
-        this.filterList = pdfArrayList;
+        this.filterList = new ArrayList<>(pdfArrayList);
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Per favore, aspetta");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -56,8 +55,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
     @NonNull
     @Override
     public HolderPdfAdmin onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding = RowPdfAdminBinding.inflate(LayoutInflater.from(context), parent, false);
-        return new HolderPdfAdmin(binding.getRoot());
+        LayoutInflater inflater = LayoutInflater.from(context);
+        RowPdfAdminBinding binding = RowPdfAdminBinding.inflate(inflater, parent, false);
+        return new HolderPdfAdmin(binding);
     }
 
     @Override
@@ -91,12 +91,9 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
         builder.setTitle("Scegli l'opzione").setItems(options, (dialog, which) -> {
             if (which == 0) {
-                openComicsPdfEditFragment(model.getId());
+                openComicsPdfEditFragment(comicsId);
             } else if (which == 1) {
-                MyApplication.deleteComics(context,
-                        "" + comicsId,
-                        "" + comicsUrl,
-                        "" + comicsTitolo);
+                MyApplication.deleteComics(context, comicsId, comicsUrl, comicsTitolo);
             }
         }).show();
     }
@@ -127,14 +124,19 @@ public class AdapterPdfComicsAdmin extends RecyclerView.Adapter<AdapterPdfComics
         return filter;
     }
 
-    class HolderPdfAdmin extends RecyclerView.ViewHolder {
+    public void updateFilteredList(ArrayList<ModelPdfComics> filteredList) {
+        this.pdfArrayList = filteredList;
+        notifyDataSetChanged();
+    }
+
+    static class HolderPdfAdmin extends RecyclerView.ViewHolder {
         TextView titleTV, descriptionTV;
         PDFView pdfView;
         ProgressBar progressBar;
         ImageButton moreBTN;
 
-        public HolderPdfAdmin(@NonNull View itemView) {
-            super(itemView);
+        public HolderPdfAdmin(@NonNull RowPdfAdminBinding binding) {
+            super(binding.getRoot());
             titleTV = binding.titleComics;
             descriptionTV = binding.descriptionComics;
             pdfView = binding.pdfView;

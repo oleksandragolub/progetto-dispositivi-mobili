@@ -88,15 +88,15 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 categoryArrayList.clear();
 
-                ModelCategory modelAll = new ModelCategory("01", "All", "", 1);
+                //ModelCategory modelAll = new ModelCategory("01", "All", "", 1);
                 ModelCategory modelMostViewed = new ModelCategory("02", "Most Viewed", "", 1);
                 ModelCategory modelMostDownloaded = new ModelCategory("03", "Most Downloaded", "", 1);
 
-                categoryArrayList.add(modelAll);
+                //categoryArrayList.add(modelAll);
                 categoryArrayList.add(modelMostViewed);
                 categoryArrayList.add(modelMostDownloaded);
 
-                viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelAll.getCategory());
+                //viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelAll.getId(), modelAll.getCategory(), modelAll.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelAll.getCategory());
                 viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostViewed.getId(), modelMostViewed.getCategory(), modelMostViewed.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelMostViewed.getCategory());
                 viewPagerAdapter.addFragment(ComicsUserFragment.newInstance(modelMostDownloaded.getId(), modelMostDownloaded.getCategory(), modelMostDownloaded.getUid(), HomeFragment.this::openComicsPdfDetailUserFragment), modelMostDownloaded.getCategory());
 
