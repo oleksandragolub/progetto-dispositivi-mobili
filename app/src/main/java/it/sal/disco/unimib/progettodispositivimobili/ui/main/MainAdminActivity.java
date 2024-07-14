@@ -200,7 +200,7 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
         if (item.getItemId() == R.id.action_custom_icon) {
             View menuItemView = findViewById(R.id.action_custom_icon);
             PopupMenu popupMenu = new PopupMenu(this, menuItemView);
-            popupMenu.inflate(R.menu.popup_menu);
+            popupMenu.inflate(R.menu.popup_menu_admin);
             popupMenu.setOnMenuItemClickListener(this::handleMenuSelection);
             popupMenu.show();
             return true;

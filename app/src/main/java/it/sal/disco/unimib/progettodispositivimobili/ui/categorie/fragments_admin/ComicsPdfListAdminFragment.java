@@ -29,6 +29,7 @@ import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsP
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterApiComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterComics;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsAdmin;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.adapters.AdapterPdfComicsUser;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsMarvelDetailFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ApiClient;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.archieve.ComicsApi;
@@ -112,7 +113,7 @@ public class ComicsPdfListAdminFragment extends Fragment {
                         Log.d(TAG, "Loaded comic from Firebase: " + model.getTitolo());
                     }
                 }
-                setupComicsAdapter();
+                setupManualComicsAdapter();
                 loadApiComics();
             }
 
@@ -123,29 +124,53 @@ public class ComicsPdfListAdminFragment extends Fragment {
         });
     }
 
-    private void setupComicsAdapter() {
-        adapterPdfComicsAdmin = new AdapterPdfComicsAdmin(getActivity(), pdfArrayList);
+    private List<ModelPdfComics> filterComicsByCategory(List<ModelPdfComics> comics, String category) {
+        List<ModelPdfComics> filteredComics = new ArrayList<>();
+        for (ModelPdfComics model : comics) {
+            if (model.getCollections() != null) {
+                for (String collection : model.getCollections()) {
+                    if (collection.equals(category)) {
+                        filteredComics.add(model);
+                        break;
+                    }
+                }
+            }
+        }
+        Log.d(TAG, "Filtered comics count: " + filteredComics.size());
+        return filteredComics;
+    }
+
+    private void setupManualComicsAdapter() {
+        adapterPdfComicsAdmin= new AdapterPdfComicsAdmin(getActivity(), pdfArrayList);
         binding.comicsRv.setAdapter(adapterPdfComicsAdmin);
 
-        adapterPdfComicsAdmin.setOnItemClickListener(model -> openComicsMarvelDetailFragment(model));
+        adapterPdfComicsAdmin.setOnItemClickListener(model -> openComicsMarvelDetailFragment(convertToComic(model)));
+        Log.d(TAG, "Manual comics adapter setup complete. Total comics: " + pdfArrayList.size());
     }
+
 
     private void loadApiComics() {
         ComicsApi apiService = ApiClient.getClient().create(ComicsApi.class);
         apiService.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, categoryId).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Comic> comics = response.body();
-                    Log.d(TAG, "Loaded " + comics.size() + " comics from API");
-                    setupApiComicsAdapter(comics);
-                    currentComicCount += comics.size(); // Aggiorna il contatore dei fumetti caricati
-                } else {
-                    Log.d(TAG, "onResponse: Response not successful. Code: " + response.code());
-                    try {
-                        Log.d(TAG, "onResponse: Response body: " + response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Comic> comics = response.body();
+                        Log.d(TAG, "Loaded " + comics.size() + " comics from API");
+                        setupApiComicsAdapter(comics);
+                        currentComicCount += comics.size(); // Aggiorna il contatore dei fumetti caricati
+                    } else {
+                        Log.d(TAG, "onResponse: Response not successful. Code: " + response.code());
+                        try {
+                            Log.d(TAG, "onResponse: Response body: " + response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } finally {
+                    if (response.body() == null && response.errorBody() != null) {
+                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
                     }
                 }
             }
@@ -174,31 +199,16 @@ public class ComicsPdfListAdminFragment extends Fragment {
         loadApiComics();
     }
 
-    private void openComicsMarvelDetailFragment(ModelPdfComics model) {
-        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+    private void openComicsMarvelDetailFragment(Comic comic) {
+        ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putSerializable("modelPdfComics", model);
-        comicsMarvelDetailFragment.setArguments(args);
+        args.putSerializable("comic", comic);
+        fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    private void openComicsMarvelDetailFragment(Comic comic) {
-        ModelPdfComics model = new ModelPdfComics();
-        model.setId(comic.getId());
-        model.setTitolo(comic.getTitle());
-        model.setDescrizione(comic.getDescription());
-        model.setUrl(comic.getThumbnail());
-        model.setYear(comic.getYear());
-        model.setLanguage(comic.getLanguage());
-        model.setCollection(comic.getCollection());
-        model.setSubject(comic.getSubject());
-        model.setFromApi(true);
-        openComicsMarvelDetailFragment(model);
     }
 
     private void openFragment(Fragment fragment) {
@@ -207,6 +217,15 @@ public class ComicsPdfListAdminFragment extends Fragment {
         transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private Comic convertToComic(ModelPdfComics modelPdfComics) {
+        Comic comic = new Comic();
+        comic.setId(modelPdfComics.getId());
+        comic.setTitle(modelPdfComics.getTitolo());
+        comic.setDescription(modelPdfComics.getDescrizione());
+        comic.setThumbnail(modelPdfComics.getUrl());
+        return comic;
     }
 
     @Override

@@ -13,7 +13,7 @@
             android:title="@string/title_chats" />
 
         <item
-            android:id="@+id/navigation_category_user"
+            android:id="@+id/navigation_category_admin"
             android:icon="@drawable/baseline_favorite_24"
             android:title="@string/gestione_category3" />
 
