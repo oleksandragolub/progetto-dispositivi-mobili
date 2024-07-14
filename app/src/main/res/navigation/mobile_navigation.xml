@@ -98,7 +98,7 @@
 
     <fragment
         android:id="@+id/navigation_character_info"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment"
+        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.characters_api_marvel_prova.CharacterInfoFragment"
         android:label="Characters info"
         tools:layout="@layout/fragment_character_info"/>
 
@@ -229,14 +229,6 @@
         android:name="it.sal.disco.unimib.progettodispositivimobili.ui.preferiti.PreferitiFragment"
         android:label="Preferiti"
         tools:layout="@layout/fragment_preferiti"/>
-
-    <fragment
-        android:id="@+id/navigation_ricerca"
-        android:name="it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment"
-        android:label="Ricerca"
-        tools:layout="@layout/fragment_ricerca"/>
-
-
 
 
     <fragment

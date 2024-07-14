@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.characters.CharacterInfoFragment">
+    tools:context=".ui.characters_api_marvel_prova.CharacterInfoFragment">
 
     <ScrollView
         android:layout_width="0dp"

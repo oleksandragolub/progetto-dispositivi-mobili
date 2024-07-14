@@ -29,7 +29,7 @@ import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.Com
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsApiUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_user.ComicsUserFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.models.Comic;
-import it.sal.disco.unimib.progettodispositivimobili.ui.characters.CharacterInfoFragment;
+import it.sal.disco.unimib.progettodispositivimobili.ui.characters_api_marvel_prova.CharacterInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.ComicsInfoFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.other.DetailUserProfileFragment;
 import it.sal.disco.unimib.progettodispositivimobili.ui.start_app.LoginActivity;
