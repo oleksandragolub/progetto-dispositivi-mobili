@@ -29,7 +29,8 @@ da notare: categorie/comics si distinguono in base al tipo dell'utente(USER o AD
 
 NOTA:
 è stato lascito il packege characters_api_marvel_prova come una cosa di divertimento + dimostrazione che sappiamo usare anche altri api ufficiali come api di marvel
-questa parte visualizza i dati di un personaggio esistente di marvel
+questa parte visualizza i dati di un personaggio esistente di marvel (https://developer.marvel.com/)
+
 tipico esempio: iron man
 
 ovviamente ci sono cose da migliorare ancora 
