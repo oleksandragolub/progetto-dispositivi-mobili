@@ -1,8 +1,11 @@
 # progetto-dispositivi-mobili
 
 IN SINTESI:
+
 registrazione password/login e via google 
+
 login password/login e via google
+
 password dimenticata
 
 dopo login:
@@ -16,6 +19,7 @@ parte profile ti permette di modificare i tuoi dati dell'account, aggiungere/mod
 parte chat ti permette di scambiare i messaggi tra gli utenti 
 
 parte ricerca comune ti permette di cercare i comics sia prelevati tramite api che inseriti manualmente in base al nome 
+
 parte ricerca avanzata ti permette di cercare i comics in base a lingua (spinner), anno (spinner), categoria/collezione (multispinner), genere (multispinner)
 
 parte home ti permette vedere i 10 comics piu visualizzati, piu scaricati, per ogni catalogo/collezione (con la possibilita' di aggiungere nuovi 10 comics sotto ulteriormente e ancora, acnora, ancora finche' non si esauriscono)
