@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:layout_marginBottom="5dp"
+    app:contentPadding="5dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/pdfRL"
+            android:layout_width="100dp"
+            android:layout_height="140dp"
+            android:layout_marginEnd="5dp">
+
+            <com.github.barteksc.pdfviewer.PDFView
+                android:id="@+id/pdfView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title_comics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_comics"
+            android:layout_toEndOf="@id/pdfRL"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            android:maxLines="1"
+            style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+        <TextView
+            android:id="@+id/description_comics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description_comics"
+            android:layout_toEndOf="@id/pdfRL"
+            android:layout_below="@id/title_comics"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="8dp"
+            android:maxLines="4"
+            android:ellipsize="end"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <!--   <TextView
+               android:id="@+id/category_comics"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/category_comics"
+               android:textSize="15sp"
+               android:maxLines="1"
+               android:layout_alignParentEnd="true"
+               android:layout_alignParentBottom="true"
+               style="@style/TextAppearance.MaterialComnts.Caption"/>
+
+
+           <TextView
+               android:id="@+id/size_comics"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/size_comics"
+               android:layout_toEndOf="@id/pdfRL"
+               android:layout_alignParentBottom="true"
+               android:textSize="15sp"
+               android:layout_marginLeft="5dp"
+               android:maxLines="1"
+               style="@style/TextAppearance.MaterialComponents.Caption"/>
+
+           <TextView
+               android:id="@+id/date_comics"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/date_comics"
+               android:layout_toEndOf="@id/size_comics"
+               android:layout_toStartOf="@id/category_comics"
+               android:layout_alignParentBottom="true"
+               android:textAlignment="center"
+               android:textSize="15sp"
+               android:layout_marginLeft="5dp"
+               android:maxLines="1"
+               style="@style/TextAppearance.MaterialComponents.Caption"/> -->
+
+
+        <!--    <ImageButton
+                android:id="@+id/moreBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="TODO"
+                android:padding="5dp"
+                android:src="@drawable/baseline_more_vert_24"
+                tools:ignore="TouchTargetSizeCheck" />  -->
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

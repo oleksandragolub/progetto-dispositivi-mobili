@@ -97,7 +97,7 @@ public class CategoryAddAdminFragment extends Fragment {
         return root;
     }
 
-    private void loadCategories(int start, int limit) {
+    /*private void loadCategories(int start, int limit) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,6 +119,32 @@ public class CategoryAddAdminFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }*/
+
+    private void loadCategories(int start, int limit) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (binding == null) {
+                    return;
+                }
+                categoryArrayList.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ModelCategory model = ds.getValue(ModelCategory.class);
+                    if (model != null && loadedCollections.add(model.getId())) {
+                        categoryArrayList.add(model);
+                    }
+                }
+                adapterCategory.notifyDataSetChanged();
+                loadApiCollections(start, limit); // Load API collections after manual categories
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Failed to load categories: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
