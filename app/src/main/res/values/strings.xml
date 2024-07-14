@@ -165,6 +165,9 @@
     <string name="comics_category_collezione">Categoria/collezione del comics</string>
     <string name="comics_subject">Genere del comics</string>
     <string name="comics_anno">Anno del comics</string>
+    <string name="gestione_category">Comics_categoria</string>
+    <string name="gestione_category2">Comics per categoria/collezioni</string>
+    <string name="gestione_category3">Categoria/Collezione</string>
 
 
     <string-array name="genres_array">

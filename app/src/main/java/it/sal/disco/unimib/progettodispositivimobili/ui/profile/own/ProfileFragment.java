@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment {
 
         binding.profileImageViewCamera.setOnClickListener(v -> openFragment(new UploadProfilePicFragment()));
         updateProfileButton.setOnClickListener(v -> openFragment(new UpdateProfileFragment()));
-        binding.favoriteBtn.setOnClickListener(v -> openFragment(new PreferitiFragment()));
+        //binding.favoriteBtn.setOnClickListener(v -> openFragment(new PreferitiFragment()));
 
         return root;
     }

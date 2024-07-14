@@ -210,8 +210,8 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
 
     private boolean handleMenuSelection(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.navigation_preferiti) {
-            openFragment(new PreferitiFragment());
+        if (id == R.id.navigation_category_admin) {
+            openFragment(new CategoryAddAdminFragment());
             //return true;
         } else if(id == R.id.searchUserFragment) {
             openFragment(new SearchUserFragment());

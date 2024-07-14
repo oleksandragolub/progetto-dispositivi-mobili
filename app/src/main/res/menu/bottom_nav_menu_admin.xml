@@ -10,9 +10,9 @@
         android:orderInCategory="1" />
 
     <item
-        android:id="@+id/navigation_category_admin"
-        android:icon="@drawable/baseline_star_rate_24_white"
-        android:title="@string/title_category"
+        android:id="@+id/navigation_preferiti"
+        android:icon="@drawable/baseline_favorite_24"
+        android:title="@string/title_preferiti"
         android:orderInCategory="2"/>
 
     <item

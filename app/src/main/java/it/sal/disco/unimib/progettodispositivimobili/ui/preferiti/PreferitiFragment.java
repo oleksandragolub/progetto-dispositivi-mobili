@@ -75,11 +75,11 @@ public class PreferitiFragment extends Fragment {
             }
         });
 
-        binding.buttonBack.setOnClickListener(v -> {
+      /*  binding.buttonBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 openFragment(new ProfileFragment());
             }
-        });
+        });*/
 
         // Setup item click listener
         adapterPdfFavorite.setOnItemClickListener(model -> {

@@ -12,6 +12,14 @@ public class Comic implements Serializable {
     private String language;
     private String url;
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @SerializedName("description")
     private Object description;
 

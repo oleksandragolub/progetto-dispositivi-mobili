@@ -52,4 +52,7 @@ public interface ComicsApi {
 
     @GET("comics/subject")
     Call<List<Comic>> getTopComicsBySubject(@Query("subject") String subject, @Query("limit") int limit);
+
+    @GET("comics")
+    Call<List<Comic>> getComicsById(@Query("id") String id);
 }
