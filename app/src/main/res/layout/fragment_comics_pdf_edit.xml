@@ -114,100 +114,85 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--   <com.google.android.material.textfield.TextInputLayout
-                  android:id="@+id/textView_input_layout_comics_anno"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="16dp"
-                  android:layout_marginLeft="16dp"
-                  android:layout_marginRight="16dp"
-                  app:boxBackgroundColor="?android:attr/panelBackground"
-                  app:layout_constraintStart_toEndOf="@id/guideline_right"
-                  app:layout_constraintStart_toStartOf="@id/guideline_left"
-                  app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_description"
-                  app:startIconDrawable="@drawable/baseline_control_camera_24"
-                  app:endIconMode="clear_text"
-                  style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                  <com.google.android.material.textfield.TextInputEditText
-                      android:id="@+id/textView_comics_anno"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"
-                      android:enabled="true"
-                      android:hint="@string/comics_anno"
-                      android:inputType="text" />
-              </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textView_input_layout_comics_lingua"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    app:boxBackgroundColor="?android:attr/panelBackground"
-                    app:layout_constraintStart_toEndOf="@id/guideline_right"
-                    app:layout_constraintStart_toStartOf="@id/guideline_left"
-                    app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_anno"
-                    app:startIconDrawable="@drawable/baseline_control_camera_24"
-                    app:endIconMode="clear_text"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textView_comics_lingua"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/comics_lingua"
-                        android:enabled="true"
-                        android:inputType="text"
-                        android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
-                </com.google.android.material.textfield.TextInputLayout> -->
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textView_input_layout_comics_category"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="?android:attr/panelBackground"
-                app:startIconDrawable="@drawable/baseline_control_camera_24"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:fontFamily="casual"
+                android:text="@string/select_year"
+                android:textAlignment="viewStart"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="8dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textView_comics_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/comics_category_collezione"
-                    android:enabled="true"
-                    android:inputType="text"
-                    android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
-            </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:padding="8dp"
+                android:fontFamily="casual"
+                android:prompt="@string/select_year" />
 
-            <!--   <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textView_input_layout_comics_subject"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    app:boxBackgroundColor="?android:attr/panelBackground"
-                    app:layout_constraintStart_toEndOf="@id/guideline_right"
-                    app:layout_constraintStart_toStartOf="@id/guideline_left"
-                    app:layout_constraintTop_toBottomOf="@id/textView_input_layout_comics_category"
-                    app:startIconDrawable="@drawable/baseline_control_camera_24"
-                    app:endIconMode="clear_text"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="@string/select_language"
+                android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="1dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textView_comics_subject"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/comics_subject"
-                        android:enabled="true"
-                        android:inputType="text"
-                        android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24_gray"/>
-                </com.google.android.material.textfield.TextInputLayout> -->
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:padding="8dp"
+                android:fontFamily="casual"
+                android:prompt="@string/select_language" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="@string/select_genre"
+                android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="1dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.MultiSelectSpinner
+                android:id="@+id/multiSelectCollection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:spinnerMode="dialog"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="@string/select_collection"
+                android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="1dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.MultiSelectSpinner
+                android:id="@+id/multiSelectGenre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:spinnerMode="dialog"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/update_btn"

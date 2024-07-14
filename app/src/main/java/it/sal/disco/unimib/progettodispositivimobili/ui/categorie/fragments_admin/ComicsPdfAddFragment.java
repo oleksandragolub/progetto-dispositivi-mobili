@@ -48,11 +48,9 @@ public class ComicsPdfAddFragment extends Fragment {
     private static final int PDF_PICK_CODE = 1000;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
-
     private Uri pdfUri;
     private String title, descrizione;
     private int pageCount;
-
     private MultiSelectSpinner multiSelectCollection, multiSelectGenre;
 
     @Override
@@ -135,23 +133,6 @@ public class ComicsPdfAddFragment extends Fragment {
         } else {
             uploadPdfToStorage(selectedCollections, selectedGenres);
         }
-    }
-
-    private void getPdfPageCount(Uri uri, final OnPageCountListener listener) {
-        PDFView pdfView = new PDFView(getContext(), null);
-        pdfView.fromUri(uri).enableSwipe(false)
-                .swipeHorizontal(true)
-                .pageFitPolicy(FitPolicy.WIDTH)
-                .onLoad(new OnLoadCompleteListener() {
-                    @Override
-                    public void loadComplete(int nbPages) {
-                        listener.onPageCount(nbPages);
-                    }
-                }).load();
-    }
-
-    interface OnPageCountListener {
-        void onPageCount(int pageCount);
     }
 
     private void uploadPdfToStorage(List<String> selectedCollections, List<String> selectedGenres) {

@@ -48,16 +48,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ComicsAvanzatoInfoFragment extends Fragment {
+    private static final String TAG = "ComicsAvanzatoInfoFragment";
     private MultiSelectSpinner multiSelectCollection, multiSelectGenre;
     private AppCompatSpinner spinnerLanguage, spinnerYear;
     private ProgressBar progress;
     private RecyclerView recyclerViewComics;
     private AdapterComics comicsAdapter;
     private List<ModelPdfComics> comicsList;
-
     private AppCompatImageView buttonBack;
 
-    private static final String TAG = "ComicsAvanzatoInfoFragment";
     private static final int SEARCH_TIMEOUT = 10000; // Timeout di 10 secondi
 
     private Handler timeoutHandler;

@@ -143,6 +143,7 @@
                 android:fontFamily="casual"
                 android:text="@string/select_language"
                 android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
                 android:textSize="16sp"
@@ -163,6 +164,7 @@
                 android:fontFamily="casual"
                 android:text="@string/select_genre"
                 android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
                 android:textSize="16sp"
@@ -172,7 +174,7 @@
                 android:id="@+id/multiSelectCollection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:spinnerMode="dialog"/>
 
             <TextView
@@ -181,6 +183,7 @@
                 android:fontFamily="casual"
                 android:text="@string/select_collection"
                 android:textAlignment="viewStart"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="1dp"
                 android:textAllCaps="false"
                 android:textSize="16sp"
@@ -190,7 +193,7 @@
                 android:id="@+id/multiSelectGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:spinnerMode="dialog"/>
 
             <androidx.appcompat.widget.AppCompatButton

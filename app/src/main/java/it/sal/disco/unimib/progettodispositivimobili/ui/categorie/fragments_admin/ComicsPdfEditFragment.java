@@ -1,8 +1,6 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.categorie.fragments_admin;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,25 +23,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.databinding.FragmentComicsPdfEditBinding;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.MultiSelectSpinner;
+import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.api_comics.SpinnerUtils;
 
 public class ComicsPdfEditFragment extends Fragment {
-
+    private static final String TAG = "ComicsPdfEditFragment";
     private FragmentComicsPdfEditBinding binding;
     private FirebaseAuth firebaseAuth;
-    private static final String TAG = "ComicsPdfEditFragment";
-    private String comicsId;
     private ProgressDialog progressDialog;
-    private ArrayList<String> categoryTitleArrayList, categoryIdArrayList;
-    private String selectedCategoryId, selectedLanguageId, selectedYearId, selectedSubjectId;
-    private String selectedCategoryTitle, selectedLanguageTitle, selectedYearTitle, selectedSubjectTitle;
-    private String title, description;
 
+    private String comicsId;
+    private String title, description;
+    private int pageCount;
+    private MultiSelectSpinner multiSelectCollection, multiSelectGenre;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,24 +51,21 @@ public class ComicsPdfEditFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("Per favore aspetta un attimo");
-        progressDialog.setCanceledOnTouchOutside(false);
-
         // Recupera l'ID del fumetto dagli argomenti
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
         }
 
-        loadCategories();
+        // Initialize the MultiSelectSpinners
+        multiSelectCollection = root.findViewById(R.id.multiSelectCollection);
+        multiSelectGenre = root.findViewById(R.id.multiSelectGenre);
+
+        loadSpinnerData();
         loadComicsInfo();
 
-        binding.textViewComicsCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                categoryDialog();
-            }
-        });
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Per favore aspetta un attimo");
+        progressDialog.setCanceledOnTouchOutside(false);
 
         binding.backBtn.setOnClickListener(v -> {
             if(getActivity() != null) {
@@ -89,47 +83,47 @@ public class ComicsPdfEditFragment extends Fragment {
         return root;
     }
 
+    private void loadSpinnerData() {
+        SpinnerUtils.loadYears(getContext(), binding.spinnerYear);
+        SpinnerUtils.loadLanguages(getContext(), binding.spinnerLanguage);
+        SpinnerUtils.loadCollections(getContext(), multiSelectCollection);
+        SpinnerUtils.loadSubjects(getContext(), multiSelectGenre);
+    }
+
     private void validateData() {
+        Log.d(TAG, "validateData: validating data...");
         title = binding.textViewComicsTitle.getText().toString().trim();
         description = binding.textViewComicsDescription.getText().toString().trim();
 
+        String selectedYearTitle = binding.spinnerYear.getSelectedItem().toString();
+        String selectedLanguageTitle = binding.spinnerLanguage.getSelectedItem().toString();
+
+        List<String> selectedCollections = multiSelectCollection.getSelectedStrings();
+        List<String> selectedGenres = multiSelectGenre.getSelectedStrings();
+
         if(TextUtils.isEmpty(title)){
             Toast.makeText(getActivity(), "Inserisci il titolo...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsTitle.setError("Titolo richisto");
+            binding.textViewInputLayoutComicsTitle.setError("Titolo richiesto");
             binding.textViewInputLayoutComicsTitle.requestFocus();
-            //return;
         } else if(TextUtils.isEmpty(description)){
             Toast.makeText(getActivity(), "Inserisci la descrizione...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsDescription.setError("Descrizione richista");
+            binding.textViewInputLayoutComicsDescription.setError("Descrizione richiesta");
             binding.textViewInputLayoutComicsDescription.requestFocus();
-            //return;
-      /*  }  else if(TextUtils.isEmpty(selectedYearId)){
-            Toast.makeText(getActivity(), "Seleziona l'anno...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsAnno.setError("Anno richisto");
-            binding.textViewInputLayoutComicsAnno.requestFocus();
-            //return;
-        } else if(TextUtils.isEmpty(selectedLanguageId)){
-            Toast.makeText(getActivity(), "Seleziona la lingua...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsLingua.setError("Lingua richista");
-            binding.textViewInputLayoutComicsLingua.requestFocus();
-            //return;
-        } else if(TextUtils.isEmpty(selectedSubjectId)){
-            Toast.makeText(getActivity(), "Seleziona il genere...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsSubject.setError("Genere richisto");
-            binding.textViewInputLayoutComicsSubject.requestFocus(); */
-            //return;
-        }  else if(TextUtils.isEmpty(selectedCategoryId)){
-            Toast.makeText(getActivity(), "Seleziona la categoria...", Toast.LENGTH_SHORT).show();
-            binding.textViewInputLayoutComicsCategory.setError("Categoria richista");
-            binding.textViewInputLayoutComicsCategory.requestFocus();
-            //return;
+        } else if (TextUtils.isEmpty(selectedYearTitle)) {
+            Toast.makeText(getActivity(), "Inserisci l'anno...", Toast.LENGTH_SHORT).show();
+        } else if (TextUtils.isEmpty(selectedLanguageTitle)) {
+            Toast.makeText(getActivity(), "Inserisci la lingua...", Toast.LENGTH_SHORT).show();
+        } else if (selectedCollections.isEmpty()) {
+            Toast.makeText(getActivity(), "Inserisci almeno una collezione...", Toast.LENGTH_SHORT).show();
+        } else if (selectedGenres.isEmpty()) {
+            Toast.makeText(getActivity(), "Inserisci almeno un genere...", Toast.LENGTH_SHORT).show();
         } else {
-            updateComicsPdf();
+            updateComicsPdf(selectedCollections, selectedGenres, selectedYearTitle, selectedLanguageTitle);
         }
     }
 
-    private void updateComicsPdf() {
-        Log.d(TAG, "updateComicsPdf: Starting updatinf pdf info to db...");
+    private void updateComicsPdf(List<String> selectedCollections, List<String> selectedGenres, String selectedYearTitle, String selectedLanguageTitle) {
+        Log.d(TAG, "updateComicsPdf: Updating comic info in the database...");
 
         progressDialog.setMessage("Updating comics info...");
         progressDialog.show();
@@ -137,7 +131,10 @@ public class ComicsPdfEditFragment extends Fragment {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("titolo", ""+title);
         hashMap.put("descrizione", ""+description);
-        hashMap.put("categoryId", ""+selectedCategoryId);
+        hashMap.put("collections", selectedCollections);
+        hashMap.put("year", selectedYearTitle);
+        hashMap.put("language", selectedLanguageTitle);
+        hashMap.put("genres", selectedGenres);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
         ref.child(comicsId).updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -150,7 +147,7 @@ public class ComicsPdfEditFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: failed to update due to " + e.getMessage());
+                Log.d(TAG, "onFailure: Failed to update due to " + e.getMessage());
                 progressDialog.dismiss();
                 Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -164,88 +161,28 @@ public class ComicsPdfEditFragment extends Fragment {
         refComics.child(comicsId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                selectedCategoryId = ""+snapshot.child("categoryId").getValue();
-                String description = ""+snapshot.child("descrizione").getValue();
                 String title = ""+snapshot.child("titolo").getValue();
+                String description = ""+snapshot.child("descrizione").getValue();
+                String year = ""+snapshot.child("year").getValue();
+                String language = ""+snapshot.child("language").getValue();
+                List<String> collections = (List<String>) snapshot.child("collections").getValue();
+                List<String> genres = (List<String>) snapshot.child("genres").getValue();
 
                 binding.textViewComicsTitle.setText(title);
                 binding.textViewComicsDescription.setText(description);
 
-                Log.d(TAG, "onDataChange: Loading Comics Category Info");
-                DatabaseReference refComicsCategory = FirebaseDatabase.getInstance().getReference("Categories");
-                refComicsCategory.child(selectedCategoryId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String category = ""+snapshot.child("category").getValue();
-
-                        binding.textViewComicsCategory.setText(category);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
+                // Set the selected items in the spinners
+                SpinnerUtils.setSpinnerItemByValue(binding.spinnerYear, year);
+                SpinnerUtils.setSpinnerItemByValue(binding.spinnerLanguage, language);
+                multiSelectCollection.setItems(collections);
+                multiSelectGenre.setItems(genres);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d(TAG, "onCancelled: Failed to load comics info due to " + error.getMessage());
             }
         });
-    }
-
-    private void categoryDialog(){
-        String[] categoriesArray = new String[categoryTitleArrayList.size()];
-        for(int i=0; i<categoryTitleArrayList.size(); i++){
-            categoriesArray[i] = categoryTitleArrayList.get(i);
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Seleziona una categoria").setItems(categoriesArray, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedCategoryId = categoryIdArrayList.get(which);
-                selectedCategoryTitle = categoryTitleArrayList.get(which);
-
-                binding.textViewComicsCategory.setText(selectedCategoryTitle);
-            }
-        }).show();
-    }
-
-    private void loadCategories() {
-        Log.d(TAG, "loadCategories: Loading categories...");
-
-        categoryIdArrayList = new ArrayList<>();
-        categoryTitleArrayList = new ArrayList<>();
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                categoryIdArrayList.clear();
-                categoryTitleArrayList.clear();
-                for(DataSnapshot ds : snapshot.getChildren()){
-                    String id = ""+ds.child("id").getValue();
-                    String category = ""+ds.child("category").getValue();
-                    
-                    categoryIdArrayList.add(id);
-                    categoryTitleArrayList.add(category);
-
-                    Log.d(TAG, "onDataChange: ID: " + id);
-                    Log.d(TAG, "onDataChange: Category: " + category);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
     }
 
     private void openFragment(Fragment fragment){

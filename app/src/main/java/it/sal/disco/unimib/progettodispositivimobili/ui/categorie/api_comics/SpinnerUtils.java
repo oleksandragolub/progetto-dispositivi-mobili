@@ -247,4 +247,12 @@ public class SpinnerUtils {
             }
         });
     }
+
+    public static void setSpinnerItemByValue(Spinner spinner, String value) {
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
+        if (adapter != null) {
+            int position = adapter.getPosition(value);
+            spinner.setSelection(position);
+        }
+    }
 }
