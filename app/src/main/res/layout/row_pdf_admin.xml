@@ -109,7 +109,8 @@
             android:contentDescription="TODO"
             android:padding="5dp"
             android:src="@drawable/baseline_more_vert_24"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            app:tint="?attr/colorControlNormal"/>
 
 
     </RelativeLayout>

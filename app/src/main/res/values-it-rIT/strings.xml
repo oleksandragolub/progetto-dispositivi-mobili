@@ -139,4 +139,9 @@
     <string name="gestione_category">Categoria Comics</string>
     <string name="gestione_category2">Comics per categoria/collezione</string>
     <string name="gestione_category3">Categoria/Collezione</string>
+
+    <string name="add_comment">Aggiungi un commento</string>
+    <string name="txt_comment">Commento</string>
+    <string name="btn_comment">Aggiungi</string>
+    <string name="label_comments">Commenti</string>
 </resources>

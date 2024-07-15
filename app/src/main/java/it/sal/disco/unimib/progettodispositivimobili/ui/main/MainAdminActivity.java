@@ -98,6 +98,7 @@ public class MainAdminActivity extends AppCompatActivity implements View.OnCreat
 
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_admin);
         bottomNavigationView.setBackground(null);

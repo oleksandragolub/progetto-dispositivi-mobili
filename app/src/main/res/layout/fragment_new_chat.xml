@@ -70,7 +70,8 @@
                     android:text="@string/txt_back"
                     android:textAllCaps="false"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorTertiary"/>
             </LinearLayout>
 
 
