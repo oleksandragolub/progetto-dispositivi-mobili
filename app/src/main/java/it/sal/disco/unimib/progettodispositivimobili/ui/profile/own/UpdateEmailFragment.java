@@ -3,7 +3,9 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile.own;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +42,8 @@ public class UpdateEmailFragment extends Fragment {
 
     private TextView textViewAuthenticated, textViewOldEmail;
     private String userOldEmail, userNewEmail, userPwd;
-    private Button buttonUpdateEmail;
-    private EditText editTextNewEmail, editTextPwd;
+    private Button buttonUpdateEmail, buttonAutentica;
+    private EditText editTextNewEmail, editTextPwd, editTextOldEmail;
 
     TextView btnBack;
     FirebaseAuth mAuth;
@@ -59,6 +61,10 @@ public class UpdateEmailFragment extends Fragment {
         editTextNewEmail = binding.emailNuovo;
         textViewAuthenticated = binding.textProfileNotAuthenticated;
         buttonUpdateEmail = binding.btnEmailNuovo;
+        buttonAutentica = binding.btnAuthenticate;
+
+        //serve solo pr il textwatcher
+        editTextOldEmail = binding.emailCorrente;
 
         buttonUpdateEmail.setEnabled(false);
         editTextNewEmail.setEnabled(false);
@@ -86,8 +92,32 @@ public class UpdateEmailFragment extends Fragment {
             }
         });
 
+        editTextOldEmail.addTextChangedListener(textWatcher);
+        editTextPwd.addTextChangedListener(textWatcher);
+
         return root;
     }
+
+    //Abilita/disabilita il bottone autentica se email e password sono inserite/vuote
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String textEmailWatcher = String.valueOf(editTextOldEmail.getText());
+            String textPasswordWatcher = String.valueOf(editTextPwd.getText());
+
+            buttonAutentica.setEnabled(!textEmailWatcher.isEmpty() && !textPasswordWatcher.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     private void reAuthenticate(FirebaseUser currentUser) {

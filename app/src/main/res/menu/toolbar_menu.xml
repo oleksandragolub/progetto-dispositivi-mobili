@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_custom_icon"
         android:title="Custom Icon"
-        android:icon="@drawable/logo_app_piccola"
+        android:icon="@drawable/menu_icon"
         app:showAsAction="always"/>
 
 </menu>

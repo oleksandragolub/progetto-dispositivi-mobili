@@ -16,8 +16,17 @@
             android:id="@+id/top_appbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_anchorGravity="top"
-            app:title="Horizon Tales" />
+            app:layout_anchorGravity="top">
+
+            <ImageView
+                android:id="@+id/imageView_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/logo_app_svg"
+                app:tint="?attr/android:colorBackground"
+                android:background="@drawable/logo_app_svg_gradient" />
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <FrameLayout
             android:id="@+id/nav_host_fragment"

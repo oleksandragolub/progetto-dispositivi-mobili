@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
 
         toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackground(null);
