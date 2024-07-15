@@ -110,10 +110,25 @@ public class ComicsPdfDetailUserFragment extends Fragment {
 
         binding.buttonBackUser.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        binding.readComicsBtn.setOnClickListener(v -> {
+        /*binding.readComicsBtn.setOnClickListener(v -> {
             ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
             Bundle args = new Bundle();
             args.putString("comic", comicsId);
+            comicsPdfViewUserFragment.setArguments(args);
+
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.nav_host_fragment, comicsPdfViewUserFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });*/
+
+        binding.readComicsBtn.setOnClickListener(v -> {
+            ComicsPdfViewUserFragment comicsPdfViewUserFragment = new ComicsPdfViewUserFragment();
+            Bundle args = new Bundle();
+            args.putString("comicsId", comicsId);
+            args.putString("comicsTitle", comicsTitle);
+            args.putString("comicsUrl", comicsUrl);
             comicsPdfViewUserFragment.setArguments(args);
 
             FragmentManager fragmentManager = getParentFragmentManager();
