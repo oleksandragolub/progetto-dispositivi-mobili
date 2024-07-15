@@ -57,7 +57,7 @@
     <string name="txt_scegli_immagine">Choose the image</string>
     <string name="txt_carica_immagine">Load the image</string>
     <string name="txt_update_profile">Update your profile details:</string>
-    <string name="btn_update_profile">Update your profile:</string>
+    <string name="btn_update_profile">Update your profile</string>
     <string name="btn_salva_update_profile">Save your up-to-date data</string>
     <string name="descrizione">Description</string>
     <string name="txt_update_email">Update your profile email:</string>
