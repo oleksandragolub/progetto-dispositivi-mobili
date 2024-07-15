@@ -373,4 +373,4 @@
             app:destination="@id/navigation_profile" />
     </fragment>
 
- </navigation>
+</navigation>
