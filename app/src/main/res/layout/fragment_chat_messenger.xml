@@ -17,6 +17,7 @@
             android:padding="4dp"
             android:gravity="fill_horizontal"
             android:background="@drawable/border2"
+            app:backgroundTint="?attr/colorControlNormal"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -26,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:src="@drawable/baseline_arrow_back_ios_24_dark"
+                android:src="@drawable/baseline_arrow_back_24"
+                android:tint="?attr/colorControlNormal"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -74,6 +76,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/round_btn2"
+            android:backgroundTint="?attr/colorControlNormal"
             android:hint="@string/scrivi_un_messaggio"
             android:padding="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,6 +90,7 @@
             android:layout_marginEnd="10dp"
             android:padding="4dp"
             android:background="@drawable/round_btn2"
+            android:backgroundTint="?attr/colorControlNormal"
             app:layout_constraintBottom_toBottomOf="@id/message_et"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/message_et">
@@ -96,7 +100,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="8dp"
-                android:src="@drawable/outline_send_24" />
+                android:src="@drawable/outline_send_24"
+                android:tint="?attr/colorControlNormal"/>
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

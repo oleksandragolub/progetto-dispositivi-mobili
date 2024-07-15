@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/edit_text_rounded_corner"
+    android:backgroundTint="?attr/android:colorBackground"
     app:contentPadding="10dp"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="8dp"
