@@ -37,13 +37,12 @@
                 android:id="@+id/txt_inserisci_dati"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:text="@string/txt_inserisci_dati"
-                android:textSize="16sp"
                 android:textAlignment="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                app:layout_constraintBottom_toTopOf="@id/text_input_layout_username" />
-
+                android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@id/text_input_layout_username"
+                tools:layout_editor_absoluteX="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_username"
@@ -201,5 +200,3 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-

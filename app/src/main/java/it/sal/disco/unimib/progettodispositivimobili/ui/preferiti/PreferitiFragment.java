@@ -190,31 +190,30 @@ public class PreferitiFragment extends Fragment {
         transaction.commit();
     }
 
-    private void openComicsPdfDetailUserFragment(ModelPdfComics model) {
+    private void openComicsMarvelDetailFragment(ModelPdfComics comic) {
+        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("comic", comic);
+        comicsMarvelDetailFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openComicsPdfDetailUserFragment(ModelPdfComics comic) {
         ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
         Bundle args = new Bundle();
-        args.putSerializable("modelPdfComics", model);
+        args.putSerializable("modelPdfComics", comic);
         comicsPdfDetailUserFragment.setArguments(args);
 
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    private void openComicsMarvelDetailFragment(ModelPdfComics model) {
-        ComicsMarvelDetailFragment comicsMarvelDetailFragment = new ComicsMarvelDetailFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("comic", model);  // Cambia "modelPdfComics" in "comic"
-        comicsMarvelDetailFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, comicsMarvelDetailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     @Override
     public void onDestroyView() {

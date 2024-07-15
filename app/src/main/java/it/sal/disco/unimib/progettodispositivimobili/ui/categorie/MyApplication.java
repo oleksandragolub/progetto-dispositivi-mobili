@@ -207,14 +207,18 @@ public class MyApplication extends Application {
     public static void loadPdfFromUrlSinglePage(String pdfUrl, String pdfTitle, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
         String TAG = "PDF_LOAD_SINGLE_TAG";
 
+        // Imposta il riferimento al PDF nel Firebase Storage
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
+
+        // Ottieni i primi 10MB del file PDF per evitare di caricare file troppo grandi in una volta sola
         ref.getBytes(MAX_BYTES_PDF).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Log.d(TAG, "onSuccess: "+ pdfTitle + " succesfylly got the file");
+                Log.d(TAG, "onSuccess: " + pdfTitle + " successfully got the file");
 
+                // Carica solo la prima pagina del PDF per risparmiare memoria
                 pdfView.fromBytes(bytes)
-                        .pages(0)
+                        .pages(0) // Carica solo la prima pagina
                         .spacing(0)
                         .swipeHorizontal(false)
                         .enableSwipe(false)
@@ -222,13 +226,13 @@ public class MyApplication extends Application {
                             @Override
                             public void onError(Throwable t) {
                                 progressBar.setVisibility(View.INVISIBLE);
-                                Log.d(TAG, "onError: "+ t.getMessage());
+                                Log.d(TAG, "onError: " + t.getMessage());
                             }
-                        }).onPageError(new OnPageErrorListener(){
+                        }).onPageError(new OnPageErrorListener() {
                             @Override
                             public void onPageError(int page, Throwable t) {
                                 progressBar.setVisibility(View.INVISIBLE);
-                                Log.d(TAG, "onPageError: "+ t.getMessage());
+                                Log.d(TAG, "onPageError: " + t.getMessage());
                             }
                         }).onLoad(new OnLoadCompleteListener() {
                             @Override
@@ -236,8 +240,9 @@ public class MyApplication extends Application {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 Log.d(TAG, "loadComplete: pdf loaded");
 
-                                if(pagesTv != null){
-                                    pagesTv.setText(""+nbPages);
+                                // Imposta il numero di pagine nel TextView se disponibile
+                                if (pagesTv != null) {
+                                    pagesTv.setText("" + nbPages);
                                 }
                             }
                         })
@@ -247,11 +252,11 @@ public class MyApplication extends Application {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressBar.setVisibility(View.INVISIBLE);
-                //Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onFailure: failed getting file from url due to "+ e.getMessage());
+                Log.d(TAG, "onFailure: failed getting file from url due to " + e.getMessage());
             }
         });
     }
+
 
     public static void loadPdfFromApi(String pdfUrl, PDFView pdfView, ProgressBar progressBar, TextView pagesTv) {
         String TAG = "PDF_LOAD_API_TAG";

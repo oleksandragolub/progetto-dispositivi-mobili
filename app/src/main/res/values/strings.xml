@@ -1,186 +1,174 @@
 <resources>
-    <string name="app_name">Horizon Tales</string>
-    <string name="open_nav">Open Navigation Drawer</string>
-    <string name="close_nav">Close Navigation Drawer</string>
+    <string name="app_name" translatable="false">Horizon Tales</string>
+    <string name="open_nav" translatable="false">Open Navigation Drawer</string>
+    <string name="close_nav" translatable="false">Close Navigation Drawer</string>
 
     <string name="title_home">Home</string>
-    <string name="title_preferiti">Preferiti</string>
-    <string name="title_ricerca">Ricerca</string>
+    <string name="title_preferiti">Favorites</string>
+    <string name="title_ricerca">Search</string>
     <string name="title_profile">Profile</string>
 
-    <string name="logout">Logout</string>
+    <string name="logout" translatable="false">Logout</string>
 
-    <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_home_page">HomePageActivity</string>
-    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="title_activity_register" translatable="false">RegisterActivity</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="title_activity_home_page" translatable="false">HomePageActivity</string>
+    <string name="title_activity_forgot_password" translatable="false">ForgotPasswordActivity</string>
 
     <string name="txt_login">Login</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
-    <string name="text_forgot_pw">Password Dimenticata?</string>
+    <string name="text_forgot_pw">Forgot password?</string>
     <string name="btn_login">Login</string>
-    <string name="btn_login_google">Login con Google</string>
+    <string name="btn_login_google">Login with Google</string>
     <string name="txt_or">OR</string>
-    <string name="txt_domanda">Non sei ancora registrato?</string>
-    <string name="button_registrati">Registrati!</string>
+    <string name="txt_domanda">Don\'t have an account?</string>
+    <string name="button_registrati">Sign Up!</string>
 
-    <string name="txt_registrazione">Registrazione</string>
-    <string name="btn_register">Registrazione</string>
-    <string name="btn_registrazione_google">Registrazione con Google</string>
-    <string name="txt_domanda_registrazione">Hai già un account?</string>
-    <string name="button_allora_entra">Allora entra!</string>
+    <string name="txt_registrazione">Sign Up</string>
+    <string name="btn_register">Sign Up</string>
+    <string name="btn_registrazione_google">Sign Up with Google</string>
+    <string name="txt_domanda_registrazione">Do you have an account?</string>
+    <string name="button_allora_entra">Then login!</string>
 
-    <string name="txt_forgot_pw">Password Dimenticata</string>
-    <string name="txt_domanda_forgot_pw">Con quale indirizzo e-mail ti sei registrato?</string>
-    <string name="btn_ripristina_password">Ripristina Password</string>
-    <string name="txt_ripristina_password">Ti invieremo a questo indirizzo le istruzioni per ripristinare la password.</string>
-    <string name="txt_domanda_back">Non sei interessato a questo?</string>
-    <string name="txt_back">Torna indietro!</string>
+    <string name="txt_forgot_pw">Forgot Password</string>
+    <string name="txt_domanda_forgot_pw">Which e-mail address did you sign up with?</string>
+    <string name="btn_ripristina_password">Reset Password</string>
+    <string name="txt_ripristina_password">We will send instructions on how to reset your password to this address.</string>
+    <string name="txt_domanda_back">Not interested in this?</string>
+    <string name="txt_back">Go back!</string>
 
 
-    <string name="web_client_id">116867753475-rmcirl3u8ncj8sc99d76hbfrrcm0b5kl.apps.googleusercontent.com</string>
+    <string name="web_client_id" translatable="false">116867753475-rmcirl3u8ncj8sc99d76hbfrrcm0b5kl.apps.googleusercontent.com</string>
     <string name="loading">Loading</string>
-    <string name="txt_inserisci_dati">Inserisci i tuoi dati:</string>
+    <string name="txt_inserisci_dati">Enter your details:</string>
     <string name="username">Username</string>
-    <string name="DoB">Data di Nascita</string>
-    <string name="gender">Genere</string>
-    <string name="gender_male">Maschio</string>
-    <string name="gender_fem">Femmina</string>
-    <string name="gender_other">Altro</string>
-    <string name="conferma_password">Conferma password</string>
+    <string name="DoB">Date of Birth</string>
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_fem">Female</string>
+    <string name="gender_other">Other</string>
+    <string name="conferma_password">Confirm password</string>
 
-    <string name="txt_change_pw">Cambia la tua password</string>
-    <string name="txt_change_email">Cambia la tua email</string>
-    <string name="txt_elimina_profile">Elimina il tuo profilo:</string>
-    <string name="txt_upload_profile_pic">Inserisci la foto del tuo profilo</string>
-    <string name="txt_scegli_immagine">Scegli l\'immagine</string>
-    <string name="txt_carica_immagine">Carica l\'immagine</string>
-    <string name="txt_update_profile">Aggiorna i dati del tuo profilo:</string>
-    <string name="btn_update_profile">Aggiorna il tuo profilo</string>
-    <string name="btn_salva_update_profile">Salva i tuoi dati aggiornati</string>
-    <string name="descrizione">Descrizione</string>
-    <string name="txt_update_email">Aggiorna l\'email del tuo profilo:</string>
-    <string name="txt_update_password">Aggiorna la password del tuo profilo:</string>
-    <string name="email_corrente">Email corrente</string>
-    <string name="btn_authenticate">Autentica</string>
-    <string name="txt_profile_not_authenticated">Il tuo profilo non è stato ancora autenticato/verificato!</string>
-    <string name="email_nuovo">Email nuova</string>
-    <string name="btn_email_nuovo">Aggiorna la tua email</string>
-    <string name="btn_password_nuova">Aggiorna la tua password</string>
-    <string name="password_corrente">Password corrente</string>
-    <string name="password_nuova">Password nuova</string>
-    <string name="conferma_password_nuova">Conferma password nuova</string>
-    <string name="txt_domanda_elimina_profile">Vorresti eliminare il tuo profilo?</string>
-    <string name="btn_delete_user">Elimina il tuo profilo</string>
+    <string name="txt_change_pw">Change your password</string>
+    <string name="txt_change_email">Change your email</string>
+    <string name="txt_elimina_profile">Delete your profile:</string>
+    <string name="txt_upload_profile_pic">Enter your profile picture</string>
+    <string name="txt_scegli_immagine">Choose the image</string>
+    <string name="txt_carica_immagine">Load the image</string>
+    <string name="txt_update_profile">Update your profile details:</string>
+    <string name="btn_update_profile">Update your profile:</string>
+    <string name="btn_salva_update_profile">Save your up-to-date data</string>
+    <string name="descrizione">Description</string>
+    <string name="txt_update_email">Update your profile email:</string>
+    <string name="txt_update_password">Update your profile password:</string>
+    <string name="email_corrente">Current email</string>
+    <string name="btn_authenticate">Authenticate</string>
+    <string name="txt_profile_not_authenticated">Your profile has not yet been authenticated!</string>
+    <string name="email_nuovo">New Email</string>
+    <string name="btn_email_nuovo">Update your email</string>
+    <string name="btn_password_nuova">Update your password</string>
+    <string name="password_corrente">Current password</string>
+    <string name="password_nuova">New Password</string>
+    <string name="conferma_password_nuova">Confirm new password</string>
+    <string name="txt_domanda_elimina_profile">Do you wish to delete your profile?</string>
+    <string name="btn_delete_user">Delete your profile</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="txt_profile_domanda_veramente_elimini">Sei sicuro di voler eliminare questo account? Questa azieone è irreversibile!</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="txt_profile_domanda_veramente_elimini">Do you want to delete this account? This action is irreversible!</string>
     <string name="title_chat">Chat</string>
-    <string name="title_searchUser">Cerca utente</string>
-    <string name="txt_search_user">Cerca utente</string>
+    <string name="title_searchUser">Search user</string>
+    <string name="txt_search_user">search user</string>
     <string name="txt_chat">Chat</string>
-    <string name="cerca_utente">Cerca utente</string>
-    <string name="cerca_la_lista_degli_utenti_con_un_cerco_username">cerca la lista degli utenti con un cerco username</string>
-    <string name="btn_chat_profile">Scrivi a questo utente</string>
-    <string name="type_a_message">Scrivi il messaggio</string>
-    <string name="title_new_chat">New Chat\n</string>
+    <string name="cerca_utente">Search user</string>
+    <string name="cerca_la_lista_degli_utenti_con_un_cerco_username">Search for the list of users with a given username</string>
+    <string name="btn_chat_profile">Text this user</string>
+    <string name="type_a_message">Type your message</string>
+    <string name="title_new_chat">"New Chat "</string>
     <string name="txt_new_chat">New Chat\n</string>
     <string name="txt_tutti_chats">Chats\n</string>
     <string name="title_chats">Chats\n</string>
-    <string name="scrivi_un_messaggio">Scrivi un messaggio...</string>
-    <string name="title_category">Categoria</string>
-    <string name="aggiungi_categoria">+ Aggiungi Categoria</string>
-    <string name="txt_add_new_category">Aggiungi una nuova categoria</string>
-    <string name="category_title">Titolo della categoria</string>
-    <string name="submit_btn">Aggiungi</string>
-    <string name="submit_btn_2">Salva</string>
-    <string name="category_title_2">Titolo della categoria\n</string>
-    <string name="category_title_3">Titolo della categoria</string>
-    <string name="txt_search_catalogo">Cerca una categoria</string>
-    <string name="txt_search_category">Cerca una categoria</string>
-    <string name="txt_add_new_comics">Aggiungi un nuovo comixes</string>
-    <string name="comics_title">Titolo del comixes</string>
-    <string name="comics_description">Descrizione del comixes</string>
-    <string name="comics_category">Categoria del comixes</string>
-    <string name="title_comics">Titolo del comixes</string>
-    <string name="description_comics">Descrizione del comixes</string>
-    <string name="size_comics">13 MB</string>
-    <string name="date_comics">dd/mm/yyyy</string>
-    <string name="category_comics">Categoria</string>
+    <string name="scrivi_un_messaggio">Type your message…</string>
+    <string name="title_category">Categories</string>
+    <string name="aggiungi_categoria">+ Add Category</string>
+    <string name="txt_add_new_category">Add new category</string>
+    <string name="category_title">Category Title</string>
+    <string name="submit_btn">Add</string>
+    <string name="submit_btn_2">Save</string>
+    <string name="category_title_2">"Category Title "</string>
+    <string name="category_title_3">Category Title</string>
+    <string name="txt_search_catalogo">Search for a category</string>
+    <string name="txt_search_category">Search for a category</string>
+    <string name="txt_add_new_comics">Add new comics</string>
+    <string name="comics_title">Comics Title</string>
+    <string name="comics_description">Comics Description</string>
+    <string name="comics_category">Comics Category</string>
+    <string name="title_comics">Comics Title</string>
+    <string name="description_comics">Comics Description</string>
+    <string name="size_comics" translatable="false">13 MB</string>
+    <string name="date_comics" translatable="false">dd/mm/yyyy</string>
+    <string name="category_comics">Category</string>
     <string name="comixes">Comics</string>
-    <string name="Categoria" />
-    <string name="categoria_text">Categoria\n</string>
-    <string name="cerca_text">Cerca</string>
-    <string name="txt_edit_comics">Modifica i dati di un comixes</string>
-    <string name="update_btn_2">Aggiorna</string>
-    <string name="comics_detail">Dettagli</string>
-    <string name="titolo_del_comics">Titolo del comixes</string>
-    <string name="categoria_text2">Categoria</string>
-    <string name="na">N/A</string>
-    <string name="date_text2">Data</string>
-    <string name="size_text2">Dimensione</string>
-    <string name="views_text2">Visualizzazioni</string>
+    <string name="Categoria" translatable="false" />
+    <string name="categoria_text">Category\n</string>
+    <string name="cerca_text">Search</string>
+    <string name="txt_edit_comics">Edit the data of a comic book</string>
+    <string name="update_btn_2">Update</string>
+    <string name="comics_detail">Details</string>
+    <string name="titolo_del_comics">Comics title</string>
+    <string name="categoria_text2">Category</string>
+    <string name="na" translatable="false">N/A</string>
+    <string name="date_text2">Date</string>
+    <string name="size_text2">Dimension</string>
+    <string name="views_text2">Views</string>
     <string name="downloads_text2">Downloads</string>
-    <string name="descrizione_comics">Descrizione del comixes</string>
-    <string name="txt_comics">Leggi il comixes</string>
-    <string name="txt1">N/N</string>
-    <string name="downloads_text3">Scaricato</string>
-    <string name="pages_text3">Pagine</string>
-    <string name="preferiti">Preferiti</string>
-    <string name="preferiti2">Aggiungi a preferiti</string>
-    <string name="preferiti3">Aggiungi</string>
-    <string name="count">N/A</string>
-    <string name="txt_search_personaggio">Cerca un personaggio</string>
-    <string name="name_character">Nome del personaggio</string>
-    <string name="descripzione_personaggio">Descrizione del personaggio</string>
+    <string name="descrizione_comics">Comics Description</string>
+    <string name="txt_comics">Read Comics</string>
+    <string name="txt1" translatable="false">N/N</string>
+    <string name="downloads_text3">Downloaded</string>
+    <string name="pages_text3">Pages</string>
+    <string name="preferiti">Favorites</string>
+    <string name="preferiti2">Add to favorites</string>
+    <string name="preferiti3">Add</string>
+    <string name="count" translatable="false">N/A</string>
+    <string name="txt_search_personaggio">Search characters</string>
+    <string name="name_character">Character name</string>
+    <string name="descripzione_personaggio">Character description</string>
 
 
-    <string name="superhero">Personaggio</string>
-    <string name="cerca_personaggio">Cerca un personaggio</string>
+    <string name="superhero">Character</string>
+    <string name="cerca_personaggio">Search Character</string>
     <string name="imagesuperhero">Image of Superhero</string>
-    <string name="empty">Il campo di ricerca è vuoto.</string>
-    <string name="close">Chiudi</string>
-    <string name="no_exist">Il personaggio non esiste.</string>
-    <string name="no_description_available">non ce</string>
+    <string name="empty">The search field is empty.</string>
+    <string name="close">Close</string>
+    <string name="no_exist">Character does not exist.</string>
+    <string name="no_description_available">Description not available</string>
 
-    <string name="network_error">Network error occurred. Please check your connection.</string>
-    <string name="service_error">Service error occurred. Please try again later.</string>
-    <string name="image_download_error">Failed to download image.</string>
+    <string name="network_error" translatable="false">Network error occurred. Please check your connection.</string>
+    <string name="service_error" translatable="false">Service error occurred. Please try again later.</string>
+    <string name="image_download_error" translatable="false">Failed to download image.</string>
     <string name="comics">Comics</string>
-    <string name="cerca_fumetto">Cerca un comics</string>
-    <string name="metadata_comics">metadata del comics</string>
-    <string name="Lingua_text2">Lingua</string>
-    <string name="anno_text2">Anno</string>
-    <string name="downloads_text4">Scaricati</string>
-    <string name="collezioni_text2">Collezioni</string>
-    <string name="generi_text2">Generi</string>
-    <string name="txt_domanda3">Vorresti vedere piu\' comics?</string>
-    <string name="button_risp_comics">Clicca qua!</string>
+    <string name="cerca_fumetto">Search comics</string>
+    <string name="metadata_comics">Comics Metadata</string>
+    <string name="Lingua_text2">Language</string>
+    <string name="anno_text2">Year</string>
+    <string name="downloads_text4">Downloaded</string>
+    <string name="collezioni_text2">Collection</string>
+    <string name="generi_text2">Genres</string>
+    <string name="txt_domanda3">Would you like to see more comics?</string>
+    <string name="button_risp_comics">Click here!</string>
     <string name="select_collection">Select Collection</string>
     <string name="select_language">Select Language</string>
     <string name="select_year">Select Year</string>
     <string name="select_genre">Select Genre</string>
-    <string name="filtri">Filtri da applicare</string>
-    <string name="no_more_comics">Non ci sono piu comics</string>
-    <string name="comics_lingua">Lingua del comics</string>
-    <string name="comics_category_collezione">Categoria/collezione del comics</string>
-    <string name="comics_subject">Genere del comics</string>
-    <string name="comics_anno">Anno del comics</string>
-    <string name="gestione_category">Comics_categoria</string>
-    <string name="gestione_category2">Comics per categoria/collezioni</string>
-    <string name="gestione_category3">Categoria/Collezione</string>
+    <string name="filtri">Apply filters</string>
+    <string name="no_more_comics">There are no more comics</string>
+    <string name="comics_lingua">Comics language</string>
+    <string name="comics_category_collezione">Comics Category/Collection</string>
+    <string name="comics_subject">Comics Genre</string>
+    <string name="comics_anno">Comics Year</string>
+    <string name="gestione_category">Comics category</string>
+    <string name="gestione_category2">Comics by Category/Collection</string>
+    <string name="gestione_category3">Category/Collection</string>
 
-
-    <string-array name="genres_array">
-        <item>Action</item>
-        <item>Adventure</item>
-        <item>Comedy</item>
-        <item>Drama</item>
-        <item>Fantasy</item>
-        <item>Horror</item>
-        <item>Romance</item>
-        <item>Sci-Fi</item>
-        <item>Superhero</item>
-    </string-array>
 </resources>

@@ -98,7 +98,7 @@ public class ComicsUserFragment extends Fragment {
         comicsList = new ArrayList<>();
 
         adapterComicsApi = new AdapterApiComics(comicsList, getActivity());
-        adapterComicsApi.setOnItemClickListener(this::openComicDetailFragment);
+       // adapterComicsApi.setOnItemClickListener(this::openComicMarvelDetailFragment);
 
         adapterPdfUser = new AdapterPdfComicsUser(getContext(), pdfArrayList);
 
@@ -159,21 +159,18 @@ public class ComicsUserFragment extends Fragment {
         comicsApi.getComicsByCollection(currentComicCount, COMICS_LOAD_LIMIT, category).enqueue(new Callback<List<Comic>>() {
             @Override
             public void onResponse(Call<List<Comic>> call, Response<List<Comic>> response) {
-                try {
-                    if (response.isSuccessful() && response.body() != null) {
-                        List<Comic> moreComics = response.body();
-                        Log.d(TAG, "Loaded " + moreComics.size() + " more comics for category: " + category);
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Comic> moreComics = response.body();
+                    if (!moreComics.isEmpty()) {
                         comicsList.addAll(moreComics);
                         adapterComicsApi.addComics(moreComics); // Aggiorna la lista dei fumetti
                         currentComicCount += moreComics.size();
-                        Log.d(TAG, "Total comics count: " + comicsList.size());
-                    } else {
-                        Log.e(TAG, "API response unsuccessful. Code: " + response.code());
-                    }
-                } finally {
-                    if (response.body() == null && response.errorBody() != null) {
-                        response.errorBody().close(); // Chiudi il corpo dell'errore se presente
-                    }
+                    } //else {
+                        // Nessun altro fumetto da caricare
+                      //  binding.moreNow.setVisibility(View.GONE);
+                   // }
+                } else {
+                    Log.e(TAG, "API response unsuccessful. Code: " + response.code());
                 }
             }
 
@@ -309,8 +306,10 @@ public class ComicsUserFragment extends Fragment {
                 binding.comicsRv.setAdapter(adapterPdfUser);
 
                 adapterPdfUser.setOnItemClickListener(model -> {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(model);
+                    if (model.isFromApi()) {
+                        openComicsMarvelDetailFragment(model);
+                    } else {
+                        openComicsPdfDetailUserFragment(model);
                     }
                 });
             }
@@ -335,27 +334,37 @@ public class ComicsUserFragment extends Fragment {
         return 0; // Default value in case of error
     }
 
-    private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfDetailUserFragment fragment = new ComicsPdfDetailUserFragment();
+    private Comic convertToComic(ModelPdfComics modelPdfComics) {
+        Comic comic = new Comic();
+        comic.setId(modelPdfComics.getId());
+        comic.setTitle(modelPdfComics.getTitolo());
+        comic.setDescription(modelPdfComics.getDescrizione());
+        comic.setThumbnail(modelPdfComics.getUrl());
+        return comic;
+    }
+
+    private void openComicsMarvelDetailFragment(ModelPdfComics modelPdfComics) {
+        Comic comic = convertToComic(modelPdfComics);
+        ComicsMarvelDetailFragment fragment = new ComicsMarvelDetailFragment();
         Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
+        args.putSerializable("comic", comic);
         fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment); // Assicurati che l'ID corrisponda al tuo layout
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    private void openComicDetailFragment(Comic comic) {
-        ComicsMarvelDetailFragment detailFragment = new ComicsMarvelDetailFragment();
+    private void openComicsPdfDetailUserFragment(ModelPdfComics modelPdfComics) {
+        Comic comic = convertToComic(modelPdfComics);
+        ComicsPdfDetailUserFragment comicsPdfDetailUserFragment = new ComicsPdfDetailUserFragment();
         Bundle args = new Bundle();
-        args.putSerializable("comic", comic);
-        detailFragment.setArguments(args);
+        args.putSerializable("modelPdfComics", comic);
+        comicsPdfDetailUserFragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, detailFragment);
+        transaction.replace(R.id.nav_host_fragment, comicsPdfDetailUserFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
