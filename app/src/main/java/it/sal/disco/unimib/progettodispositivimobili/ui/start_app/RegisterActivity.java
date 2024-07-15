@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,12 +68,63 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        binding.loginNow.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
+         binding.topAppbar.setNavigationOnClickListener(v -> {
+             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+             startActivity(intent);
+             finish();
+         });
+
+         //per il textwatcher sotto
+        binding.username.addTextChangedListener(textWatcher);
+        binding.email.addTextChangedListener(textWatcher);
+        binding.DoB.addTextChangedListener(textWatcher);
+        binding.password.addTextChangedListener(textWatcher);
+        binding.confermaPassword.addTextChangedListener(textWatcher);
+
+        /*Serve solo per il caso particolare del textwatcher in cui il radiobutton è l'ultimo elemento
+            ad essere cliccato/riempito. Con questo metodo il textwatcher funziona indipendentemente
+            dall'ordine in cui i campi vengono compilati
+         */
+        binding.radioGroupRegisterGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                binding.btnRegister.setEnabled(fieldsAreValid());
+            }
         });
     }
+
+    //metodo che ritorna true se i campi sono tutti inseriti
+    private boolean fieldsAreValid(){
+        String textUsernameWatcher = String.valueOf(binding.username.getText());
+        String textEmailWatcher = String.valueOf(binding.email.getText());
+        String textDoBWatcher = String.valueOf(binding.DoB.getText());
+        String textPasswordWatcher = String.valueOf(binding.password.getText());
+        String textConfirmPasswordWatcher = String.valueOf(binding.confermaPassword.getText());
+
+        int intGenderIndexWatcher = binding.radioGroupRegisterGender.getCheckedRadioButtonId();
+
+        return !textUsernameWatcher.isEmpty() && !textEmailWatcher.isEmpty() && !textDoBWatcher.isEmpty() &&
+                !textPasswordWatcher.isEmpty() && !textConfirmPasswordWatcher.isEmpty() && intGenderIndexWatcher != -1;
+    }
+
+    //Abilita/disabilita il bottone di registrazione se i campi sono inseriti/vuoti
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            binding.btnRegister.setEnabled(fieldsAreValid());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void setupDatePicker() {
         binding.DoB.setOnClickListener(v -> {
@@ -89,6 +143,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
+    /*TODO: semplificare questa funzione. Ora che il textwatcher attiva/disattiva il bottone di registrazione,
+        molte di queste opzioni sono impossibili da raggiungere, e il codice è quindi superfluo.
+     */
     private void validateData() {
         name = binding.username.getText().toString().trim();
         email = binding.email.getText().toString().trim();
