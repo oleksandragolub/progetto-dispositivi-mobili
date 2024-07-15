@@ -13,7 +13,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
                 <TextView
                     android:id="@+id/text_update_profile"
@@ -24,7 +25,7 @@
                     android:layout_marginRight="16dp"
                     android:text="@string/txt_update_profile"
                     android:textAlignment="center"
-                    android:textSize="32sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@id/guideline_begin"
                     app:layout_constraintStart_toEndOf="@id/guideline_right"
@@ -32,6 +33,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textView_input_layout_username"
+                    style="?attr/textInputFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -42,8 +44,7 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_left"
                     app:layout_constraintTop_toBottomOf="@id/text_update_profile"
                     app:startIconDrawable="@drawable/profile_icone"
-                    app:endIconMode="clear_text"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/textView_username"
@@ -55,6 +56,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textView_input_layout_DoB"
+                    style="?attr/textInputFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -65,8 +67,7 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_left"
                     app:layout_constraintTop_toBottomOf="@id/textView_input_layout_username"
                     app:startIconDrawable="@drawable/baseline_calendar_month_24"
-                    app:endIconMode="clear_text"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/textView_DoB"
@@ -104,6 +105,14 @@
                         android:text="@string/gender_male"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/gender_other"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gender_other"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </RadioGroup>
 
 
@@ -120,12 +129,11 @@
                     app:layout_constraintStart_toEndOf="@id/guideline_left"
                     app:layout_constraintEnd_toStartOf="@id/guideline_right">
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <Button
                         android:id="@+id/profile_update_btn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_salva_update_profile"
-                        android:background="@drawable/round_btn"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textAllCaps="false" />
@@ -161,7 +169,8 @@
                         android:text="@string/txt_back"
                         android:textAllCaps="false"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorTertiary"/>
                 </LinearLayout>
 
 

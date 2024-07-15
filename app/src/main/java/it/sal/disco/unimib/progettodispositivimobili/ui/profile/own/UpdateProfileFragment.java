@@ -3,7 +3,9 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile.own;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,8 +135,53 @@ public class UpdateProfileFragment extends Fragment {
             }
         });
 
+        //per il textwatcher sotto
+        usernameEditText.addTextChangedListener(textWatcher);
+        dobEditText.addTextChangedListener(textWatcher);
+
+        /*Serve solo per il caso particolare del textwatcher in cui il radiobutton è l'ultimo elemento
+            ad essere cliccato/riempito. Con questo metodo il textwatcher funziona indipendentemente
+            dall'ordine in cui i campi vengono compilati
+         */
+        radioGroupRegisterGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                updateProfileButton.setEnabled(fieldsAreValid());
+            }
+        });
+
         return root;
     }
+
+    //metodo che ritorna true se i campi sono tutti inseriti
+    private boolean fieldsAreValid(){
+        String textUsernameWatcher = String.valueOf(usernameEditText.getText());
+        String textDoBWatcher = String.valueOf(dobEditText.getText());
+
+        int intGenderIndexWatcher = radioGroupRegisterGender.getCheckedRadioButtonId();
+
+        return !textUsernameWatcher.isEmpty() && !textDoBWatcher.isEmpty() &&
+                intGenderIndexWatcher != -1;
+    }
+
+    //Abilita/disabilita il bottone di update profile se i campi sono inseriti/vuoti
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            updateProfileButton.setEnabled(fieldsAreValid());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     // Metodo per controllare se il form è completo
     private boolean isFormComplete() {

@@ -20,7 +20,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:padding="8dp"
-            android:src="@drawable/baseline_arrow_back_ios_24_dark" />
+            android:src="@drawable/baseline_arrow_back_24"
+            android:tint="?attr/colorControlNormal"/>
 
         <TextView
             android:id="@+id/titleComicsTv"
@@ -274,9 +275,8 @@
                     android:id="@+id/commentsLabelTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed"
                     android:padding="5dp"
-                    android:text="Comments"
+                    android:text="@string/label_comments"
                     android:textSize="16sp"/>
 
                 <ImageButton
@@ -286,7 +286,8 @@
                     android:layout_alignParentEnd="true"
                     android:padding="5dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/baseline_add_comment_24"/>
+                    android:src="@drawable/baseline_add_comment_24"
+                    app:tint="?attr/colorControlNormal"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/commentsRv"

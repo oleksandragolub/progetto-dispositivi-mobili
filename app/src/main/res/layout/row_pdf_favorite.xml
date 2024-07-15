@@ -5,6 +5,7 @@
     android:layout_height="140dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/edit_text_rounded_corner"
+    android:backgroundTint="?attr/android:colorBackground"
     android:layout_marginBottom="5dp"
     app:contentPadding="5dp"
     app:cardUseCompatPadding="true"
@@ -56,7 +57,8 @@
             android:contentDescription="TODO"
             android:padding="5dp"
             android:src="@drawable/baseline_favorite_24"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            app:tint="?attr/colorControlNormal"/>
 
         <TextView
             android:id="@+id/description_comics"

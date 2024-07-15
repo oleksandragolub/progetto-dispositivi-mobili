@@ -13,7 +13,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
             <TextView
                 android:id="@+id/text_elimina_profile"
@@ -24,7 +25,7 @@
                 android:layout_marginRight="16dp"
                 android:text="@string/txt_elimina_profile"
                 android:textAlignment="center"
-                android:textSize="32sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/guideline_begin"
                 app:layout_constraintEnd_toStartOf="@id/guideline_right"
@@ -32,6 +33,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_password"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -40,8 +42,7 @@
                 app:boxBackgroundColor="?android:attr/panelBackground"
                 app:layout_constraintTop_toBottomOf="@id/text_elimina_profile"
                 app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/baseline_password_24"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:startIconDrawable="@drawable/baseline_password_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
@@ -51,14 +52,14 @@
                     android:textColorHint="@color/design_default_color_background" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/btn_authenticate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/round_btn"
+                android:enabled="false"
                 android:text="@string/btn_authenticate"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -73,13 +74,13 @@
                 android:paddingRight="10dp"
                 android:textAlignment="center"
                 android:text="@string/txt_profile_not_authenticated"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 app:layout_constraintTop_toBottomOf="@id/btn_authenticate" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/btn_delete_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +88,6 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/round_btn"
                 android:text="@string/btn_delete_user"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -126,7 +126,8 @@
                     android:text="@string/txt_back"
                     android:textAllCaps="false"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorTertiary"/>
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline

@@ -37,7 +37,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:src="@drawable/baseline_arrow_back_ios_24_dark" />
+                        android:src="@drawable/baseline_arrow_back_24"
+                        android:tint="?attr/colorControlNormal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -72,9 +73,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="6dp"
                 android:text="@string/txt_edit_comics"
-                android:textSize="28sp"
-                android:gravity="center"
-                android:fontFamily="sans-serif-condensed" />
+                android:textSize="26sp"
+                android:gravity="center" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_comics_title"
@@ -117,7 +117,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_year"
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
@@ -132,13 +131,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
-                android:fontFamily="casual"
                 android:prompt="@string/select_year" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_language"
                 android:textAlignment="viewStart"
                 android:layout_marginTop="8dp"
@@ -153,13 +150,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
-                android:fontFamily="casual"
                 android:prompt="@string/select_language" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_genre"
                 android:textAlignment="viewStart"
                 android:layout_marginTop="8dp"
@@ -178,7 +173,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_collection"
                 android:textAlignment="viewStart"
                 android:layout_marginTop="8dp"
@@ -194,11 +188,10 @@
                 android:layout_marginTop="5dp"
                 android:spinnerMode="dialog"/>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/update_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_btn"
                 android:text="@string/update_btn_2"
                 android:layout_marginTop="16dp"
                 android:textSize="18sp"

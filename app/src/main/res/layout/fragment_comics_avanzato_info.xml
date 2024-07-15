@@ -32,7 +32,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:src="@drawable/baseline_arrow_back_ios_24_dark"
+                    android:src="@drawable/baseline_arrow_back_24"
+                    android:tint="?attr/colorControlNormal"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -40,7 +41,6 @@
                     android:id="@+id/txtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="casual"
                     android:gravity="center"
                     android:text="@string/filtri"
                     android:textAlignment="center"
@@ -58,7 +58,6 @@
                 android:id="@+id/txtCollezione"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_collection"
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
@@ -72,14 +71,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
-                android:fontFamily="casual"
                 android:prompt="@string/select_collection" />
 
             <TextView
                 android:id="@+id/txtLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_language"
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
@@ -93,14 +90,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
-                android:fontFamily="casual"
                 android:prompt="@string/select_language" />
 
             <TextView
                 android:id="@+id/txtYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_year"
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
@@ -114,14 +109,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:padding="8dp"
-                android:fontFamily="casual"
                 android:prompt="@string/select_year" />
 
             <TextView
                 android:id="@+id/txtGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="casual"
                 android:text="@string/select_genre"
                 android:textAlignment="viewStart"
                 android:layout_marginLeft="1dp"
@@ -138,11 +131,10 @@
                 android:fontFamily="casual"
                 android:prompt="@string/select_genre" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/searchButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_btn"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:textStyle="bold"

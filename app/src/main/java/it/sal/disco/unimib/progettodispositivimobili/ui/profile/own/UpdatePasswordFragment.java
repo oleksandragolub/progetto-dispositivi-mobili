@@ -2,7 +2,9 @@ package it.sal.disco.unimib.progettodispositivimobili.ui.profile.own;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,8 +79,30 @@ public class UpdatePasswordFragment extends Fragment {
             }
         });
 
+        editTextPwdCurr.addTextChangedListener(textWatcher);
+
         return root;
     }
+
+    //Abilita/disabilita il bottone autentica se password è inserita/vuota
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String textPasswordWatcher = String.valueOf(editTextPwdCurr.getText());
+
+            buttonReAuthenticate.setEnabled(!textPasswordWatcher.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     private void reAuthenticateUser(FirebaseUser currentUser) {

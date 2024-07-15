@@ -33,13 +33,14 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:padding="8dp"
-                    android:src="@drawable/baseline_favorite_24" />
+                    android:src="@drawable/baseline_favorite_24"
+                    android:tint="?attr/colorControlNormal"/>
             </RelativeLayout>
 
             <FrameLayout
                 android:id="@+id/layout_profile_image_view"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_width="144dp"
+                android:layout_height="144dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
@@ -49,8 +50,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image_view"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="144dp"
+                    android:layout_height="144dp"
                     android:layout_gravity="center"
                     android:background="@drawable/circular_bg"
                     android:padding="5dp"
@@ -80,6 +81,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_username"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -90,8 +92,7 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/layout_profile_image_view"
                 app:startIconDrawable="@drawable/profile_icone"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textView_username"
@@ -104,6 +105,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_email"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -114,8 +116,7 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/textView_input_layout_username"
                 app:startIconDrawable="@drawable/baseline_alternate_email_24"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textView_email"
@@ -128,6 +129,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_DoB"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -138,8 +140,7 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/textView_input_layout_email"
                 app:startIconDrawable="@drawable/baseline_calendar_month_24"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textView_DoB"
@@ -152,6 +153,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textView_input_layout_gender"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -162,8 +164,7 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/textView_input_layout_DoB"
                 app:startIconDrawable="@drawable/baseline_transgender_24"
-                app:endIconMode="clear_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textView_gender"
@@ -189,11 +190,10 @@
                 app:layout_constraintBottom_toTopOf="@id/guideline_end">
 
 
-                <androidx.appcompat.widget.AppCompatButton
+                <Button
                     android:id="@+id/profile_chat_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/round_btn"
                     android:text="@string/btn_chat_profile"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -229,7 +229,8 @@
                     android:text="@string/txt_back"
                     android:textAllCaps="false"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorTertiary"/>
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
