@@ -9,7 +9,8 @@
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="5dp"
     app:cardElevation="0dp"
-    android:background="@drawable/edit_text_rounded_corner">
+    android:background="@drawable/edit_text_rounded_corner"
+    android:backgroundTint="?attr/android:colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
