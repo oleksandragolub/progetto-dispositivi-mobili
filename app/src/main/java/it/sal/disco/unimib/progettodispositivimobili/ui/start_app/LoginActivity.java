@@ -1,16 +1,10 @@
 package it.sal.disco.unimib.progettodispositivimobili.ui.start_app;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,9 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.Objects;
-
 import it.sal.disco.unimib.progettodispositivimobili.R;
 import it.sal.disco.unimib.progettodispositivimobili.ui.profile.ReadWriteUserDetails;
 import it.sal.disco.unimib.progettodispositivimobili.ui.main.MainActivity;
@@ -59,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin, text_registerNow;
     TextView text_ForgotPassword;
-
 
     private void signIn(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -210,7 +201,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
     private void startMainActivity() {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
@@ -228,10 +218,10 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        if(currentUser==null){
-            signIn();
-        } else {
+        if(currentUser != null){
             updateUI(currentUser);
+        } else {
+            signIn();
         }
 
         editTextEmail = findViewById(R.id.email);
@@ -249,7 +239,6 @@ public class LoginActivity extends AppCompatActivity {
         text_registerNow.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
-            finish();
         });
 
         buttonLogin.setOnClickListener(v -> {
@@ -269,26 +258,20 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword.addTextChangedListener(textWatcher);
     }
 
-
     //Abilita/disabilita il bottone login se email e password sono inserite/vuote
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String textEmailWatcher = String.valueOf(editTextEmail.getText());
             String textPasswordWatcher = String.valueOf(editTextPassword.getText());
-
             buttonLogin.setEnabled(!textEmailWatcher.isEmpty() && !textPasswordWatcher.isEmpty());
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-
-        }
+        public void afterTextChanged(Editable s) { }
     };
 
     private void loginUser(String email, String password) {
@@ -366,16 +349,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, Objects.requireNonNull(exception.getMessage()));
             Toast.makeText(LoginActivity.this, "Errore di login: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void signOutUser() {
-        if (mAuth != null) {
-            mAuth.signOut();
-            Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
         }
     }
 }
