@@ -8,7 +8,7 @@
     <string name="title_ricerca">Search</string>
     <string name="title_profile">Profile</string>
 
-    <string name="logout" translatable="false">Logout</string>
+    <string name="logout">Logout</string>
 
     <string name="title_activity_register" translatable="false">RegisterActivity</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
@@ -170,5 +170,43 @@
     <string name="gestione_category">Comics category</string>
     <string name="gestione_category2">Comics Category/Collection</string>
     <string name="gestione_category3">Category/Collection</string>
+    <string name="search_character">Search Character</string>
+
+
+    <string name="toast_delete">Removed successfully...</string>
+    <string name="toast_del">Removing...</string>
+    <string name="toast_user_detail">Failed to load user details: </string>
+    <string name="toast_comics_unfound">No comics found with selected parameters</string>
+    <string name="toast_search_error">Error searching</string>
+    <string name="toast_search_cancelled">Search cancelled</string>
+    <string name="toast_search_timeout">The research took too long. Please try again later.</string>
+    <string name="toast_param">Select at least a search paramater</string>
+    <string name="toast_unknow">Unknow data tipe</string>
+    <string name="toast_null">Argument is null</string>
+    <string name="toast_url">Comics url not avaiable. Please try again later.</string>
+    <string name="toast_url_invalid">Comcis url not valid. Please try again later</string>
+    <string name="toast_auth">You are not authenticated.</string>
+    <string name="toast_comment">enter your comment...</string>
+    <string name="toast_comment_added">Comment added...</string>
+    <string name="toast_comment_failed">Failed to add comment due to </string>
+    <string name="toast_download_failed">Failed to download PDF </string>
+    <string name="toast_favourite">Added to favourites...</string>
+    <string name="toast_failed_favourite">Failed to add favourites...</string>
+    <string name="toast_removed_favourite">Removed from favourites...</string>
+    <string name="toast_failed_remove_favourite">Failed to remove favourites...</string>
+    <string name="toast_error_page">Error on page</string>
+    <string name="toast_category">Failed to load categories: </string>
+    <string name="toast_collection">Failed to load collection from API</string>
+    <string name="toast_retry">Retry failed: </string>
+    <string name="toast_insert_category">Insert title of the new category...</string>
+    <string name="toast_inserted_category">The category added successfully!</string>
+    <string name="toast_insert_title">Insert title...</string>
+    <string name="toast_insert_descriprion">Insert descripton...</string>
+    <string name="toast_select_year">Select year...</string>
+    <string name="toast_select_language">Select language...</string>
+    <string name="toast_select_collection">Select at least a collection...</string>
+    <string name="toast_select_genre">Select at least a genre...</string>
+    <string name="toast_select_pdf">Select PDF...</string>
+    <string name="toast_pdfupload_failed">Failed to download PDF due to </string>
 
 </resources>

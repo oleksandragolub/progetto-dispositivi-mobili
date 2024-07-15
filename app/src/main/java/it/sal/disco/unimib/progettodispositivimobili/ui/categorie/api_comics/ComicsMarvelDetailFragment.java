@@ -88,12 +88,14 @@ public class ComicsMarvelDetailFragment extends Fragment {
                 ModelPdfComics model = (ModelPdfComics) comicData;
                 populateModelPdfComicsDetails(model);
             } else {
-                Log.e(TAG, "Unknown data type");
-                Toast.makeText(getActivity(), "Unknown data type", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_unknow);
+                Log.e(TAG, toast_text);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Log.e(TAG, "Arguments are null");
-            Toast.makeText(getActivity(), "Arguments are null", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_null);
+            Log.e(TAG, toast_text);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         }
 
         binding.buttonBackUser.setOnClickListener(v -> getParentFragmentManager().popBackStack());
@@ -153,13 +155,15 @@ public class ComicsMarvelDetailFragment extends Fragment {
                 openPdfViewer(comicsUrl);
                 MyApplication.incrementMarvelComicsViewCount(comicsId);
             } else {
-                Toast.makeText(getActivity(), "Comic URL not available. Please try again later.", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_url);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.downloadComicsBtn.setOnClickListener(v -> {
             if (comicsUrl == null || comicsUrl.isEmpty()) {
-                Toast.makeText(getActivity(), "Invalid comics URL, please try again later.", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_url_invalid);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
                 return;
             }
             MyApplication.downloadMarvelComics(getActivity(), comicsId, title, comicsUrl);
@@ -167,7 +171,8 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
         binding.addCommentBtn.setOnClickListener(v -> {
             if (firebaseAuth.getCurrentUser() == null) {
-                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_auth);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             } else {
                 addCommentDialog();
             }
@@ -175,7 +180,8 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
         binding.favoriteComicsBtn.setOnClickListener(v -> {
             if (firebaseAuth.getCurrentUser() == null) {
-                Toast.makeText(getActivity(), "Non sei autentificato!", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_url_invalid);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             } else {
                 if (isInMyFavorites) {
                     removeFromFavorites();
@@ -418,7 +424,8 @@ public class ComicsMarvelDetailFragment extends Fragment {
             comment = commentAddBinding.commentEt.getText().toString().trim();
 
             if (TextUtils.isEmpty(comment)) {
-                Toast.makeText(getActivity(), "Inserisci il tuo commento...", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_comment);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             } else {
                 alertDialog.dismiss();
                 addComment();
@@ -441,11 +448,13 @@ public class ComicsMarvelDetailFragment extends Fragment {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ComicsMarvel");
         ref.child(comicsId).child("Comments").child(timestamp).setValue(hashMap).addOnSuccessListener(unused -> {
-            Toast.makeText(getActivity(), "Comment Added...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_comment_added);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
-            Toast.makeText(getActivity(), "Failed to add comment due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_comment_failed);
+            Toast.makeText(getActivity(), toast_text + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -497,7 +506,8 @@ public class ComicsMarvelDetailFragment extends Fragment {
                 updateFirebaseWithPageCount(comicsId, String.valueOf(pageCount));
                 updateFirebaseWithFileSize(comicsId, fileSize);
             } else {
-                Toast.makeText(getActivity(), "Failed to download PDF", Toast.LENGTH_SHORT).show();
+                String toast_text = getContext().getString(R.string.toast_download_failed);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -548,10 +558,11 @@ public class ComicsMarvelDetailFragment extends Fragment {
         hashMap.put("thumbnailUrl", thumbnailUrl); // Add the thumbnail URL to the favorites
 
         ref.setValue(hashMap).addOnSuccessListener(aVoid -> {
-            Toast.makeText(getActivity(), "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_favourite);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             isInMyFavorites = true;
             updateFavoriteButton();
-        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to add to favorites", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), getString(R.string.toast_failed_favourite), Toast.LENGTH_SHORT).show());
     }
 
     private void removeFromFavorites() {
@@ -559,10 +570,11 @@ public class ComicsMarvelDetailFragment extends Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Utenti registrati").child(userId).child("Favorites").child(comicsId);
 
         ref.removeValue().addOnSuccessListener(aVoid -> {
-            Toast.makeText(getActivity(), "Rimosso dai preferiti", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_removed_favourite);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             isInMyFavorites = false;
             updateFavoriteButton();
-        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to remove from favorites", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), getString(R.string.toast_failed_remove_favourite), Toast.LENGTH_SHORT).show());
     }
 
     private void updateFavoriteButton() {

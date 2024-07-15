@@ -97,7 +97,8 @@ public class AdapterComment extends  RecyclerView.Adapter<AdapterComment.HolderC
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Toast.makeText(context, "Deleted...", Toast.LENGTH_SHORT).show();
+                                        String toast_text = context.getString(R.string.toast_delete);
+                                        Toast.makeText(context, toast_text, Toast.LENGTH_SHORT).show();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -139,7 +140,8 @@ public class AdapterComment extends  RecyclerView.Adapter<AdapterComment.HolderC
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Failed to load user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                String toast_text = context.getString(R.string.toast_user_detail);
+                Toast.makeText(context, toast_text + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

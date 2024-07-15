@@ -116,7 +116,8 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
     }
 
     private void onSearchTimeout() {
-        Toast.makeText(getContext(), "La ricerca ha impiegato troppo tempo. Riprovare più tardi.", Toast.LENGTH_SHORT).show();
+        String toast_text = getContext().getString(R.string.toast_search_timeout);
+        Toast.makeText(getContext(), toast_text, Toast.LENGTH_SHORT).show();
         progress.setVisibility(View.INVISIBLE);
         timeoutHandler.removeCallbacks(timeoutRunnable);
     }
@@ -135,7 +136,8 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         String year = spinnerYear.getSelectedItem() != null ? spinnerYear.getSelectedItem().toString() : "";
 
         if (collections.isEmpty() && language.isEmpty() && year.isEmpty() && genres.isEmpty()) {
-            Toast.makeText(getContext(), "Seleziona almeno un parametro di ricerca", Toast.LENGTH_SHORT).show();
+            String toast_text = getContext().getString(R.string.toast_param);
+            Toast.makeText(getContext(), toast_text, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -191,8 +193,9 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                         comicsAdapter.notifyDataSetChanged();
                         Log.d(TAG, "Comics caricati dall'API: " + comicsList.size());
                     } else {
-                        Toast.makeText(getContext(), "Nessun fumetto trovato con i parametri selezionati", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Nessun fumetto trovato con i parametri selezionati");
+                        String toast_text = getContext().getString(R.string.toast_comics_unfound);
+                        Toast.makeText(getContext(), toast_text, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, toast_text);
                     }
                     progress.setVisibility(View.INVISIBLE);
                 } finally {
@@ -212,8 +215,9 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
                         retrySearchApiComics(collections, language, year, genres);
                     }
                 } else {
-                    Toast.makeText(getContext(), "Errore durante la ricerca", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Errore durante la ricerca: " + t.getMessage());
+                    String toast_text = getContext().getString(R.string.toast_search_error);
+                    Toast.makeText(getContext(), toast_text, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, toast_text+": " + t.getMessage());
                     progress.setVisibility(View.INVISIBLE);
                 }
             }
@@ -301,7 +305,8 @@ public class ComicsAvanzatoInfoFragment extends Fragment {
         builder.setMessage("Timeout occurred. Would you like to wait a bit longer for the data to load?")
                 .setPositiveButton("Yes", (dialog, id) -> searchApiComics(collections, language, year, genres, true))
                 .setNegativeButton("No", (dialog, id) -> {
-                    Toast.makeText(getContext(), "Search cancelled", Toast.LENGTH_SHORT).show();
+                    String toast_text = getContext().getString(R.string.toast_search_cancelled);
+                    Toast.makeText(getContext(), toast_text, Toast.LENGTH_SHORT).show();
                     progress.setVisibility(View.INVISIBLE);
                 });
         AlertDialog alert = builder.create();

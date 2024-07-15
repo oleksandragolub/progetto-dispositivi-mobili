@@ -4,6 +4,7 @@
     <string name="title_preferiti">Preferiti</string>
     <string name="title_ricerca">Ricerca</string>
     <string name="title_profile">Profilo</string>
+    <string name="logout">Esci</string>
     <string name="txt_login">Accesso</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
@@ -139,4 +140,42 @@
     <string name="gestione_category">Categoria Comics</string>
     <string name="gestione_category2">Comics per categoria/collezione</string>
     <string name="gestione_category3">Categoria/Collezione</string>
+    <string name="search_character">Cerca Personaggio</string>
+    <string name="toast_delete">Eliminazione effettuata con successo...</string>
+    <string name="toast_del">Eliminazione...</string>
+    <string name="toast_user_detail">Impossibile caricare i dettagli dell\'utente: </string>
+    <string name="toast_comics_unfound">Nessun fumetto trovato con i parametri selezionati</string>
+    <string name="toast_search_error">Errore durante la ricerca</string>
+    <string name="toast_search_cancelled">Ricerca Cancellata</string>
+    <string name="toast_search_timeout">La ricerca ha impiegato troppo tempo. Riprovare più tardi.</string>
+    <string name="toast_param">Seleziona almeno un parametro di ricerca</string>
+    <string name="toast_unknow">Tipo Dati sconosciuto</string>
+    <string name="toast_null">Argomento è nullo</string>
+    <string name="toast_url">Comics url non disponibile. Riprova più tardi.</string>
+    <string name="toast_url_invalid">Comcis url non valido. Riprova più tardi</string>
+    <string name="toast_auth">Non sei autentificato.</string>
+    <string name="toast_comment">inserisci il tuo commento...</string>
+    <string name="toast_comment_added">Commento aggiunto...</string>
+    <string name="toast_comment_failed">Impossibile aggiungere un commento a causa di </string>
+    <string name="toast_download_failed">Impossibile fare il download del PDF </string>
+    <string name="toast_favourite">Aggiunto ai preferiti...</string>
+    <string name="toast_failed_favourite">Impossibile aggiungere i preferiti...</string>
+    <string name="toast_removed_favourite">Rimosso dai preferiti...</string>
+    <string name="toast_failed_remove_favourite">Impossibile aggiungere i preferiti...</string>
+    <string name="toast_error_page">Errore nella pagina</string>
+    <string name="toast_category">Impossibile caricare le categorie: </string>
+    <string name="toast_collection">Impossibile caricare le collezioni dalle API</string>
+    <string name="toast_retry">Riprova fallita: </string>
+    <string name="toast_insert_category">Inserisci titolo della nuova categoria...</string>
+    <string name="toast_inserted_category">La categoria aggiunta con successo!</string>
+    <string name="toast_insert_title">Inserisci il titolo...</string>
+    <string name="toast_insert_descriprion">Inserisci la descrizione..</string>
+    <string name="toast_select_year">Seleziona l\'anno...</string>
+    <string name="toast_select_language">Seleziona la lingua...</string>
+    <string name="toast_select_collection">Seleziona almeno una collezione...</string>
+    <string name="toast_select_genre">Seleziona almeno un genere...</string>
+    <string name="toast_select_pdf">Seleziona il pdf...</string>
+    <string name="toast_pdfupload_failed">Impossibile caricare il PDF a cause di </string>
+
+
 </resources>

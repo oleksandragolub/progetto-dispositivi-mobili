@@ -113,23 +113,30 @@ public class ComicsPdfAddFragment extends Fragment {
         List<String> selectedGenres = multiSelectGenre.getSelectedStrings();
 
         if (TextUtils.isEmpty(title)) {
+            String toast_text = getString(R.string.toast_insert_title);
             Toast.makeText(getActivity(), "Inserisci il titolo...", Toast.LENGTH_SHORT).show();
             binding.textViewComicsTitle.setError("Titolo richiesto");
             binding.textViewComicsTitle.requestFocus();
         } else if (TextUtils.isEmpty(descrizione)) {
-            Toast.makeText(getActivity(), "Inserisci la descrizione...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_insert_descriprion);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             binding.textViewComicsDescription.setError("Descrizione richiesta");
             binding.textViewComicsDescription.requestFocus();
         } else if (TextUtils.isEmpty(selectedYearTitle)) {
-            Toast.makeText(getActivity(), "Seleziona l'anno...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_select_year);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(selectedLanguageTitle)) {
-            Toast.makeText(getActivity(), "Seleziona la lingua...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_select_language);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         } else if (selectedCollections.isEmpty()) {
-            Toast.makeText(getActivity(), "Seleziona almeno una collezione...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_select_collection);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         } else if (selectedGenres.isEmpty()) {
-            Toast.makeText(getActivity(), "Seleziona almeno un genere...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_select_genre);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         } else if (pdfUri == null) {
-            Toast.makeText(getActivity(), "Seleziona il pdf...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_select_pdf);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
         } else {
             uploadPdfToStorage(selectedCollections, selectedGenres);
         }
@@ -162,7 +169,8 @@ public class ComicsPdfAddFragment extends Fragment {
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
                 Log.d(TAG, "onFailure: PDF upload failed due to " + e.getMessage());
-                Toast.makeText(getActivity(), "PDF upload failed due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_pdfupload_failed);
+                Toast.makeText(getActivity(), toast_text + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
