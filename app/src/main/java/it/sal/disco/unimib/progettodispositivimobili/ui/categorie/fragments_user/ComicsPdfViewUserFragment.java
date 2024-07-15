@@ -35,8 +35,7 @@ import java.io.IOException;
 
 public class ComicsPdfViewUserFragment extends Fragment {
     private FragmentComicsPdfViewUserBinding binding;
-    private FirebaseAuth firebaseAuth;
-    private String comicsId;
+    private String comicsId, comicsTitle, comicsUrl;
     private static final String TAG = "ComicsPdfViewUserFragment";
     private static final int MAX_RETRY_COUNT = 3;
     private int retryCount = 0;
@@ -46,13 +45,13 @@ public class ComicsPdfViewUserFragment extends Fragment {
         binding = FragmentComicsPdfViewUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         if (getArguments() != null) {
             comicsId = getArguments().getString("comicsId");
-            if (comicsId == null) {
-                Log.e(TAG, "comicsId is null");
-                Toast.makeText(getActivity(), "Error: Comics ID is null", Toast.LENGTH_SHORT).show();
+            comicsTitle = getArguments().getString("comicsTitle");
+            comicsUrl = getArguments().getString("comicsUrl");
+            if (comicsId == null || comicsTitle == null || comicsUrl == null) {
+                Log.e(TAG, "Missing arguments");
+                Toast.makeText(getActivity(), "Error: Missing arguments", Toast.LENGTH_SHORT).show();
                 return root;
             }
         } else {
@@ -62,44 +61,12 @@ public class ComicsPdfViewUserFragment extends Fragment {
         }
 
         Log.d(TAG, "onCreate: ComicsId: " + comicsId);
-        loadComicsDetails();
+        binding.toolbarTitleTv.setText(comicsTitle);
+        loadComicsFromUrl(comicsUrl);
 
-        binding.buttonBack.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                openComicsPdfDetailUserFragment(comicsId);
-            }
-        });
+        binding.buttonBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         return root;
-    }
-
-    private void loadComicsDetails() {
-        Log.d(TAG, "loadComicsDetails: Get Pdf URL...");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comics");
-        ref.child(comicsId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    Log.e(TAG, "onDataChange: Comics not found");
-                    Toast.makeText(getActivity(), "Error: Comics not found", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String pdfUrl = "" + snapshot.child("url").getValue();
-                Log.d(TAG, "onDataChange: PDF URL: " + pdfUrl);
-                String title = "" + snapshot.child("titolo").getValue();
-                Log.d(TAG, "onDataChange: Title: " + title);
-
-                binding.toolbarTitleTv.setText(title);
-                loadComicsFromUrl(pdfUrl);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: Error loading comic details", error.toException());
-                Toast.makeText(getActivity(), "Error loading comic details", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void loadComicsFromUrl(String pdfUrl) {
@@ -109,48 +76,34 @@ public class ComicsPdfViewUserFragment extends Fragment {
         try {
             File localFile = File.createTempFile("comics", "pdf");
 
-            reference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.pdfView.fromFile(localFile).enableSwipe(true)
-                            .swipeHorizontal(true)
-                            .pageSnap(true)
-                            .pageFling(true)
-                            .autoSpacing(true)
-                            .pageFitPolicy(FitPolicy.HEIGHT)
-                            .onPageChange(new OnPageChangeListener() {
-                                @Override
-                                public void onPageChanged(int page, int pageCount) {
-                                    int currentPage = page + 1;
-                                    binding.toolbarSubtitleTv.setText(currentPage + "/" + pageCount);
-                                    Log.d(TAG, "onPageChanged: " + currentPage + "/" + pageCount);
-                                    updateFirebaseWithPageCount(comicsId, pageCount);
-                                }
-                            })
-                            .onError(new OnErrorListener() {
-                                @Override
-                                public void onError(Throwable t) {
-                                    Log.d(TAG, "onError: " + t.getMessage());
-                                    Toast.makeText(getActivity(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .onPageError(new OnPageErrorListener() {
-                                @Override
-                                public void onPageError(int page, Throwable t) {
-                                    Log.d(TAG, "onPageError: " + t.getMessage());
-                                    Toast.makeText(getActivity(), "Error on page " + page + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }).load();
-                    binding.progressBar.setVisibility(View.GONE);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "onFailure: " + e.getMessage());
-                    binding.progressBar.setVisibility(View.GONE);
-                    handleFailure(e, pdfUrl);
-                }
+            reference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.pdfView.fromFile(localFile)
+                        .enableSwipe(true)
+                        .swipeHorizontal(true)
+                        .pageSnap(true)
+                        .pageFling(true)
+                        .autoSpacing(true)
+                        .pageFitPolicy(FitPolicy.HEIGHT)
+                        .onPageChange((page, pageCount) -> {
+                            int currentPage = page + 1;
+                            binding.toolbarSubtitleTv.setText(currentPage + "/" + pageCount);
+                            Log.d(TAG, "onPageChanged: " + currentPage + "/" + pageCount);
+                            updateFirebaseWithPageCount(comicsId, pageCount);
+                        })
+                        .onError(t -> {
+                            Log.d(TAG, "onError: " + t.getMessage());
+                            Toast.makeText(getActivity(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        })
+                        .onPageError((page, t) -> {
+                            Log.d(TAG, "onPageError: " + t.getMessage());
+                            Toast.makeText(getActivity(), "Error on page " + page + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }).load();
+                binding.progressBar.setVisibility(View.GONE);
+            }).addOnFailureListener(e -> {
+                Log.d(TAG, "onFailure: " + e.getMessage());
+                binding.progressBar.setVisibility(View.GONE);
+                handleFailure(e, pdfUrl);
             });
 
         } catch (IOException e) {
@@ -174,34 +127,10 @@ public class ComicsPdfViewUserFragment extends Fragment {
         ref.child("pages").setValue(pages);
     }
 
-    private void openFragment(Fragment fragment, String comicsId) {
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-    private void openComicsPdfDetailUserFragment(String comicsId) {
-        ComicsPdfViewUserFragment fragment = new ComicsPdfViewUserFragment();
-        Bundle args = new Bundle();
-        args.putString("comicsId", comicsId);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment); // Assicurati che l'ID corrisponda al tuo layout
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+

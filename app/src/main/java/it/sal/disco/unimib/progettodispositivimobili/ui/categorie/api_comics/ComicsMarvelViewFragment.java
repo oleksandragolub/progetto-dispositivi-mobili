@@ -118,7 +118,8 @@ public class ComicsMarvelViewFragment extends Fragment {
                                 @Override
                                 public void onPageError(int page, Throwable t) {
                                     if (getActivity() != null) {
-                                        Toast.makeText(getActivity(), "Error on page " + page + ": " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        String toast_text = getString(R.string.toast_error_page);
+                                        Toast.makeText(getActivity(), toast_text + page + ": " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             })
@@ -126,7 +127,8 @@ public class ComicsMarvelViewFragment extends Fragment {
                 }
             } else {
                 if (getActivity() != null) {
-                    Toast.makeText(getActivity(), "Failed to download PDF", Toast.LENGTH_SHORT).show();
+                    String toast_text = getString(R.string.toast_download_failed);
+                    Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -1,4 +1,12 @@
 # progetto-dispositivi-mobili
+GRUPPO: Hack&Horizon
+
+Membri: 
+Oleksandra Golub - 856706
+Alessandro redaelli - 869841
+Taha Mounji - 780471
+
+
 
 IN SINTESI:
 

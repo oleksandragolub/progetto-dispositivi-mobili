@@ -61,7 +61,8 @@ public class CategoryAddFragment extends Fragment {
         category = binding.textViewCategoryTitle.getText().toString();
 
         if(TextUtils.isEmpty(category)){
-            Toast.makeText(getActivity(), "Inserisci il titolo della nuova categoria...", Toast.LENGTH_SHORT).show();
+            String toast_text = getString(R.string.toast_insert_category);
+            Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             binding.textViewInputLayoutCategoryTitle.setError("Titolo richisto");
             binding.textViewInputLayoutCategoryTitle.requestFocus();
             //return;
@@ -83,7 +84,8 @@ public class CategoryAddFragment extends Fragment {
         ref.child(""+timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(getActivity(), "La categoria aggiunta con successo!", Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_inserted_category);
+                Toast.makeText(getActivity(), toast_text, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -144,7 +144,8 @@ public class CategoryAddAdminFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Failed to load categories: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                String toast_text = getString(R.string.toast_category);
+                Toast.makeText(getActivity(), toast_text + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -178,7 +179,7 @@ public class CategoryAddAdminFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(getActivity(), "Failed to load collections from API", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.toast_collection), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -187,7 +188,7 @@ public class CategoryAddAdminFragment extends Fragment {
                 if (t instanceof SocketTimeoutException) {
                     retryApiCall(call.clone());
                 } else {
-                    Toast.makeText(getActivity(), "Failed to load collections from API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.toast_collection)+": " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -220,13 +221,13 @@ public class CategoryAddAdminFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(getActivity(), "Failed to load collections from API", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.toast_collection), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getActivity(), "Retry failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.toast_retry) + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

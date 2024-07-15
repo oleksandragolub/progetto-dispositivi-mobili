@@ -237,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         text_registerNow.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 

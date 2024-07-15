@@ -74,7 +74,8 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
                         .setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(context.getApplicationContext(), "Eliminazione...", Toast.LENGTH_SHORT).show();
+                                String toast_text = context.getString(R.string.toast_del);
+                                Toast.makeText(context.getApplicationContext(), toast_text, Toast.LENGTH_SHORT).show();
                                 deleteCategory(model, holder);
                             }
                         }).setNegativeButton("Cancella", new DialogInterface.OnClickListener() {
@@ -124,7 +125,8 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
         ref.child(id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(context.getApplicationContext(), "Eliminazione effettuata con successo...", Toast.LENGTH_SHORT).show();
+                String toast_text = context.getString(R.string.toast_delete);
+                Toast.makeText(context.getApplicationContext(), toast_text, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
