@@ -57,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseReference reference;
 
     TextInputEditText editTextEmail, editTextPassword;
-    Button buttonLogin;
-    TextView text_ForgotPassword, text_registerNow;
+    Button buttonLogin, text_registerNow;
+    TextView text_ForgotPassword;
 
 
     private void signIn(){
@@ -256,31 +256,11 @@ public class LoginActivity extends AppCompatActivity {
             String textEmail = String.valueOf(editTextEmail.getText());
             String textPassword = String.valueOf(editTextPassword.getText());
 
-            //Questo pezzo di codice non serve più, questo caso è impossibile con il nuovo textWatcher (vedi sotto)
-            /*
-                if(TextUtils.isEmpty(textEmail)){
-                    Toast.makeText(LoginActivity.this, "Inserisci la tua email", Toast.LENGTH_SHORT).show();
-                    editTextEmail.setError("Email richiesta");
-                    editTextEmail.requestFocus();
-                    //return;
-                }
-             */
             if(!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
                 Toast.makeText(LoginActivity.this, "Re-inserisci la tua email", Toast.LENGTH_SHORT).show();
                 editTextEmail.setError("Email valida richiesta");
                 editTextEmail.requestFocus();
-                //return;
-            }
-            //Codice superfluo #2
-            /*
-            else if(TextUtils.isEmpty(textPassword)){
-                Toast.makeText(LoginActivity.this, "Inserisci la tua password", Toast.LENGTH_SHORT).show();
-                editTextPassword.setError("Password richiesta");
-                editTextPassword.requestFocus();
-                //return;
-            }
-             */
-             else {
+            } else {
                 loginUser(textEmail, textPassword);
             }
         });
@@ -288,6 +268,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.addTextChangedListener(textWatcher);
         editTextPassword.addTextChangedListener(textWatcher);
     }
+
 
     //Abilita/disabilita il bottone login se email e password sono inserite/vuote
     private TextWatcher textWatcher = new TextWatcher() {

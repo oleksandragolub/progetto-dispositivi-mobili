@@ -369,6 +369,7 @@ public class ComicsMarvelDetailFragment extends Fragment {
     private void openPdfViewer(String pdfUrl) {
         ComicsMarvelViewFragment comicsMarvelViewFragment = new ComicsMarvelViewFragment();
         Bundle args = new Bundle();
+        args.putString("comicsId", comicsId);
         args.putString("pdfUrl", pdfUrl);
         args.putString("title", comicsTitle);
         comicsMarvelViewFragment.setArguments(args);

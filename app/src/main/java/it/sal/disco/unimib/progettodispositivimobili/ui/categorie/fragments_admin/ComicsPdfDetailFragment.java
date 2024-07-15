@@ -79,6 +79,12 @@ public class ComicsPdfDetailFragment extends Fragment {
         binding = FragmentComicsPdfDetailBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Aspetta per favore");
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
         if (getArguments() != null) {
             if (getArguments().containsKey("modelPdfComics")) {
                 modelPdfComics = (ModelPdfComics) getArguments().getSerializable("modelPdfComics");
@@ -90,15 +96,6 @@ public class ComicsPdfDetailFragment extends Fragment {
                 comicsId = getArguments().getString("comicsId");
                 loadComicsDetails();
             }
-        }
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("Aspetta per favore");
-        progressDialog.setCanceledOnTouchOutside(false);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null) {
-            checkIsFavorite();
         }
 
         if (comicsId != null) {
@@ -114,7 +111,7 @@ public class ComicsPdfDetailFragment extends Fragment {
         binding.readComicsBtn.setOnClickListener(v -> {
             ComicsPdfViewFragment comicsPdfViewFragment = new ComicsPdfViewFragment();
             Bundle args = new Bundle();
-            args.putString("comicsId", comicsId);
+            args.putSerializable("comicsId", comicsId);
             comicsPdfViewFragment.setArguments(args);
 
             FragmentManager fragmentManager = getParentFragmentManager();

@@ -60,8 +60,8 @@ public class AdapterApiComics extends RecyclerView.Adapter<AdapterApiComics.Comi
         holder.description.setText(comic.getDescription());
         Glide.with(holder.itemView.getContext())
                 .load(comic.getThumbnail())
-                .apply(new RequestOptions().override(100, 150).timeout(500))
-                .thumbnail(0.1f)
+                .apply(new RequestOptions().override(100, 150)) // Apply RequestOptions here
+                .thumbnail(0.1f) // Use thumbnail directly on RequestBuilder
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail);
 

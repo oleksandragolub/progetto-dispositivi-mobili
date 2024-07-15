@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 import it.sal.disco.unimib.progettodispositivimobili.databinding.RowPdfUserBinding;
 import it.sal.disco.unimib.progettodispositivimobili.ui.categorie.MyApplication;
@@ -62,6 +60,7 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
         holder.titleTv.setText(title);
         holder.descriptionTv.setText(description);
 
+        // Carica solo la prima pagina del PDF
         MyApplication.loadPdfFromUrlSinglePage(pdfUrl, title, holder.pdfView, holder.progressBar, null);
 
         holder.itemView.setOnClickListener(v -> {
@@ -69,6 +68,15 @@ public class AdapterPdfComicsUser extends RecyclerView.Adapter<AdapterPdfComicsU
                 onItemClickListener.onItemClick(model);
             }
         });
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull HolderPdfUser holder) {
+        super.onViewRecycled(holder);
+        // Ricicla le risorse del PDFView quando il ViewHolder viene riciclato
+        if (holder.pdfView != null) {
+            holder.pdfView.recycle();
+        }
     }
 
     @Override
